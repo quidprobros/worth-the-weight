@@ -1,0 +1,77 @@
+<?
+$journal_day_offset = (int) Flight::request()->query["day_offset"];
+
+
+
+if (empty($journal_day_offset)) {
+    $journal_view_date = Flight::now("D M j, Y");
+    $journal_date = date("Y-m-d");
+    $colloqial_date = "&nbsp";
+} else {
+    $journal_view_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("D M j, Y");
+    $journal_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("Y-m-d 00:00:00");
+
+    switch(strtotime($journal_date)) {
+        case (strtotime("yesterday")):
+            $colloqial_date = "yesterday";
+            break;
+        case (date("Y-m-d")):
+            $colloqial_date = "today";
+            break;
+        default:
+            $colloqial_date = "&nbsp;";
+            break;
+    }
+}
+
+$data = Flight::getRelativeRecords($journal_day_offset);
+
+$records = $data['records'];
+
+$today_points = $data['points'];
+
+$exercised = $data['exercised'];
+
+?>
+<style>
+ .fade-me-out.htmx-swapping {
+     opacity: 0;
+     transition: opacity 1s ease-out;
+ }
+</style>
+<!-- Your menu or Off-canvas content goes here -->
+<div id='this-container' class="grid-y">
+    <div class="cell">
+        <div class="button-group align-spaced align-middle">
+            <a class="button" title="see entry for yesterday"
+               hx-indicator="#indicator"
+               hx-get="/journal-yesterday?day_offset=<?=($journal_day_offset - 1)?>"
+               hx-swap="outerHTML"
+               hx-push-url="?day_offset=<?=($journal_day_offset - 1)?>"
+               hx-target='#this-container'>⬅</a>
+            <a><h1 style='margin:0'><?=$journal_view_date?></h1></a>
+            <a class="button fade-me-out" title="see entry for tomorrow"
+               hx-indicator="#indicator"
+               hx-get="/journal-tomorrow?day_offset=<?=($journal_day_offset + 1)?>"
+               hx-swap="outerHTML"
+               hx-push-url="?day_offset=<?=($journal_day_offset + 1)?>"
+               hx-target='#this-container'>⮕</a>
+        </div>
+    </div>
+    <div class="cell">
+        <div class="callout">
+            <strong>Consumed: <?=$today_points?> points</strong>
+            <br>
+            <strong>Exercised this day: <?=$exercised ? "YES!": "NOPE"?></strong>
+        </div>
+    </div>
+    <div class="cell">
+        <div class='callout'>
+            <div class="table-scroll">
+                <?=Flight::render("partials/journal", [
+                    "records" => $records,
+                ])?>
+            </div>
+        </div>
+    </div>
+</div>

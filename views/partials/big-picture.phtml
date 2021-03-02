@@ -1,0 +1,73 @@
+<?
+
+if (empty($journal_day_offset)) {
+    $journal_view_date = Flight::now("D M j, Y");
+    $journal_date = date("Y-m-d");
+    $colloqial_date = "&nbsp";
+} else {
+    $journal_view_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("D M j, Y");
+    $journal_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("Y-m-d 00:00:00");
+    Tracy\Debugger::log($journal_date);
+}
+
+switch(strtotime($journal_date)) {
+    case (strtotime("yesterday")):
+        $title = "yesterday";
+        break;
+    case (date("Y-m-d")):
+        $title = "today";
+        break;
+    default:
+        $title = "Count for {$journal_view_date}";
+        break;
+}
+
+$data = Flight::getRelativeRecords($journal_day_offset);
+
+$records = $data['records'];
+
+$today_points = $data['points'];
+
+$exercised = $data['exercised'];
+Tracy\Debugger::log($exercised);
+Tracy\Debugger::log(1 == $exercised ? "checked":"what");
+
+?>
+<div id="big-picture" class="card">
+    <div class="card-divider button-group align-justify">
+
+        <a class="button" title="see total for previous day"
+           hx-post="/big-picture-prev"
+           hx-swap="outerHTML"
+           hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
+           hx-indicator="#indicator"
+           hx-target='#big-picture'>⬅</a>
+        <h4><a title="see total for today"
+               hx-post="/big-picture-next"
+               hx-swap="outerHTML"
+               hx-vals='{"journal_day_offset": "-1"}'
+               hx-target='#big-picture'><?=$title?></a></h4>
+        <a class="button" title="see total for next day"
+           hx-post="/big-picture-next"
+           hx-swap="outerHTML"
+           hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
+           hx-target='#big-picture'>⮕</a>
+    </div>
+    <div class="card-section">
+        <div class="callout secondary text-center">
+            <div id="today-total" style="font-size:5rem"><?=number_format($today_points, 1)?> points</div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <form action="" name="day-info">
+            <fieldset class="cell small-12 fieldset">
+                <input name="exercised" type="checkbox"
+                       hx-post="/exercised-today"
+                       hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
+                       <?=(1 == $exercised) ? "checked":""?>
+                />
+                <label for="exercised">Did you exercise today?</label>
+            </fieldset>
+        </form>
+    </div>
+</div>

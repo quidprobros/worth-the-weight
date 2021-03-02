@@ -1,0 +1,38 @@
+
+// <settings>
+$offcanvas-background: "black";
+$offcanvas-shadow: 0 0 10px rgba(green, 0.7);
+
+$offcanvas-sizes: (
+    small: 100vw,
+    medium: 50vw,
+);
+
+// </settings>
+
+
+@import "@/foundation-sites/scss/foundation";
+
+@import "@/select2/dist/css/select2.min.css";
+
+
+@include foundation-everything;
+
+@include foundation-xy-grid-classes(
+    /* options
+  $base-grid: true,
+  $margin-grid: true,
+  $padding-grid: true,
+  $block-grid: true,
+  $collapse: true,
+  $offset: true,
+  $vertical-grid: true,
+  $frame-grid: true
+   */
+);
+
+
+
+.button {
+    font-weight: bold;
+}

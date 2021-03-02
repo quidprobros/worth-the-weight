@@ -1,0 +1,49 @@
+{
+    "name": "home-weight-watchers",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "npx ts-node fusebox.ts",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "open": "http://worth-the-weight.paxperscientiam.lan",
+        "share": "ngrok http -host-header=rewrite http://worth-the-weight.paxperscientiam.lan/"
+    },
+    "author": "Christopher David Ramos",
+    "license": "ISC",
+    "dependencies": {
+        "@paxperscientiam/dlv.ts": "^1.2.5",
+        "@popperjs/core": "^2.6.0",
+        "datatables.net": "^1.10.23",
+        "datatables.net-zf": "^1.10.23",
+        "foundation-sites": "^6.6.3",
+        "htmx.org": "^1.2.1",
+        "inputmask": "^5.0.5",
+        "jquery": "^3.5.1",
+        "notifyjs-browser": "^0.4.2",
+        "select2": "^4.1.0-rc.0"
+    },
+    "devDependencies": {
+        "@types/datatables.net": "^1.10.19",
+        "@types/inputmask": "^5.0.0",
+        "@types/jquery": "^3.5.5",
+        "@types/node": "^14.14.25",
+        "@types/notifyjs-browser": "^0.0.0",
+        "@types/select2": "^4.0.53",
+        "fuse-box": "^4.0.0",
+        "fuse-box-typechecker": "^3.1.1",
+        "node-sass": "^5.0.0",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.1.4"
+    },
+    "files": [
+        "index.php",
+        "dist",
+        "vendor",
+        "db",
+        "views",
+        "composer.json",
+        "data.php",
+        ".htaccess"
+    ]
+}

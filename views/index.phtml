@@ -1,0 +1,212 @@
+<!-- mode: web -->
+<?
+
+$foods = Flight::db()->query("SELECT * FROM food_records");
+
+// STATS
+$journal_dates = Flight::db()->query("SELECT strftime(\"%Y-%m-%d\", \"date\") as thisDate from points_records group by thisDate")->fetchAll();
+
+$journaling_days = count($journal_dates);
+
+$avg_points_daily = Flight::db()->query("SELECT strftime(\"%d\", \"date\") as day, avg(points) as average from points_records where points > 0 group by day")->fetch()["average"];
+$avg_points_daily = number_format($avg_points_daily, 2);
+
+$today_points = Flight::db()->query("SELECT sum(points) as today_points, date(date) as th, date('now', 'localtime') as tt from points_records where th = tt")->fetch()["today_points"];
+
+$journal_day_offset = (int) Flight::request()->query["day_offset"];
+
+$checkbox_date = date("Y-m-d");
+
+$exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DATE(`date`, 'localtime') = '{$checkbox_date}'")->fetch()['exercised'];
+
+?>
+<!doctype html>
+<html lang="en">
+    <?php Tracy\Debugger::renderLoader() ?>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Track your progress</title>
+
+        <script type="text/javascript" src="/dist/app.js"></script>
+        <script type="text/javascript" src="/dist/vendor.js"></script>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+        <style>
+         .editing {
+             color: white;
+             background-color: #8842d5;
+         }
+        </style>
+
+    </head>
+    <body>
+        <!-- <img id="indicator" class="htmx-indicator" src="/spinner.gif"/> -->
+        <div class="title-bar">
+            <div class="title-bar-left">
+                <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
+                <span class="title-bar-title">View your journal</span>
+            </div>
+            <div class="title-bar-right">
+                <span><?=(1 == DEBUG) ? " The date is " . Flight::now("D M j, Y") : ""?></span>
+            </div>
+        </div>
+
+        <div class="off-canvas-wrapper">
+            <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas>
+                <?Flight::render("partials/offcanvas-menu", [
+                ]);?>
+            </div>
+            <div class="off-canvas-content" data-off-canvas-content>
+                <div class="grid-container">
+                    <div class="grid-x grid-margin-x">
+                        <div class="cell auto">
+                            <div id="statistics" class="callout">
+                                <p>
+                                    <?="Your journal is <strong>{$journaling_days}</strong> days long. You are averaging <strong>{$avg_points_daily}</strong> points/day."?>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-x grid-margin-x align-middle">
+                        <div class="cell small-12 large-4">
+                            <form name='food-log-form' class="grid-x">
+                                <fieldset class="cell small-12 fieldset">
+                                    <legend>food info</legend>
+                                    <div class='form-group'>
+                                        <label><strong>Select date</strong></label>
+                                        <input class="form-control" name="date" type="date" value="<?=Flight::now()?>" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Select food:</strong></label>
+                                        <select name='food-selection' class='form-control' required>
+                                            <option value="" selected>Select food ...</option>
+                                            <? foreach ($foods as $food) { ?>
+                                                <option value="<?=$food['id']?>"><?=$food['food']?> (<?=$food['points']?> points)</option>
+                                            <? } ?>
+                                        </select>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="cell small-12 fieldset">
+                                    <div class="form-group">
+                                        <label><strong>Multiplier <small>(fraction of food selection base quantity)</small></strong></label>
+                                        <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
+                                    </div>
+                                </fieldset>
+                                <button type="submit" class="button success large"
+                                        hx-post="/submit-food-log"
+                                >submit</button>
+                            </form>
+                        </div>
+                        <div class="cell small-12 large-8">
+                            <div class="grid-x grid-margin-x align-center-middle">
+                                <?=Flight::render("partials/big-picture", [
+                                    "title" => "Today's count",
+                                    "today_points" => $today_points,
+                                    "exercised" => $exercised,
+                                    "journal_day_offset" => 0
+                                ])?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+
+         $(document).on("keydown", "table td[contenteditable]", function(e) {
+             const $target  = $(e.currentTarget)
+             if (13 == e.which) {
+                 saveCell(e);
+                 e.preventDefault();
+             }
+             if (27 == e.which) {
+                 document.execCommand('undo');
+                 e.preventDefault();
+             }
+         });
+
+         /* $(document).on("submit", "[name='food-log-form']", function(e) {
+          *     e.preventDefault();
+          *     
+          *     const $form = $(e.currentTarget);
+
+          *     $.post("/submit-food-log", $form.serialize(), function(d) {
+          *         console.log(d);
+          *         if (null == d) {
+          *             $.notify("no server response", "error");
+          *             return;
+          *         }
+          *         if (1 == d.error) {
+          *             $.notify(dlv(d, "response.message"), "error");
+          *             return;
+          *         }
+          *         const $tbody = $("table tbody");
+
+          *         const _date = (d.response.data.date).split(" ")[0];
+
+          *         let [year,month,day] =_date.split("-");
+
+          *         const date = [month,day,year].join("/");
+
+          *         const $row = $(`<tr data-id='${d.response.data.id}'/>`);
+          *         $row.append($(`<td data-name='date' contenteditable="true">${date}</td>`));
+          *         $row.append($(`<td>${d.response.data.food_name}</td>`));
+          *         $row.append($(`<td class='text-right' data-name="quantity" contenteditable="true">${d.response.data.quantity}</td>`));
+          *         $row.append($(`<td class='text-right'>${d.response.data.points.toFixed(1)}</td>`));
+
+          *         $row.append(`<td><div class="button-group stacked">
+          *     <button type='button' class='button alert' style='cursor:not-allowed;opacity:0.25;' data-rowid='${d.response.data.id}' disabled name='save-row-button'>save</button>
+          *     <button type='button' class='button' data-rowid='${d.response.data.id}' name='delete-row-button'>delete</button>
+          *     </div></td>`);
+
+          *         $(".empty-row-notice", "table").hide();
+          *         $tbody.prepend($row);
+
+          *         $("#today-total").text(dlv(d, "response.data.today_points", "?") + " points");
+          *         //$("#statistics").html(dlv(d, "response.data.stats_sentence", "?"));
+
+          *         $.notify(dlv(d, "response.message"), "success");
+
+          *     }, "json");
+          * }); */
+
+         $(document).on("keyup", "[name='searchbox']", debounce(function(e) {
+
+             const $searchbox = $(e.currentTarget);
+             const data = {
+                 searchvalue: $searchbox.val()
+             };
+
+             fetch("/search", {
+                 method: "POST",
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify(data),
+             })
+                 .then(response => response.json())
+                 .then((json) => {
+                     const data = dlv(json, 'response.data');
+                     if (true == Array.isArray(data)) {
+                         const $select = $("[name='food-selection']");
+                         $select.empty();
+                         $.each(data, function(index, item) {
+                             $select.append(`<option value="${item.id}">${item.food}</option>`);
+                         });
+
+                         if (0 == data.length) {
+                             $select.append(`<option>NO RESULTS</option>`);
+                         }
+                     }
+                 });
+         }, 700, false));
+        </script>
+        <? if (true === DEBUG) { ?>
+            <button type="button" class="button alert" style="position:fixed;left:0;bottom:0" name='drop-food-records'>DELETE ENTIRE FOOD LOG</button>
+        <? } ?>
+    </body>
+</html>
