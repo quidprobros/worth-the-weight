@@ -4,7 +4,6 @@ date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
 
 require_once __DIR__ . "/vendor/autoload.php";
-require_once __DIR__ . "/data.php";
 
 const WEB_ROOT = __DIR__;
 
@@ -73,9 +72,8 @@ Flight::map("fractionToDecimal", function ($input) {
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.extension', ".phtml");
 
-Flight::route('GET /', function () use ($measurements) {
-
-    Flight::render('index', ["measurements" => $measurements]);
+Flight::route('GET /', function () {
+    Flight::render('index', []);
 });
 
 Flight::route('GET /journal-yesterday', function () {
@@ -414,7 +412,7 @@ SQL;
     ]);
 });
 
-Flight::route("GET /bootstrap", function() {
+Flight::route("GET /bootstrap", function () {
     Flight::render("bootstrap", []);
 });
 

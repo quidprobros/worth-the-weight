@@ -204,6 +204,11 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
                      }
                  });
          }, 700, false));
+
+         <? if (true == $notify) { ?>
+         
+         <? } ?>
+
         </script>
         <? if (true === DEBUG) { ?>
             <button type="button" class="button alert" style="position:fixed;left:0;bottom:0" name='drop-food-records'>DELETE ENTIRE FOOD LOG</button>

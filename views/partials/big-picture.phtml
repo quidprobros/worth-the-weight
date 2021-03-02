@@ -37,17 +37,20 @@ Tracy\Debugger::log(1 == $exercised ? "checked":"what");
     <div class="card-divider button-group align-justify">
 
         <a class="button" title="see total for previous day"
+           hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
            hx-post="/big-picture-prev"
            hx-swap="outerHTML"
            hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
            hx-indicator="#indicator"
            hx-target='#big-picture'>⬅</a>
         <h4><a title="see total for today"
+               hx-trigger="click, keyup[shiftKey&&key=='S'] from:body"
                hx-post="/big-picture-next"
                hx-swap="outerHTML"
                hx-vals='{"journal_day_offset": "-1"}'
                hx-target='#big-picture'><?=$title?></a></h4>
         <a class="button" title="see total for next day"
+           hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
            hx-post="/big-picture-next"
            hx-swap="outerHTML"
            hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
