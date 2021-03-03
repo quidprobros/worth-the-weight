@@ -1,6 +1,8 @@
 <!-- mode: web -->
 <?
 
+use Aura\Payload_Interface\PayloadStatus;
+
 $foods = Flight::db()->query("SELECT * FROM food_records");
 
 // STATS
@@ -25,13 +27,14 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
     <?php Tracy\Debugger::renderLoader() ?>
     <head>
         <meta charset="UTF-8"/>
-        <title>Track your progress</title>
+        <title>Worth the Weight!</title>
 
         <script type="text/javascript" src="/dist/app.js"></script>
         <script type="text/javascript" src="/dist/vendor.js"></script>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.2.1/htmx.min.js" integrity="sha512-Xsn9EFspscbf/oX268GrUeBgvaVWik7iwUqqwCiEdBWiPHEIpDekW3OSFL61BZXxSKnklTPA5RPWqRR99rJoSA==" crossorigin="anonymous"></script> -->
         <style>
          .editing {
              color: white;
@@ -41,7 +44,6 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
 
     </head>
     <body>
-        <!-- <img id="indicator" class="htmx-indicator" src="/spinner.gif"/> -->
         <div class="title-bar">
             <div class="title-bar-left">
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
@@ -59,15 +61,6 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
             </div>
             <div class="off-canvas-content" data-off-canvas-content>
                 <div class="grid-container">
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell auto">
-                            <div id="statistics" class="callout">
-                                <p>
-                                    <?="Your journal is <strong>{$journaling_days}</strong> days long. You are averaging <strong>{$avg_points_daily}</strong> points/day."?>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="grid-x grid-margin-x align-middle">
                         <div class="cell small-12 large-4">
@@ -96,16 +89,18 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
                                 </fieldset>
                                 <button type="submit" class="button success large"
                                         hx-post="/submit-food-log"
+                                        hx-swap="outerHTML swap:200ms"
+                                        hx-target='#big-picture'
                                 >submit</button>
                             </form>
+
                         </div>
+
                         <div class="cell small-12 large-8">
                             <div class="grid-x grid-margin-x align-center-middle">
                                 <?=Flight::render("partials/big-picture", [
-                                    "title" => "Today's count",
-                                    "today_points" => $today_points,
-                                    "exercised" => $exercised,
-                                    "journal_day_offset" => 0
+                                    "journal_day_offset" => 0,
+                                    "payload" => Flight::payload(),
                                 ])?>
                             </div>
                         </div>
@@ -205,9 +200,28 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
                  });
          }, 700, false));
 
-         <? if (true == $notify) { ?>
-         
-         <? } ?>
+
+         htmx.onLoad(function(elt){
+             const $elt = $(elt);
+             let status = $elt.data('notify-status')
+
+             switch (status) {
+                 case '<?=PayloadStatus::SUCCESS?>':
+                     status = 'success';
+                     break;
+                 case '<?=PayloadStatus::FAILURE?>':
+                     status = 'warn';
+                     break;
+                 default:
+                     status = 'info';
+                     break;
+             }
+
+             const msg = $elt.data('notify-message');
+             if (msg) {
+                 $.notify(msg, status);
+             }
+         })
 
         </script>
         <? if (true === DEBUG) { ?>

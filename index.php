@@ -2,10 +2,16 @@
 
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
+use Aura\Payload\Payload;
+use Aura\Payload_Interface\PayloadStatus;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
 const WEB_ROOT = __DIR__;
+
+if (!file_exists(WEB_ROOT.'/tracy')) {
+    mkdir(WEB_ROOT . '/tracy', 0755, true);
+}
 
 session_start();
 Debugger::$dumpTheme = 'dark';
@@ -13,12 +19,13 @@ Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::enable(Debugger::DETECT, __DIR__ . '/tracy/');
 
 
+
 define("DEBUG", true);
 
 Flight::map('now', function ($format = 'Y-m-d') {
     $tz = 'America/New_York';
     $timestamp = time();
-    $dt = new DateTime("now", new \DateTimeZone($tz)); //first argument "must" be a string
+    $dt = new DateTime("now", new \DateTimeZone($tz));
     $dt->setTimestamp($timestamp); //adjust the object to correct timestamp
     return $dt->format($format);
 });
@@ -31,6 +38,16 @@ Flight::register(
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     }
+);
+
+Flight::register(
+    'stats',
+    'App\Stats'
+);
+
+Flight::register(
+    'payload',
+    'Aura\Payload\Payload'
 );
 
 Flight::map("getFood", function ($index) {
@@ -281,42 +298,48 @@ MYSQL;
 Flight::route('POST /submit-food-log', function () {
     $formData = Flight::request()->data;
 
-    // validate amount input
+    $payload = new Payload();
+
     if (false == is_numeric($formData['amount'])) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => "Amount must be numeric, but you entered " . $formData['amount'],
-            ]
+        $payload->setStatus(PayloadStatus::FAILURE);
+        $payload->setMessages([
+            "Amount must be numeric, but you entered " . $formData['amount'],
+        ]);
+
+        return Flight::render("partials/big-picture", [
+            "journal_day_offset" => 0,
+            "payload" => $payload,
         ]);
     }
+
     if (!isset($formData['amount']) || 0 >= $formData['amount']) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => "Must enter food amount",
-            ]
+        $payload->setStatus(PayloadStatus::FAILURE);
+        $payload->setMessages(["Must enter food amount"]);
+
+        return Flight::render("partials/big-picture", [
+            "journal_day_offset" => 0,
+            "payload" => $payload,
         ]);
-        exit;
     }
 
     if (false == strtotime($formData['date'])) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => "Date value is unrecognized: " . $formData['date'],
-            ]
+        $payload->setStatus(PayloadStatus::FAILURE);
+        $payload->setMessages(["Date value is unrecognized: " . $formData['date']]);
+
+        return Flight::render("partials/big-picture", [
+            "journal_day_offset" => 0,
+            "payload" => $payload,
         ]);
     }
 
     if (empty($formData['food-selection']) || false == is_numeric($formData['food-selection'])) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => "Must enter food name",
-            ]
+        $payload->setStatus(PayloadStatus::FAILURE);
+        $payload->setMessages(["Must enter food name"]);
+
+        return Flight::render("partials/big-picture", [
+            "journal_day_offset" => 0,
+            "payload" => $payload,
         ]);
-        exit;
     }
 
     try {
@@ -326,24 +349,17 @@ Flight::route('POST /submit-food-log', function () {
                      ;
     
         if (false == $food_exists) {
-            echo Flight::json([
-                "error" => 1,
-                "response" => [
-                    "message" => "Sorry, this food item is not recognized."
-                ]
-            ]);
-            exit;
+            throw new \Exception("Sorry, this food item is not recognized.");
         }
     } catch (\Exception $e) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => $e->getMessage()
-            ]
-        ]);
-        exit;
-    }
+        $payload->setStatus(PayloadStatus::FAILURE);
+        $payload->setMessages([$e->getMessage()]);
 
+        return Flight::render("partials/big-picture", [
+            "journal_day_offset" => 0,
+            "payload" => $payload,
+        ]);
+    }
 
     $amount = (float) $formData['amount'];
     $food = (int) $formData['food-selection'];
@@ -385,30 +401,27 @@ SQL;
                           ->fetch()["average"];
 
     } catch (\Exception $e) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => $e->getMessage()
-            ]
+        $payload->setStatus(PayloadStatus::FAILURE);
+        $payload->setMessages([$e->getMessage()]);
+
+        return Flight::render("partials/big-picture", [
+            "journal_day_offset" => 0,
+            "payload" => $payload,
         ]);
-        exit;
     }
 
-    echo Flight::json([
-        "error" => 0,
-        "response" => [
-            "message" => "Food added",
-            "data" => [
-                "id" => 0,
-                "date" => $date,
-                "food" => $food,
-                "food_name" => $item_name,
-                "quantity" => $amount,
-                "points" => $total_points,
-                "today_points" => $today_points,
-                "stats_sentence" => "<p>Your journal is <strong>{$journaling_days}</strong> days long. You are averaging <strong>{$avg_points_daily}</strong> points/day."
-            ]
-        ]
+    // offset of submitted value
+    $earlier = new DateTime($formData['date']);
+    $later = new DateTime("now");
+    $interval = $later->diff($earlier);
+    $days = $interval->format("%a") * (1 == $interval->invert ? -1 : 1);
+
+    $payload->setStatus(PayloadStatus::SUCCESS);
+    $payload->setMessages(["Success"]);
+
+    Flight::render("partials/big-picture", [
+        "journal_day_offset" => $days,
+        "payload" => $payload,
     ]);
 });
 

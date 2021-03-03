@@ -7,7 +7,8 @@
     },
     "require": {
         "mikecao/flight": "^1.3",
-        "tracy/tracy": "^2.8"
+        "tracy/tracy": "^2.8",
+        "aura/payload": "^3.0"
     },
     "authors": [
         {

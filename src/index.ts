@@ -1,7 +1,7 @@
 import "./style.scss"
 
-import * as htmx from 'htmx.org/dist/htmx.js'
-window.htmx = htmx
+import 'htmx.org/dist/htmx.js';
+
 
 import "datatables.net"
 import dt from "datatables.net-zf"

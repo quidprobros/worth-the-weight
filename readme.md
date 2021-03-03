@@ -21,9 +21,10 @@
 - [x] integrate htmx for handling requesets on client and updatin UI
 - [x] add pagination to journal view
 - [x] show point count for selected date in journal view
-- [] Show basic daily summary
+- [x] Show basic daily summary
 - [x] click date to load view for today
 - [x] validate (right form) and verify (sensical) data inputs
+- [ ] fix htmx conflict with displaying notifications
 
 # sprint 3
 - [] store and track goals
