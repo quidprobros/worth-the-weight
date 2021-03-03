@@ -44,6 +44,7 @@
         "views",
         "composer.json",
         "data.php",
-        ".htaccess"
+        ".htaccess",
+        "src/app"
     ]
 }
