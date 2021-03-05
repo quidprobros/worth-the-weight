@@ -7,6 +7,8 @@ use Aura\Payload_Interface\PayloadStatus;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
+App\Config::init();
+
 const WEB_ROOT = __DIR__;
 
 if (!file_exists(WEB_ROOT.'/tracy')) {
@@ -18,9 +20,10 @@ Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::enable(Debugger::DETECT, __DIR__ . '/tracy/');
 
-
-
 define("DEBUG", true);
+
+Flight::set('flight.log_errors', true);
+Flight::set('flight.views.extension', ".phtml");
 
 Flight::map('now', function ($format = 'Y-m-d') {
     $tz = 'America/New_York';
@@ -59,7 +62,6 @@ Flight::map("getRelativeRecords", function ($index = 0) {
              ->query("SELECT `id`, * FROM `points_records` WHERE DATE(`date`) = DATE('now', 'localtime', '{$index} days') ORDER BY date DESC")
              ->fetchAll()
              ;
-
     $points = (int) Flight::db()
                   ->query("SELECT sum(points) as today_points, date(date) as th, date('now', 'localtime', '{$index} days') as tt from points_records where th = tt")
                   ->fetch()["today_points"]
@@ -75,58 +77,34 @@ Flight::map("getRelativeRecords", function ($index = 0) {
     ];
 });
 
-Flight::map("fractionToDecimal", function ($input) {
-    list($n, $d) = explode("/", $input);
-    if (empty($d)) {
-        return (float) $n;
-    }
-    if (!is_numeric($n) || is_numeric($d)) {
-        return 0;
-    }
-    return $n / $d;
+Flight::route('GET *', function () {
+    echo 'shit';
+    return true;
 });
-
-Flight::set('flight.log_errors', true);
-Flight::set('flight.views.extension', ".phtml");
 
 Flight::route('GET /', function () {
     Flight::render('index', []);
 });
 
-Flight::route('GET /journal-yesterday', function () {
-    $offset = ((int) Flight::request()->query['day_offset']) - 1;
+Flight::route('GET /journal/rel/@offset', function ($offset) {
+    $offset = (int) $offset;
     $records = Flight::db()
              ->query("SELECT `id`, * FROM `points_records` WHERE DATE(`date`) = DATE('now', 'localtime', '$offset day') ORDER BY date DESC")
              ->fetchAll();
-
     Flight::render("partials/offcanvas-menu", [
+        "journal_day_offset" => $offset
     ]);
 });
 
-Flight::route('GET /journal-tomorrow', function () {
-    $offset = ((int) Flight::request()->query['day_offset']) + 1;
-    $records = Flight::db()
-             ->query("SELECT `id`, * FROM `points_records` WHERE DATE(`date`) = DATE('now', 'localtime', '$offset day') ORDER BY date DESC")
-             ->fetchAll();
-
-    Flight::render("partials/offcanvas-menu", [
-    ]);
-});
-
-Flight::route('POST /big-picture-prev', function () {
+Flight::route('GET /big-picture/rel/@offset', function ($offset) {
+    $offset = (int) $offset;
     Flight::render("partials/big-picture", [
-        "journal_day_offset" => (Flight::request()->data['journal_day_offset'] - 1),
+        "journal_day_offset" => $offset,
     ]);
 });
-
-Flight::route('POST /big-picture-next', function () {
-    Flight::render("partials/big-picture", [
-        "journal_day_offset" => (Flight::request()->data['journal_day_offset'] + 1),
-    ]);
-});
-
 
 Flight::route('POST /search', function () {
+
     $searchTerm = "%" . Flight::request()->data["searchvalue"] . "%";
 
     $statement = <<<SQL
@@ -158,31 +136,24 @@ SQL;
     }
 });
 
-Flight::route('POST /submit-delete-row', function () {
-    $rowID = Flight::request()->data['rowID'];
+Flight::route('DELETE /journal-entry/@id', function ($id) {
+    if (false == is_numeric($id)) {
+        return Flight::render("partials/message", [
+            "status" => "error",
+            "message" => "A non-existant resouce was requested. Contact Chris."
+        ]);
+    }
+
+    $rowID = $id;
     $statement = <<<SQL
 DELETE FROM points_records
 WHERE rowid=:rowID
 SQL;
 
-
     try {
         Flight::db()->prepare($statement)->execute(["rowID" => $rowID]);
-        echo Flight::json([
-            "error" => 0,
-            "response" => [
-                "message" => "Record deleted",
-            ]
-        ]);
-        exit;
     } catch (\Exception $e) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => "no delete",
-            ]
-        ]);
-        exit;
+        Debugger::log($e->getMessage());
     }
 });
 
@@ -239,6 +210,9 @@ SQL;
 });
 
 Flight::route('POST /drop-food-log', function () {
+    if (false === DEBUG) {
+        return;
+    }
     $statement = "DELETE FROM points_records";
     try {
         Flight::db()->prepare($statement)->execute();
@@ -248,7 +222,6 @@ Flight::route('POST /drop-food-log', function () {
                 "message" => "Food log emptied",
             ]
         ]);
-        exit;
     } catch (\Exection $e) {
         echo Flight::json([
             "error" => 1,
@@ -262,6 +235,7 @@ Flight::route('POST /drop-food-log', function () {
 Flight::route('POST /exercised-today', function () {
     $data = Flight::request()->data;
 
+
     $day_offset = $data['journal_day_offset'];
     if (empty($data['exercised'])) {
         $statement = <<<MYSQL
@@ -272,26 +246,16 @@ MYSQL;
         $statement = <<<MYSQL
 REPLACE INTO day_records(`date`, `exercised`)
 values(DATE('NOW', 'localtime', "{$day_offset} days"), 1)
-MYSQL;  
+MYSQL;
     }
-
     try {
         Flight::db()->prepare($statement)->execute();
-        echo Flight::json([
-            "error" => 0,
-            "response" => [
-                "message" => "Record updated",
-            ]
+        Flight::render("partials/exercised-statement", [
+            "exercised" => 1
         ]);
-        exit;
     } catch (\Exception $e) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => "Record not updated",
-            ]
-        ]);
-        exit;
+        Debugger::log($e->getMessage());
+        return Flight::view("ROFL");
     }
 });
 
@@ -429,10 +393,43 @@ Flight::route("GET /bootstrap", function () {
     Flight::render("bootstrap", []);
 });
 
-
 Flight::map('error', function ($ex) {
     Debugger::log($ex);
     Debugger::dump($ex);
 });
+
+
+// need ...
+// validate numeric
+
+
+
+Flight::before('start', function (&$params) {
+    $query_data = Flight::request()->query->getData();
+
+    $sanitized_query_data = [];
+
+    foreach ($query_data as $k => $v) {
+        switch ($k) {
+            case "day_offset":
+                $sanitized_query_data[$k] = (int) $v;
+            case "journal_day_offset":
+                $sanitized_query_data[$k] = (int) $v;
+            case "searchvalue":
+                ;
+            default:
+                // Debugger::log([
+                //     "d" => $query_data,
+                //     "c" => $sanitized_query_data,
+                //     "p" => $params
+                // ]);
+        }
+    }
+
+    //    Debugger::log(Flight::request()->query);
+
+
+});
+
 
 Flight::start();

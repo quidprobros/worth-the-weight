@@ -93,26 +93,6 @@ $(() => {
     // @ts-ignore
     window.saveCell = saveCell
 
-
-    $(document).on("mousedown touchstart", "table tr [name='delete-row-button']", (e: PointerEvent) => {
-        const $button = $(e.currentTarget);
-        const $row = $button.parents("tr");
-        const rowID = $button.data("rowid");
-
-        $.post("/submit-delete-row", `rowID=${rowID}`, function(d: IPayload) {
-            if (0 != d.error) {
-                $.notify(dlv(d, "response.message"), "error");
-                return;
-            }
-            $row.fadeOut();
-            $.notify(dlv(d, "response.message"), "info");
-            delay(750).then(function() {
-                location.reload()
-            });
-        });
-    });
-
-
     $(document)
         .on("focus", "td[contenteditable]", (e: FocusEvent) => {
             const $target = $(e.currentTarget);
@@ -160,7 +140,6 @@ $(() => {
                     location.reload()
                 });
             });
-
     });
 
     const dtSettings = {

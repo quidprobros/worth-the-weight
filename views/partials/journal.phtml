@@ -8,37 +8,41 @@
             <th scope="col">Action</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody hx-target="closest tr" hx-swap="outerHTML swap:1s">
         <? if (empty($records)) { ?>
-        <tr class="empty-row-notice">
-            <td class="text-center" colspan="100%"><em>Your food log is empty.</em></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+            <tr class="empty-row-notice">
+                <td class="text-center" colspan="100%"><em>Your food log is empty.</em></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         <? } ?>
         <? foreach ($records as $record) { ?>
-        <tr data-id='<?=$record['id']?>'>
-            <?
-            $_date = $record['date'];
-            if (false == strtotime($_date)) {
-            $date = "?";
-            } else {
-            $date = date_create($_date)->format("m/d/Y");
-            }
-            ?>
-            <td id="date-<?=$record['id']?>" data-rowid='<?=$record['id']?>' data-sort="<?=strtotime($_date)?>" data-name='date' contenteditable="true"><?=$date?></td>
-            <td id="food-<?=$record['id']?>" data-rowid='<?=$record['id']?>' data-name='food'><?=Flight::getFood($record['food'])?></td>
-            <td id="quantity-<?=$record['id']?>" class="text-right" data-rowid='<?=$record['id']?>' data-name='quantity' contenteditable="true"><?=$record['quantity']?></td>
-            <td id="points-<?=$record['id']?>" class="text-right" data-rowid='<?=$record['id']?>' data-name='points'><?=number_format($record['points'], 2)?></td>
-            <td>
-                <div class="button-group stacked" role="group">
-                    <button type="button" class="alert button" data-rowid='<?=$record['id']?>' disabled name='save-row-button' style="cursor:not-allowed;opacity:0.25;">save</button>
-                    <button type="button" class="button" data-rowid='<?=$record['id']?>' name='delete-row-button'>delete</button>
-                </div>
-            </td>
-        </tr>
+            <tr data-id='<?=$record['id']?>'>
+                <?
+                $_date = $record['date'];
+                if (false == strtotime($_date)) {
+                    $date = "?";
+                } else {
+                    $date = date_create($_date)->format("m/d/Y");
+                }
+                ?>
+                <td id="date-<?=$record['id']?>" data-rowid='<?=$record['id']?>' data-sort="<?=strtotime($_date)?>" data-name='date' contenteditable="true"><?=$date?></td>
+                <td id="food-<?=$record['id']?>" data-rowid='<?=$record['id']?>' data-name='food'><?=Flight::getFood($record['food'])?></td>
+                <td id="quantity-<?=$record['id']?>" class="text-right" data-rowid='<?=$record['id']?>' data-name='quantity' contenteditable="true"><?=$record['quantity']?></td>
+                <td id="points-<?=$record['id']?>" class="text-right" data-rowid='<?=$record['id']?>' data-name='points'><?=number_format($record['points'], 2)?></td>
+                <td>
+                    <div class="button-group stacked" role="group">
+                        <button type="button" class="alert button" data-rowid='<?=$record['id']?>' disabled name='save-row-button' style="cursor:not-allowed;opacity:0.25;">save</button>
+                        <button type="button" class="button"
+                                hx-swap="#message"
+                                hx-delete="/journal-entry/<?=$record['id']?>">
+                            delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
         <? } ?>
     </tbody>
 </table>

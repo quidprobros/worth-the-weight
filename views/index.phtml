@@ -35,12 +35,6 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.2.1/htmx.min.js" integrity="sha512-Xsn9EFspscbf/oX268GrUeBgvaVWik7iwUqqwCiEdBWiPHEIpDekW3OSFL61BZXxSKnklTPA5RPWqRR99rJoSA==" crossorigin="anonymous"></script> -->
-        <style>
-         .editing {
-             color: white;
-             background-color: #8842d5;
-         }
-        </style>
 
     </head>
     <body>
@@ -57,6 +51,7 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
         <div class="off-canvas-wrapper">
             <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas>
                 <?Flight::render("partials/offcanvas-menu", [
+                    "journal_day_offset" => 0
                 ]);?>
             </div>
             <div class="off-canvas-content" data-off-canvas-content>
@@ -124,50 +119,11 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
              }
          });
 
-         /* $(document).on("submit", "[name='food-log-form']", function(e) {
-          *     e.preventDefault();
-          *     
-          *     const $form = $(e.currentTarget);
-
-          *     $.post("/submit-food-log", $form.serialize(), function(d) {
-          *         console.log(d);
-          *         if (null == d) {
-          *             $.notify("no server response", "error");
-          *             return;
-          *         }
-          *         if (1 == d.error) {
-          *             $.notify(dlv(d, "response.message"), "error");
-          *             return;
-          *         }
-          *         const $tbody = $("table tbody");
-
-          *         const _date = (d.response.data.date).split(" ")[0];
-
-          *         let [year,month,day] =_date.split("-");
-
-          *         const date = [month,day,year].join("/");
-
-          *         const $row = $(`<tr data-id='${d.response.data.id}'/>`);
-          *         $row.append($(`<td data-name='date' contenteditable="true">${date}</td>`));
-          *         $row.append($(`<td>${d.response.data.food_name}</td>`));
-          *         $row.append($(`<td class='text-right' data-name="quantity" contenteditable="true">${d.response.data.quantity}</td>`));
-          *         $row.append($(`<td class='text-right'>${d.response.data.points.toFixed(1)}</td>`));
-
-          *         $row.append(`<td><div class="button-group stacked">
-          *     <button type='button' class='button alert' style='cursor:not-allowed;opacity:0.25;' data-rowid='${d.response.data.id}' disabled name='save-row-button'>save</button>
-          *     <button type='button' class='button' data-rowid='${d.response.data.id}' name='delete-row-button'>delete</button>
-          *     </div></td>`);
-
-          *         $(".empty-row-notice", "table").hide();
-          *         $tbody.prepend($row);
-
-          *         $("#today-total").text(dlv(d, "response.data.today_points", "?") + " points");
-          *         //$("#statistics").html(dlv(d, "response.data.stats_sentence", "?"));
-
-          *         $.notify(dlv(d, "response.message"), "success");
-
-          *     }, "json");
-          * }); */
+         $(document).on("submit", "[name='food-log-form']", function(e) {w
+             e.preventDefault();
+             const $form = $(e.currentTarget);
+             $form[0].reset();
+         });
 
          $(document).on("keyup", "[name='searchbox']", debounce(function(e) {
 
@@ -200,8 +156,8 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
                  });
          }, 700, false));
 
-
          htmx.onLoad(function(elt){
+             console.log(elt);
              const $elt = $(elt);
              let status = $elt.data('notify-status')
 
@@ -218,10 +174,10 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
              }
 
              const msg = $elt.data('notify-message');
-             if (msg) {
+             if (null != msg && null != status) {
                  $.notify(msg, status);
              }
-         })
+         });
 
         </script>
         <? if (true === DEBUG) { ?>

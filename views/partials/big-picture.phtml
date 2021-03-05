@@ -29,29 +29,24 @@ $records = $data['records'];
 $today_points = $data['points'];
 
 $exercised = $data['exercised'];
-
+ 
 ?>
-<div id="big-picture" class="card custom-shadow" data-notify-status="<?=$payload->getStatus()?>" data-notify-message="<?=$payload->getMessages()[0]?>">
+<div id="big-picture" class="card custom-shadow">
     <div class="card-divider button-group align-justify">
-
         <a class="button" title="see total for previous day"
            hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
-           hx-post="/big-picture-prev"
+           hx-get="/big-picture/rel/<?=($journal_day_offset - 1)?>"
            hx-swap="outerHTML swap:200ms"
-           hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
-           hx-indicator="#indicator"
            hx-target='#big-picture'>⬅</a>
         <h4><a title="see total for today"
                hx-trigger="click, keyup[shiftKey&&key=='S'] from:body"
-               hx-post="/big-picture-next"
+               hx-post="/big-picture/rel/0"
                hx-swap="outerHTML"
-               hx-vals='{"journal_day_offset": "-1"}'
                hx-target='#big-picture'><?=$title?></a></h4>
         <a class="button" title="see total for next day"
            hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
-           hx-post="/big-picture-next"
+           hx-get="/big-picture/rel/<?=($journal_day_offset + 1)?>"
            hx-swap="outerHTML swap:200ms"
-           hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
            hx-target='#big-picture'>⮕</a>
     </div>
     <div class="card-section">
@@ -64,10 +59,13 @@ $exercised = $data['exercised'];
             <fieldset class="cell small-12 fieldset">
                 <input name="exercised" type="checkbox"
                        hx-post="/exercised-today"
+                       hx-target="#exercised-statement"
                        hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
                        <?=(1 == $exercised) ? "checked":""?>
                 />
                 <label for="exercised">Did you exercise today?</label>
+                <br>
+                <?=Flight::render("partials/exercised-statement", ["exercised" => $exercised])?>
             </fieldset>
         </form>
     </div>
@@ -84,3 +82,7 @@ $exercised = $data['exercised'];
         </div>
     </div>
 </div>
+<?=Flight::render("partials/message", [
+    "message" => isset($payload) ? $payload->getMessages()[0] : "",
+    "status" => isset($payload) ? $payload->getStatus() : ""
+])?>

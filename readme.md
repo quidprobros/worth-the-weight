@@ -1,3 +1,9 @@
+# What is Worth the Weight?
+
+Just a website for *local* personal use. 
+
+
+
 # meta
 - [] bootstrap
   - [] mock food data
@@ -24,12 +30,26 @@
 - [x] Show basic daily summary
 - [x] click date to load view for today
 - [x] validate (right form) and verify (sensical) data inputs
-- [ ] fix htmx conflict with displaying notifications
+- [x] fix htmx conflict with displaying notifications
+- [ ] fix reactivity of deleting items for offcanvas journal
+- [x] fix 'next page' bug
+- [ ] reset form after submit
 
 # sprint 3
 - [] store and track goals
 - [] submit new foods
 - [] update code to use more fully html application state management
+
+
+# security sprint
+- [ ] use UUIDs instead of ids
+- [ ] doorway to manage walks
+
+# OWASP Zap (passive scan)
+- [x] X-Frame-Options Header Not Set
+- [x] Server Leaks Information via "X-Powered-By" HTTP Response Header Field
+- [x] X-Content-Type-Options Header Missing
+
 
 # reach
 * https://github.com/auraphp/Aura.Sql/blob/3.x/docs/getting-started.md

@@ -1,5 +1,6 @@
 <?
-$journal_day_offset = (int) Flight::request()->query["day_offset"];
+// could be used as fallback?
+//$journal_day_offset = (int) Flight::request()->query["day_offset"];
 
 
 
@@ -45,16 +46,15 @@ $exercised = $data['exercised'];
         <div class="button-group align-spaced align-middle">
             <a class="button" title="see entry for yesterday"
                hx-indicator="#indicator"
-               hx-get="/journal-yesterday?day_offset=<?=($journal_day_offset - 1)?>"
+               hx-get="/journal/rel/<?=($journal_day_offset - 1)?>"
                hx-swap="outerHTML"
-               hx-push-url="?day_offset=<?=($journal_day_offset - 1)?>"
                hx-target='#this-container'>⬅</a>
-            <a><h1 style='margin:0'><?=$journal_view_date?></h1></a>
-            <a class="button fade-me-out" title="see entry for tomorrow"
-               hx-indicator="#indicator"
-               hx-get="/journal-tomorrow?day_offset=<?=($journal_day_offset + 1)?>"
+            <a hx-get="/journal/rel/0"
                hx-swap="outerHTML"
-               hx-push-url="?day_offset=<?=($journal_day_offset + 1)?>"
+               hx-target='#this-container'><h1 style='margin:0'><?=$journal_view_date?></h1></a>
+            <a class="button fade-me-out" title="see entry for tomorrow"
+               hx-get="/journal/rel/<?=($journal_day_offset + 1)?>"
+               hx-swap="outerHTML"
                hx-target='#this-container'>⮕</a>
         </div>
     </div>

@@ -43,3 +43,13 @@ $offcanvas-sizes: (
         box-shadow: 0 3px 5px rgba(0,0,0,0.3);
     }
 }
+
+tr.htmx-swapping td {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.editing {
+    color: white;
+    background-color: #8842d5;
+}
