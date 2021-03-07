@@ -33,7 +33,7 @@ Just a website for *local* personal use.
 - [x] fix htmx conflict with displaying notifications
 - [ ] fix reactivity of deleting items for offcanvas journal
 - [x] fix 'next page' bug
-- [ ] reset form after submit
+- [x] reset form after submit
 
 # sprint 3
 - [] store and track goals

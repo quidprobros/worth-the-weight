@@ -7,7 +7,6 @@ if (empty($journal_day_offset)) {
 } else {
     $journal_view_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("D M j, Y");
     $journal_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("Y-m-d 00:00:00");
-    Tracy\Debugger::log($journal_date);
 }
 
 switch(strtotime($journal_date)) {
@@ -22,13 +21,13 @@ switch(strtotime($journal_date)) {
         break;
 }
 
-$data = Flight::getRelativeRecords($journal_day_offset);
+$stats = Flight::stats();
 
-$records = $data['records'];
+$records = $stats->journalEntries($journal_day_offset);
 
-$today_points = $data['points'];
+$today_points = $stats->points($journal_day_offset);
 
-$exercised = $data['exercised'];
+$exercised = $stats->exercised($journal_day_offset);
  
 ?>
 <div id="big-picture" class="card custom-shadow">
@@ -40,8 +39,8 @@ $exercised = $data['exercised'];
            hx-target='#big-picture'>⬅</a>
         <h4><a title="see total for today"
                hx-trigger="click, keyup[shiftKey&&key=='S'] from:body"
-               hx-post="/big-picture/rel/0"
-               hx-swap="outerHTML"
+               hx-get="/big-picture/rel/0"
+               hx-swap="outerHTML swap:200ms"
                hx-target='#big-picture'><?=$title?></a></h4>
         <a class="button" title="see total for next day"
            hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
@@ -57,10 +56,9 @@ $exercised = $data['exercised'];
     <div class="card-section">
         <form action="" name="day-info">
             <fieldset class="cell small-12 fieldset">
-                <input name="exercised" type="checkbox"
-                       hx-post="/exercised-today"
-                       hx-target="#exercised-statement"
-                       hx-vals='{"journal_day_offset": "<?=$journal_day_offset?>"}'
+                <input name="exercised"
+                       type="checkbox"
+                       hx-post="/exercised/rel/<?=$journal_day_offset?>"
                        <?=(1 == $exercised) ? "checked":""?>
                 />
                 <label for="exercised">Did you exercise today?</label>

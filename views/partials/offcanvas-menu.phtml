@@ -1,8 +1,5 @@
 <?
-// could be used as fallback?
-//$journal_day_offset = (int) Flight::request()->query["day_offset"];
-
-
+use Carbon\Carbon;
 
 if (empty($journal_day_offset)) {
     $journal_view_date = Flight::now("D M j, Y");
@@ -25,13 +22,14 @@ if (empty($journal_day_offset)) {
     }
 }
 
-$data = Flight::getRelativeRecords($journal_day_offset);
 
-$records = $data['records'];
+$stats = Flight::stats();
 
-$today_points = $data['points'];
+$records = $stats->journalEntries($journal_day_offset);
 
-$exercised = $data['exercised'];
+$today_points = $stats->points($journal_day_offset);
+
+$exercised = $stats->exercised($journal_day_offset);
 
 ?>
 <style>
@@ -69,7 +67,7 @@ $exercised = $data['exercised'];
         <div class='callout'>
             <div class="table-scroll">
                 <?=Flight::render("partials/journal", [
-                    "records" => $records,
+                    "records" => \Flight::journalItem()->whereDate("date", "=", Carbon::now()->subDays($journal_day_offset))->get()
                 ])?>
             </div>
         </div>

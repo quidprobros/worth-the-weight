@@ -4,6 +4,7 @@ date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
 use Aura\Payload\Payload;
 use Aura\Payload_Interface\PayloadStatus;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
@@ -33,6 +34,17 @@ Flight::map('now', function ($format = 'Y-m-d') {
     return $dt->format($format);
 });
 
+
+$capsule = new Capsule();
+
+$capsule->addConnection([
+    "driver" => App\DB_DRIVER,
+    "database" => App\DB_DATABASE,
+]);
+
+$capsule->setAsGlobal();
+$capsule->bootEloquent();
+
 Flight::register(
     'db',
     'PDO',
@@ -53,32 +65,29 @@ Flight::register(
     'Aura\Payload\Payload'
 );
 
-Flight::map("getFood", function ($index) {
-    return Flight::db()->query("SELECT food FROM food_records WHERE id={$index} LIMIT 1")->fetch()["food"];
-});
+Flight::register(
+    'record',
+    'App\Record'
+);
 
-Flight::map("getRelativeRecords", function ($index = 0) {
-    $records = Flight::db()
-             ->query("SELECT `id`, * FROM `points_records` WHERE DATE(`date`) = DATE('now', 'localtime', '{$index} days') ORDER BY date DESC")
-             ->fetchAll()
-             ;
-    $points = (int) Flight::db()
-                  ->query("SELECT sum(points) as today_points, date(date) as th, date('now', 'localtime', '{$index} days') as tt from points_records where th = tt")
-                  ->fetch()["today_points"]
-                  ;
-    $exercised = (int) Flight::db()
-               ->query("SELECT `exercised` from `day_records` WHERE DATE(`date`) = DATE('NOW', 'localtime', '{$index} days')")
-               ->fetch()
-               ;
-    return [
-        "points" => $points,
-        "exercised" => $exercised,
-        "records" => $records,
-    ];
-});
+Flight::register(
+    'journalItem',
+    'App\Models\JournalItem'
+);
+
+Flight::register(
+    'food',
+    'App\Models\Food'
+);
+
+// foreach(\Flight::journalItem()->where("date", ">", "2021-03-01")->get() as $k) {
+//     s($k->food);
+// }
+// exit;
+
 
 Flight::route('GET *', function () {
-    echo 'shit';
+    //    echo 'shit';
     return true;
 });
 
@@ -232,30 +241,26 @@ Flight::route('POST /drop-food-log', function () {
     }
 });
 
-Flight::route('POST /exercised-today', function () {
-    $data = Flight::request()->data;
+Flight::route('POST /exercised/rel/@offset', function ($offset) {
+    $offset = (int) $offset;
+    $exercised = Flight::request()->data['exercised'];
 
-
-    $day_offset = $data['journal_day_offset'];
-    if (empty($data['exercised'])) {
+    if (isset($exercised)) {
         $statement = <<<MYSQL
 REPLACE INTO day_records(`date`, `exercised`)
-values(DATE('NOW', 'localtime', "{$day_offset} days"), 0)
+values(DATE('NOW', 'localtime', "{$offset} days"), 1)
 MYSQL;
     } else {
         $statement = <<<MYSQL
 REPLACE INTO day_records(`date`, `exercised`)
-values(DATE('NOW', 'localtime', "{$day_offset} days"), 1)
+values(DATE('NOW', 'localtime', "{$offset} days"), 0)
 MYSQL;
     }
     try {
+        Debugger::log($statement);
         Flight::db()->prepare($statement)->execute();
-        Flight::render("partials/exercised-statement", [
-            "exercised" => 1
-        ]);
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
-        return Flight::view("ROFL");
     }
 });
 
@@ -267,7 +272,7 @@ Flight::route('POST /submit-food-log', function () {
     if (false == is_numeric($formData['amount'])) {
         $payload->setStatus(PayloadStatus::FAILURE);
         $payload->setMessages([
-            "Amount must be numeric, but you entered " . $formData['amount'],
+            "Amount must be numeric, but you entered '" . $formData['amount']."'",
         ]);
 
         return Flight::render("partials/big-picture", [
@@ -330,15 +335,15 @@ Flight::route('POST /submit-food-log', function () {
     $date = $formData['date'];
     $date = $date . " " . date("H:i:s");
 
-    $item_points = Flight::db()->query("SELECT points from food_records WHERE id={$food} LIMIT 1")->fetch()["points"];
-    $item_name = Flight::db()->query("SELECT food from food_records WHERE id={$food} LIMIT 1")->fetch()["food"];
+    
+    // $food_record = Flight::record()->getFood($food);
+
+    $item_points = $food_record["item_points"];
+    $item_name = $food_record["item_name"];
+
     $total_points = $item_points * $amount;
 
-    $statement = <<<SQL
-INSERT INTO points_records
-(date, food, quantity, points)
-VALUES (:date, :food, :quantity, :points)
-SQL;
+
     $data = [
         "date" => $date,
         "food" => $food,
@@ -347,8 +352,8 @@ SQL;
     ];
 
     try {
-        
-        Flight::db()->prepare($statement)->execute($data);
+
+        Flight::record()->setFoodEntry($data);
 
         $today_points = Flight::db()
                       ->query("SELECT sum(points) as today_points, date(date) as th, date('now') as tt from points_records where th = tt")
@@ -393,6 +398,12 @@ Flight::route("GET /bootstrap", function () {
     Flight::render("bootstrap", []);
 });
 
+
+Flight::map('notFound', function () {
+    echo "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
+    exit;
+});
+
 Flight::map('error', function ($ex) {
     Debugger::log($ex);
     Debugger::dump($ex);
@@ -425,10 +436,6 @@ Flight::before('start', function (&$params) {
                 // ]);
         }
     }
-
-    //    Debugger::log(Flight::request()->query);
-
-
 });
 
 
