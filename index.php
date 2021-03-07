@@ -2,6 +2,7 @@
 
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
+use Carbon\Carbon;
 use Aura\Payload\Payload;
 use Aura\Payload_Interface\PayloadStatus;
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -79,12 +80,6 @@ Flight::register(
     'food',
     'App\Models\Food'
 );
-
-// foreach(\Flight::journalItem()->where("date", ">", "2021-03-01")->get() as $k) {
-//     s($k->food);
-// }
-// exit;
-
 
 Flight::route('GET *', function () {
     //    echo 'shit';
@@ -198,8 +193,6 @@ SQL;
 
         $stmt->execute();
 
-        //Debugger::log($stmt->debugDumpParams());
-
         echo Flight::json([
             "error" => 0,
             "response" => [
@@ -244,23 +237,19 @@ Flight::route('POST /drop-food-log', function () {
 Flight::route('POST /exercised/rel/@offset', function ($offset) {
     $offset = (int) $offset;
     $exercised = Flight::request()->data['exercised'];
-
+    Debugger::log($offset);
     if (isset($exercised)) {
-        $statement = <<<MYSQL
-REPLACE INTO day_records(`date`, `exercised`)
-values(DATE('NOW', 'localtime', "{$offset} days"), 1)
-MYSQL;
+        $x = App\Models\Daily::updateOrCreate([
+            "date" => Carbon::now()->addDays($offset)->format("Y-m-d"),
+        ], [
+            "exercised" => 1
+        ]);
     } else {
-        $statement = <<<MYSQL
-REPLACE INTO day_records(`date`, `exercised`)
-values(DATE('NOW', 'localtime', "{$offset} days"), 0)
-MYSQL;
-    }
-    try {
-        Debugger::log($statement);
-        Flight::db()->prepare($statement)->execute();
-    } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
+        $x = App\Models\Daily::updateOrCreate([
+            "date" => Carbon::now()->addDays($offset)->format("Y-m-d"),
+        ], [
+            "exercised" => 0
+        ]);
     }
 });
 

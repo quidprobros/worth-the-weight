@@ -67,7 +67,7 @@ $exercised = $stats->exercised($journal_day_offset);
         <div class='callout'>
             <div class="table-scroll">
                 <?=Flight::render("partials/journal", [
-                    "records" => \Flight::journalItem()->whereDate("date", "=", Carbon::now()->subDays($journal_day_offset))->get()
+                    "records" => \Flight::journalItem()->whereDate("date", "=", Carbon::now()->addDays($journal_day_offset))->get()
                 ])?>
             </div>
         </div>

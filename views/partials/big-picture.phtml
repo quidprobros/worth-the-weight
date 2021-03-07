@@ -6,7 +6,7 @@ if (empty($journal_day_offset)) {
     $colloqial_date = "&nbsp";
 } else {
     $journal_view_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("D M j, Y");
-    $journal_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("Y-m-d 00:00:00");
+    $journal_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("Y-m-d");
 }
 
 switch(strtotime($journal_date)) {
@@ -27,8 +27,11 @@ $records = $stats->journalEntries($journal_day_offset);
 
 $today_points = $stats->points($journal_day_offset);
 
-$exercised = $stats->exercised($journal_day_offset);
- 
+
+$daily_model = \App\Models\Daily::firstWhere("date", $journal_date);
+
+$exercised = $daily_model->exercised;
+
 ?>
 <div id="big-picture" class="card custom-shadow">
     <div class="card-divider button-group align-justify">
