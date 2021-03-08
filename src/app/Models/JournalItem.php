@@ -6,7 +6,7 @@ class JournalItem extends \Illuminate\Database\Eloquent\Model
 {
     protected $primaryKey = "id";
     protected $table = "points_records";
-    protected $fillable = ["food", "points", "quantity", "created_at", "date"];
+    protected $fillable = ["food", "points", "quantity", "date"];
 
     public function getFood(int $foodID)
     {

@@ -2,6 +2,8 @@ import "./style.scss"
 
 import 'htmx.org/dist/htmx.js';
 
+htmx.config.historyEnabled = false
+
 
 import "datatables.net"
 import dt from "datatables.net-zf"
@@ -58,6 +60,12 @@ function debounce(func: Function, wait: number, immediate: boolean) {
 // @ts-ignore
 window.debounce = debounce
 
+function delayedReload(ms: number) {
+    delay(ms).then(() => location.reload())
+}
+
+//@ts-ignore
+window.delayedReload = delayedReload
 
 interface IPayload {
     error: number|boolean,
@@ -121,26 +129,13 @@ $(() => {
     });
 
 
-    $("[name='drop-food-records']").on("click", function(e: Event) {
-        e.preventDefault();
-        fetch("/drop-food-log", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then((json: IPayload) => {
-                if (0 != json.error) {
-                    $.notify(dlv(json, "response.message"), "error");
-                    return;
-                }
-                $.notify(dlv(json, "response.message"), "success");
-                delay(750).then(function() {
-                    location.reload()
-                });
-            });
-    });
+
+    // $("[name='drop-food-records']").on("click", function(e: Event) {
+    //     e.preventDefault();
+    //     delay(7050).then(function() {
+    //         location.reload()
+    //     });
+    // });
 
     const dtSettings = {
         paging: false,

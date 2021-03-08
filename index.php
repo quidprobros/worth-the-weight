@@ -213,21 +213,17 @@ Flight::route('POST /drop-food-log', function () {
     if (false === DEBUG) {
         return;
     }
-    $statement = "DELETE FROM points_records";
     try {
-        Flight::db()->prepare($statement)->execute();
-        echo Flight::json([
-            "error" => 0,
-            "response" => [
-                "message" => "Food log emptied",
-            ]
+        Flight::journalItem()::truncate();
+        return Flight::render("partials/message", [
+            "status" => "success",
+            "message" => "Food log emptied"
         ]);
     } catch (\Exection $e) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => $e->getMessage(),
-            ]
+        Tracy\Debugger::log($e->getMessage());
+        return Flight::render("partials/message", [
+            "status" => "error",
+            "message" => "Error deleting journal! Contact Chris."
         ]);
     }
 });
@@ -322,8 +318,6 @@ Flight::route('POST /submit-food-log', function () {
 
 
     $item_points = $food_model->points;
-    //$item_name = 'asdf';//$food_record["item_name"];
-
     $total_points = $item_points * $amount;
 
 
@@ -335,7 +329,7 @@ Flight::route('POST /submit-food-log', function () {
     ];
 
     try {
-        Flight::record()->setFoodEntry($data);
+        Flight::journalItem()->create($data);
     } catch (\Exception $e) {
         $payload->setStatus(PayloadStatus::FAILURE);
         $payload->setMessages([$e->getMessage()]);
@@ -377,33 +371,28 @@ Flight::map('error', function ($ex) {
 });
 
 
-// need ...
-// validate numeric
-
-
-
-Flight::before('start', function (&$params) {
-    $query_data = Flight::request()->query->getData();
-
-    $sanitized_query_data = [];
-
-    foreach ($query_data as $k => $v) {
-        switch ($k) {
-            case "day_offset":
-                $sanitized_query_data[$k] = (int) $v;
-            case "journal_day_offset":
-                $sanitized_query_data[$k] = (int) $v;
-            case "searchvalue":
-                ;
-            default:
-                // Debugger::log([
-                //     "d" => $query_data,
-                //     "c" => $sanitized_query_data,
-                //     "p" => $params
-                // ]);
-        }
-    }
-});
+/* Flight::before('start', function (&$params) {
+ *     $query_data = Flight::request()->query->getData();
+ * 
+ *     $sanitized_query_data = [];
+ * 
+ *     foreach ($query_data as $k => $v) {
+ *         switch ($k) {
+ *             case "day_offset":
+ *                 $sanitized_query_data[$k] = (int) $v;
+ *             case "journal_day_offset":
+ *                 $sanitized_query_data[$k] = (int) $v;
+ *             case "searchvalue":
+ *                 ;
+ *             default:
+ *                 // Debugger::log([
+ *                 //     "d" => $query_data,
+ *                 //     "c" => $sanitized_query_data,
+ *                 //     "p" => $params
+ *                 // ]);
+ *         }
+ *     }
+ * }); */
 
 
 Flight::start();

@@ -36,11 +36,18 @@ Just a website for *local* personal use.
 - [x] reset form after submit
 
 # sprint 3
+- [ ] rework submit food log
 - [ ] editing content or deleting from journal should update big picture
-- [ ] use Eloqent models instead of PDO
+- [x] use Eloqent models instead of PDO
+- [ ] update code to use more fully html application state management
+- [ ] fix rounding error in big-picture display
+- [ ] when adding food, it should update journal properly
+- [ ] basic graph to see progress
+- [ ] fix stats calculations
+
+# spring 4 (reach)
 - [ ] store and track goals
 - [ ] submit new foods
-- [ ] update code to use more fully html application state management
 
 
 # security sprint
