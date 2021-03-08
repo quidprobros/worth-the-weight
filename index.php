@@ -80,8 +80,7 @@ Flight::register(
     'App\Models\Food'
 );
 
-Flight::route('GET *', function () {
-    //    echo 'shit';
+Flight::route('GET|POST *', function () {
     return true;
 });
 
@@ -91,9 +90,6 @@ Flight::route('GET /', function () {
 
 Flight::route('GET /journal/rel/@offset', function ($offset) {
     $offset = (int) $offset;
-    $records = Flight::db()
-             ->query("SELECT `id`, * FROM `points_records` WHERE DATE(`date`) = DATE('now', 'localtime', '$offset day') ORDER BY date DESC")
-             ->fetchAll();
     Flight::render("partials/offcanvas-menu", [
         "journal_day_offset" => $offset
     ]);
@@ -239,7 +235,7 @@ Flight::route('POST /drop-food-log', function () {
 Flight::route('POST /exercised/rel/@offset', function ($offset) {
     $offset = (int) $offset;
     $exercised = Flight::request()->data['exercised'];
-    Debugger::log($offset);
+
     if (isset($exercised)) {
         $x = App\Models\Daily::updateOrCreate([
             "date" => Carbon::now()->addDays($offset)->format("Y-m-d"),
@@ -305,17 +301,12 @@ Flight::route('POST /submit-food-log', function () {
     }
 
     try {
-        $food_exists = Flight::db()
-                     ->query("SELECT EXISTS(SELECT 1 FROM food_records WHERE id=" . $formData['food-selection'] . " )")
-                     ->fetchColumn()
-                     ;
-    
-        if (false == $food_exists) {
-            throw new \Exception("Sorry, this food item is not recognized.");
-        }
+        $food_model = Flight::food()::findOrFail($formData['food-selection']);
     } catch (\Exception $e) {
+        Debugger::log($e->getMessage());
+
         $payload->setStatus(PayloadStatus::FAILURE);
-        $payload->setMessages([$e->getMessage()]);
+        $payload->setMessages(["Sorry, this food item is not recognized."]);
 
         return Flight::render("partials/big-picture", [
             "journal_day_offset" => 0,
@@ -324,15 +315,14 @@ Flight::route('POST /submit-food-log', function () {
     }
 
     $amount = (float) $formData['amount'];
+
     $food = (int) $formData['food-selection'];
     $date = $formData['date'];
     $date = $date . " " . date("H:i:s");
 
-    
-    // $food_record = Flight::record()->getFood($food);
 
-    $item_points = $food_record["item_points"];
-    $item_name = $food_record["item_name"];
+    $item_points = $food_model->points;
+    //$item_name = 'asdf';//$food_record["item_name"];
 
     $total_points = $item_points * $amount;
 
@@ -345,23 +335,7 @@ Flight::route('POST /submit-food-log', function () {
     ];
 
     try {
-
         Flight::record()->setFoodEntry($data);
-
-        $today_points = Flight::db()
-                      ->query("SELECT sum(points) as today_points, date(date) as th, date('now') as tt from points_records where th = tt")
-                      ->fetch()["today_points"];
-
-
-        $journal_dates = Flight::db()
-                       ->query("SELECT strftime(\"%Y-%m-%d\", \"date\") as thisDate from points_records group by thisDate")
-                       ->fetchAll();
-        $journaling_days = count($journal_dates);
-
-        $avg_points_daily = Flight::db()
-                          ->query("SELECT strftime(\"%d\", \"date\") as day, avg(points) as average from points_records group by day")
-                          ->fetch()["average"];
-
     } catch (\Exception $e) {
         $payload->setStatus(PayloadStatus::FAILURE);
         $payload->setMessages([$e->getMessage()]);

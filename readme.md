@@ -31,14 +31,16 @@ Just a website for *local* personal use.
 - [x] click date to load view for today
 - [x] validate (right form) and verify (sensical) data inputs
 - [x] fix htmx conflict with displaying notifications
-- [ ] fix reactivity of deleting items for offcanvas journal
+- [x] fix reactivity of deleting items for offcanvas journal
 - [x] fix 'next page' bug
 - [x] reset form after submit
 
 # sprint 3
-- [] store and track goals
-- [] submit new foods
-- [] update code to use more fully html application state management
+- [ ] editing content or deleting from journal should update big picture
+- [ ] use Eloqent models instead of PDO
+- [ ] store and track goals
+- [ ] submit new foods
+- [ ] update code to use more fully html application state management
 
 
 # security sprint

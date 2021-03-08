@@ -121,11 +121,13 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
              }
          });
 
-         $(document).on("submit", "[name='food-log-form']", function(e) {w
-             e.preventDefault();
-             const $form = $(e.currentTarget);
-             $form[0].reset();
-         });
+         /* $(document).on("submit", "[name='food-log-form']", function(e) {w
+          *     e.preventDefault();
+          *     const $form = $(e.currentTarget);
+          *     $form[0].reset();
+          *     console.log($('select', $form))
+          *     $('select', $form).val('').trigger('change');
+          * }); */
 
          $(document).on("keyup", "[name='searchbox']", debounce(function(e) {
 
@@ -159,7 +161,7 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
          }, 700, false));
 
          htmx.onLoad(function(elt){
-             console.log(elt);
+             // console.log(elt);
              const $elt = $(elt);
              let status = $elt.data('notify-status')
 
@@ -182,7 +184,10 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
          });
 
          $(document).on("click", "[type='submit']", function(e) {
-             $(e.currentTarget).parents("form")[0].reset();
+             const $form = $(e.currentTarget).parents("form");
+             $form[0].reset();
+             $('select', $form).val('').trigger('change');
+
          });
 
         </script>
