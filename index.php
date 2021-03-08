@@ -35,7 +35,6 @@ Flight::map('now', function ($format = 'Y-m-d') {
     return $dt->format($format);
 });
 
-
 $capsule = new Capsule();
 
 $capsule->addConnection([
@@ -148,16 +147,19 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
         ]);
     }
 
-    $rowID = $id;
-    $statement = <<<SQL
-DELETE FROM points_records
-WHERE rowid=:rowID
-SQL;
-
     try {
-        Flight::db()->prepare($statement)->execute(["rowID" => $rowID]);
+        $item = Flight::journalItem()::findOrFail($id);
+        $item->delete();
+        return Flight::render("partials/message", [
+            "status" => "success",
+            "message" => "Journal entry deleted"
+        ]);
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
+        return Flight::render("partials/message", [
+            "status" => "error",
+            "message" => "A non-existant resouce was requested. Contact Chris."
+        ]);
     }
 });
 
@@ -244,12 +246,14 @@ Flight::route('POST /exercised/rel/@offset', function ($offset) {
         ], [
             "exercised" => 1
         ]);
+        return Flight::render("partials/exercised-statement", ["exercised" => 1]);
     } else {
         $x = App\Models\Daily::updateOrCreate([
             "date" => Carbon::now()->addDays($offset)->format("Y-m-d"),
         ], [
             "exercised" => 0
         ]);
+        return Flight::render("partials/exercised-statement", ["exercised" => 0]);
     }
 });
 

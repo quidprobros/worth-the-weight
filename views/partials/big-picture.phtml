@@ -29,6 +29,12 @@ $today_points = $stats->points($journal_day_offset);
 
 
 $daily_model = \App\Models\Daily::firstWhere("date", $journal_date);
+if (empty($daily_model)) {
+    $daily_model = \App\Models\Daily::create([
+        "date" => $journal_date,
+        "exercised" => 0
+    ]);
+}
 
 $exercised = $daily_model->exercised;
 
@@ -62,6 +68,7 @@ $exercised = $daily_model->exercised;
                 <input name="exercised"
                        type="checkbox"
                        hx-post="/exercised/rel/<?=$journal_day_offset?>"
+                       hx-target="#exercised-statement"
                        <?=(1 == $exercised) ? "checked":""?>
                 />
                 <label for="exercised">Did you exercise today?</label>
