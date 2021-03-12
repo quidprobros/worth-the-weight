@@ -18,6 +18,9 @@
             "./src/@types/",
             "./node_modules/foundation-sites/js/typescript",
             "./node_modules/@types"
+        ],
+        "types": [
+            "htmx.org"
         ]
     },
     "allowSyntheticDefaultImports": true,

@@ -14,10 +14,8 @@ import "./style.scss"
 import $ from "jquery"
 window.$ = $
 
-import * as htmx from 'htmx.org/dist/htmx.min.js'
+import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
-
-window.htmx = htmx
 
 
 import dt from "datatables.net"
