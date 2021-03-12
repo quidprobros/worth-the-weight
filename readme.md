@@ -38,14 +38,14 @@ Just a website for *local* personal use.
 # sprint 3
 - [x] rework submit food log
 - [x] remove cell editing
-- [ ] deleting from journal should update 'big picture'
+- [x] deleting from journal should update 'big picture'
 - [x] use Eloqent models instead of PDO
-- [ ] update code to use more fully html application state management
+- [x] update code to use more fully html application state management
 - [ ] fix rounding error in big-picture display
-- [ ] when adding food, it should update journal properly
+- [x] when adding food, it should update journal properly
 - [ ] basic graph to see progress
 - [ ] fix stats calculations
-- [ ] handle cell edit request with htmx
+
 
 # spring 4 (reach)
 - [ ] store and track goals

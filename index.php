@@ -149,14 +149,9 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
     ]);
 });
 
-Flight::route('GET /journal-entry-summary/rel/@offset', function($offset) {
-    $stats = Flight::stats();
-    $today_points = $stats->points($offset);
-    $exercised = $stats->exercised($offset);
-
-    return Flight::render("partials/journal-entry-summary", [
-        "today_points" => $today_points,
-        "exercised" => $exercised
+Flight::route('GET /off-canvas-left/rel/@offset', function($offset) {
+    return Flight::render("partials/offcanvas-menu", [
+        "journal_day_offset" => $offset
     ]);
 });
 

@@ -12,4 +12,8 @@ class JournalItem extends \Illuminate\Database\Eloquent\Model
     {
         return (new Food())->where("id", $foodID)->first()->food;
     }
+    public function getSum($date)
+    {
+        return $this->whereDate("date", "=", $date)->sum("points");
+    }
 }

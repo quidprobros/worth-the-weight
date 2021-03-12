@@ -42,25 +42,27 @@ $exercised = $stats->exercised($journal_day_offset);
                hx-get="/journal/rel/<?=($journal_day_offset - 1)?>"
                hx-swap="outerHTML"
                hx-target='#this-container'>⬅</a>
-            <a hx-get="/journal/rel/<?=($journal_day_offset)?>"
+            <a hx-get="/journal/rel/0"
                hx-swap="outerHTML"
-               path-deps="/submit-food-log"
-               hx-trigger="click, path-deps"
+               hx-trigger="click"
                hx-target='#this-container'><h1 style='margin:0'><?=$journal_view_date?></h1></a>
-            <a title="see entry for tomorrow"
+            <a class='button' title="see entry for tomorrow"
                hx-get="/journal/rel/<?=($journal_day_offset + 1)?>"
                hx-swap="outerHTML"
                hx-target='#this-container'>⮕</a>
         </div>
+        <? if (0 == $journal_day_offset) { ?>
+            <p class="text-center"><small>today</small></p>
+        <? } else { ?>
+            <p class="text-center"><small>&nbsp;</small></p>
+        <? } ?>
     </div>
-    <div class="cell"
-         hx-get="/journal-entry-summary/rel/<?=$journal_day_offset?>"
-         hx-trigger="path-deps"
-         path-deps="/journal-entry">
-        <?=Flight::render("partials/journal-entry-summary", [
-            "today_points" => $today_points,
-            "exercised" => $exercised
-        ])?>
+    <div class="cell">
+        <div class="callout">
+            <strong>Consumed: <?=$today_points?> points</strong>
+            <br>
+            <strong>Exercised this day: <?=$exercised ? "YES!": "NOPE"?></strong>
+        </div>
     </div>
     <div class="cell">
         <div class='callout'>
