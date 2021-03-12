@@ -39,13 +39,6 @@ if (empty($daily_model)) {
 $exercised = $daily_model->exercised;
 
 ?>
-<div style='display:none'
-     hx-trigger="path-deps"
-     hx-target="#big-picture"
-     hx-swap="outerHTML swap:200ms"
-     hx-get="/big-picture/rel/<?=($journal_day_offset)?>"
-     path-deps="/journal-entry/*"></div>
-
 <div id="big-picture" class="card custom-shadow">
     <div class="card-divider button-group align-justify">
         <a class="button" title="see total for previous day"
@@ -55,7 +48,7 @@ $exercised = $daily_model->exercised;
            hx-target='#big-picture'>⬅</a>
         <h4><a title="see total for today"
                hx-trigger="click, path-deps, keyup[shiftKey&&key=='S'] from:body"
-               path-deps="/submit-food-log"
+               path-deps="/journal-entry"
                hx-get="/big-picture/rel/<?=($journal_day_offset)?>"
                hx-swap="outerHTML swap:200ms"
                hx-target='#big-picture'><?=$title?></a></h4>

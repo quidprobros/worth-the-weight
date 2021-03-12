@@ -53,12 +53,14 @@ $exercised = $stats->exercised($journal_day_offset);
                hx-target='#this-container'>⮕</a>
         </div>
     </div>
-    <div class="cell">
-        <div class="callout">
-            <strong>Consumed: <?=$today_points?> points</strong>
-            <br>
-            <strong>Exercised this day: <?=$exercised ? "YES!": "NOPE"?></strong>
-        </div>
+    <div class="cell"
+         hx-get="/journal-entry-summary/rel/<?=$journal_day_offset?>"
+         hx-trigger="path-deps"
+         path-deps="/journal-entry">
+        <?=Flight::render("partials/journal-entry-summary", [
+            "today_points" => $today_points,
+            "exercised" => $exercised
+        ])?>
     </div>
     <div class="cell">
         <div class='callout'>

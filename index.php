@@ -149,6 +149,17 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
     ]);
 });
 
+Flight::route('GET /journal-entry-summary/rel/@offset', function($offset) {
+    $stats = Flight::stats();
+    $today_points = $stats->points($offset);
+    $exercised = $stats->exercised($offset);
+
+    return Flight::render("partials/journal-entry-summary", [
+        "today_points" => $today_points,
+        "exercised" => $exercised
+    ]);
+});
+
 Flight::route('GET /big-picture/rel/@offset', function ($offset) {
     $offset = (int) $offset;
     Flight::render("partials/big-picture", [
@@ -194,14 +205,6 @@ Flight::route('GET /example', function () {
     echo '<div>SHIT</div>';
 });
 
-Flight::route('POST /triggered', function () {
-    Debugger::log("fake triggered");
-});
-
-
-
-
-
 Flight::route('DELETE /journal-entry/@id', function ($id) {
     if (false == is_numeric($id)) {
         return Flight::render("partials/message", [
@@ -222,61 +225,6 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
             "status" => "error",
             "message" => "A non-existant resouce was requested. Contact Chris."
         ]);
-    }
-});
-
-Flight::route("PUT /submit-edit-quantity/(@rowID)", function ($rowID) {
-    
-    Debugger::log(Flight::request()->data);
-});
-
-Flight::route("POST /submit-edit-cell", function () {
-    $rowID = Flight::request()->data['rowID'];
-    $colID = Flight::request()->data['colID'];
-    $value = Flight::request()->data['value'];
-
-    switch ($colID) {
-        case "date":
-            $statement = <<<SQL
-UPDATE points_records
-SET date = :value
-WHERE rowid = :rowID
-SQL;
-            break;
-        case "amount":
-        case "quantity":
-            $statement = <<<SQL
-UPDATE points_records
-SET quantity = :value
-WHERE rowid = :rowID
-SQL;
-            break;
-        default:
-            return;
-    }
-    
-    try {
-        $stmt = Flight::db()->prepare($statement);
-        $stmt->bindValue(":value", $value, PDO::PARAM_STR);
-        $stmt->bindValue(":rowID", $rowID);
-
-        $stmt->execute();
-
-        echo Flight::json([
-            "error" => 0,
-            "response" => [
-                "message" => "Record updated",
-            ]
-        ]);
-        exit;
-    } catch (\Exception $e) {
-        echo Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => $e->getMessage(),
-            ]
-        ]);
-        exit;
     }
 });
 
@@ -342,7 +290,7 @@ Flight::route('GET /food-support-message', function () {
     echo $greetings[0];
 });
 
-Flight::route('POST /submit-food-log', function () {
+Flight::route('POST /journal-entry', function () {
     $formData = Flight::request()->data;
 
     $payload = new Payload();
