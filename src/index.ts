@@ -19,7 +19,6 @@ import 'htmx.org/dist/ext/path-deps.js'
 
 
 import dt from "datatables.net"
-import "datatables.net-zf"
 dt($)
 
 import dlv from "@paxperscientiam/dlv.ts"
