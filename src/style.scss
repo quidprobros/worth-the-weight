@@ -15,6 +15,7 @@ $offcanvas-sizes: (
 
 @import "@/select2/dist/css/select2.min.css";
 
+@import "./htmx.scss";
 
 @include foundation-everything;
 
@@ -49,7 +50,14 @@ tr.htmx-swapping td {
     transition: opacity 1s ease-out;
 }
 
+
+[contenteditable]:hover {
+    cursor: cell;
+}
+[contenteditable]:focus {
+    cursor: text;
+}
+
 .editing {
-    color: white;
-    background-color: #8842d5;
+    text-decoration: underline;
 }

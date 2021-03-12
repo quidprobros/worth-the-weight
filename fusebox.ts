@@ -5,12 +5,12 @@ import { fusebox, sparky, pluginCSS, pluginSass } from 'fuse-box';
 import { pluginTypeChecker } from 'fuse-box-typechecker';
 import { IPublicConfig } from 'fuse-box/config/IConfig';
 
-// const typeChecker = require('fuse-box-typechecker').TypeChecker({
-//     tsConfig: './tsconfig.json',
-//     basePath: './',
-//     name: 'checkerSync',
-//     print_summary: true,
-// });
+const typeChecker = require('fuse-box-typechecker').TypeChecker({
+    tsConfig: './tsconfig.json',
+    basePath: './',
+    name: 'checkerSync',
+    print_summary: true,
+});
 
 class Context {
     public outputType!: string
@@ -35,6 +35,7 @@ class Context {
             plugins: [
                 pluginTypeChecker({
                     name: 'Superman',
+                    tsConfig: './tsconfig.json',
                 }),
                 pluginSass(),
                 //pluginCSS(),
@@ -82,3 +83,11 @@ task("build", async (ctx: Context) => {
             console.log("Done building ESM module")
         })
 })
+
+task("watch", () => {
+    typeChecker.printSettings();
+    typeChecker.inspectAndPrint();
+
+    typeChecker.worker_watch('./');
+})
+ 

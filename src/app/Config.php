@@ -10,6 +10,7 @@ class Config
         header("X-Frame-Options: SAMEORIGIN");
         header("X-Powered-By: Me");
         header("X-Content-Type-Options: NOSNIFF");
+        header('Server: ROLF');
     }
 
 

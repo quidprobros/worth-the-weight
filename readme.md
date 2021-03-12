@@ -36,7 +36,7 @@ Just a website for *local* personal use.
 - [x] reset form after submit
 
 # sprint 3
-- [ ] rework submit food log
+- [x] rework submit food log
 - [ ] editing content or deleting from journal should update big picture
 - [x] use Eloqent models instead of PDO
 - [ ] update code to use more fully html application state management
@@ -44,6 +44,7 @@ Just a website for *local* personal use.
 - [ ] when adding food, it should update journal properly
 - [ ] basic graph to see progress
 - [ ] fix stats calculations
+- [ ] handle cell edit request with htmx
 
 # spring 4 (reach)
 - [ ] store and track goals

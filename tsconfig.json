@@ -1,22 +1,29 @@
 {
     "compilerOptions": {
+        "baseUrl": "./",
         "esModuleInterop": true,
         "moduleResolution": "node",
         "module": "CommonJS",
+        "alwaysStrict": true,
         "strict": true,
+        "noImplicitAny": true,
         "forceConsistentCasingInFileNames": true,
-        "declaration": true,
+        "declaration": false,
         "outDir": "./dist",
         "lib": ["dom","es2019"],
         "paths": {
             "@app/*":["./src/*"]
         },
-        "types": ["node"],
         "typeRoots": [
-            "./node_modules/foundation-sites/js/typescript"
+            "./src/@types/",
+            "./node_modules/foundation-sites/js/typescript",
+            "./node_modules/@types"
         ]
     },
+    "allowSyntheticDefaultImports": true,
+    "types": ["jquery", "htmx.org"],
     "include": [
-        "./src/"
+        "src/**/*"
     ]
 }
+

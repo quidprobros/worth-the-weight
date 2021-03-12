@@ -1,5 +1,4 @@
 <?PHP
-
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
 use Carbon\Carbon;
@@ -85,7 +84,62 @@ Flight::route('GET|POST *', function () {
 });
 
 Flight::route('GET /', function () {
-    Flight::render('index', []);
+    $foods = Flight::db()->query("SELECT * FROM food_records");
+
+    // STATS
+    $journal_dates = Flight::db()->query("SELECT strftime(\"%Y-%m-%d\", \"date\") as thisDate from points_records group by thisDate")->fetchAll();
+
+    $journaling_days = count($journal_dates);
+
+    $avg_points_daily = Flight::db()->query("SELECT strftime(\"%d\", \"date\") as day, avg(points) as average from points_records where points > 0 group by day")->fetch()["average"];
+    $avg_points_daily = number_format($avg_points_daily, 2);
+
+    $today_points = Flight::db()->query("SELECT sum(points) as today_points, date(date) as th, date('now', 'localtime') as tt from points_records where th = tt")->fetch()["today_points"];
+
+    $checkbox_date = date("Y-m-d");
+
+    $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DATE(`date`, 'localtime') = '{$checkbox_date}'")->fetch()['exercised'];
+
+
+    Flight::render('index', [
+        "foods" => $foods,
+        "journaling_days" => $journaling_days,
+        "avg_points_daily" => $avg_points_daily,
+        "today_points" => $today_points,
+        "checkbox_date" => $checkbox_date,
+        "exercised" => $exercised,
+    ]);
+});
+
+Flight::route("GET /prompt-to-delete-record/(@id)", function($id) {
+    $payload = new Payload();
+    if (false == is_numeric($id)) {
+        return Flight::render("partials/message", [
+            "status" => "error",
+            "message" => "A non-existant resouce was requested. Contact Chris."
+        ]);
+    }
+    Flight::render("partials/modals/prompt-to-delete-record", [
+        "id" => $id
+    ]);
+
+});
+
+Flight::route("/test" , function () {
+    $payload = new Payload();
+    $payload->setStatus(PayloadStatus::ACCEPTED);
+
+    $s = new stdClass();
+    $s->a = "a";
+    $s->b = "b";
+
+    $payload->setOutput($s);
+
+    Flight::render("test", [
+        "status" => $payload->getStatus(),
+        "messages" => $payload->getMessages(),
+        "data" => $payload->getOutput(),
+    ]);
 });
 
 Flight::route('GET /journal/rel/@offset', function ($offset) {
@@ -135,6 +189,19 @@ SQL;
     }
 });
 
+
+Flight::route('GET /example', function () {
+    echo '<div>SHIT</div>';
+});
+
+Flight::route('POST /triggered', function () {
+    Debugger::log("fake triggered");
+});
+
+
+
+
+
 Flight::route('DELETE /journal-entry/@id', function ($id) {
     if (false == is_numeric($id)) {
         return Flight::render("partials/message", [
@@ -146,17 +213,27 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     try {
         $item = Flight::journalItem()::findOrFail($id);
         $item->delete();
+        Flight::render("partials/big-picture", [
+            "journal_day_offset" => 1,
+            "oob" => "true:#big-picture",
+        ]);
         return Flight::render("partials/message", [
             "status" => "success",
             "message" => "Journal entry deleted"
         ]);
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
+        echo '<div hx-swap-oob="true:#big-picture">OMFG</div>';
         return Flight::render("partials/message", [
             "status" => "error",
             "message" => "A non-existant resouce was requested. Contact Chris."
         ]);
     }
+});
+
+Flight::route("PUT /submit-edit-quantity/(@rowID)", function ($rowID) {
+    
+    Debugger::log(Flight::request()->data);
 });
 
 Flight::route("POST /submit-edit-cell", function () {
@@ -247,6 +324,28 @@ Flight::route('POST /exercised/rel/@offset', function ($offset) {
         ]);
         return Flight::render("partials/exercised-statement", ["exercised" => 0]);
     }
+});
+
+Flight::map("welcome", function () {
+    if(date("H") < 12){
+        return "good morning";
+    } elseif(date("H") > 11 && date("H") < 18) {
+        return "good afternoon";
+    }elseif(date("H") > 17){
+        return "good evening";
+    }
+});
+
+Flight::route('GET /food-support-message', function () {
+    $greetings = [
+        'Yum!',
+        "Eh, I've had better!",
+        'Nice!',
+        'Way to go!',
+        'Woot woot!',
+    ];
+    shuffle($greetings);
+    echo $greetings[0];
 });
 
 Flight::route('POST /submit-food-log', function () {

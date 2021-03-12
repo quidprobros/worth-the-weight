@@ -1,0 +1,13 @@
+<div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
+	  <div class="modal-underlay" _="on click trigger closeModal"></div>
+	  <div class="modal-content">
+        Are you sure you want to delete this journal entry?
+        <button type="button" class="button"
+                hx-swap="#message"
+                hx-trigger="click"
+                hx-delete="/journal-entry/<?=$id?>">
+            Yes
+        </button>
+		    <button _="on click trigger closeModal">Close</button>
+	  </div>
+</div>

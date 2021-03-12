@@ -47,8 +47,10 @@ $exercised = $stats->exercised($journal_day_offset);
                hx-get="/journal/rel/<?=($journal_day_offset - 1)?>"
                hx-swap="outerHTML"
                hx-target='#this-container'>⬅</a>
-            <a hx-get="/journal/rel/0"
+            <a hx-get="/journal/rel/<?=($journal_day_offset)?>"
                hx-swap="outerHTML"
+               path-deps="/submit-food-log"
+               hx-trigger="click, path-deps"
                hx-target='#this-container'><h1 style='margin:0'><?=$journal_view_date?></h1></a>
             <a class="button fade-me-out" title="see entry for tomorrow"
                hx-get="/journal/rel/<?=($journal_day_offset + 1)?>"
@@ -67,7 +69,8 @@ $exercised = $stats->exercised($journal_day_offset);
         <div class='callout'>
             <div class="table-scroll">
                 <?=Flight::render("partials/journal", [
-                    "records" => \Flight::journalItem()->whereDate("date", "=", Carbon::now()->addDays($journal_day_offset))->get()
+                    "records" => \Flight::journalItem()->whereDate("date", "=", Carbon::now()->addDays($journal_day_offset))->get(),
+                    "offset" => $journal_day_offset,
                 ])?>
             </div>
         </div>

@@ -1,27 +1,7 @@
-<!-- mode: web -->
 <?
-
 use Aura\Payload_Interface\PayloadStatus;
-
-$foods = Flight::db()->query("SELECT * FROM food_records");
-
-// STATS
-$journal_dates = Flight::db()->query("SELECT strftime(\"%Y-%m-%d\", \"date\") as thisDate from points_records group by thisDate")->fetchAll();
-
-$journaling_days = count($journal_dates);
-
-$avg_points_daily = Flight::db()->query("SELECT strftime(\"%d\", \"date\") as day, avg(points) as average from points_records where points > 0 group by day")->fetch()["average"];
-$avg_points_daily = number_format($avg_points_daily, 2);
-
-$today_points = Flight::db()->query("SELECT sum(points) as today_points, date(date) as th, date('now', 'localtime') as tt from points_records where th = tt")->fetch()["today_points"];
-
-$journal_day_offset = (int) Flight::request()->query["day_offset"];
-
-$checkbox_date = date("Y-m-d");
-
-$exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DATE(`date`, 'localtime') = '{$checkbox_date}'")->fetch()['exercised'];
-
 ?>
+<!-- mode: web -->
 <!doctype html>
 <html lang="en">
     <?php Tracy\Debugger::renderLoader() ?>
@@ -33,17 +13,31 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
         <script type="text/javascript" src="/dist/vendor.js"></script>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
-    <body>
+    <body hx-ext="path-deps">
+        <? if (true === DEBUG) { ?>
+            <button type="button"
+                    class="button alert"
+                    style="position:fixed;left:0;bottom:0"
+                    name='drop-food-records'
+                    hx-swap='none'
+                    hx-post="/drop-food-log">
+                DELETE ENTIRE FOOD LOG</button>
+        <? } ?>
         <div class="title-bar">
             <div class="title-bar-left">
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
                 <span class="title-bar-title">View your journal</span>
             </div>
+            <div class='text-center'
+                 hx-get='/food-support-message'
+                 hx-trigger="path-deps"
+                 hx-swap='innerHTML'
+                 path-deps="/submit-food-log"><?=Flight::welcome()?></div>
             <div class="title-bar-right">
                 <span><?=(1 == DEBUG) ? " The date is " . Flight::now("D M j, Y") : ""?></span>
             </div>
         </div>
-
+        
         <div class="off-canvas-wrapper">
             <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas>
                 <?=Flight::render("partials/offcanvas-menu", [
@@ -80,9 +74,8 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
                                 </fieldset>
                                 <button type="submit" class="button success large"
                                         hx-post="/submit-food-log"
-                                        hx-swap="outerHTML swap:200ms"
-                                        hx-target='#big-picture'
-                                >submit</button>
+                                        hx-swap="none"
+                                        hx-target='#big-picture'>submit</button>
                             </form>
                         </div>
 
@@ -105,7 +98,6 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
          $(document).on("keydown", "table td[contenteditable]", function(e) {
              const $target  = $(e.currentTarget)
              if (13 == e.which) {
-                 saveCell(e);
                  e.preventDefault();
              }
              if (27 == e.which) {
@@ -145,28 +137,28 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
                  });
          }, 700, false));
 
-         htmx.onLoad(function(elt){
-             // console.log(elt);
-             const $elt = $(elt);
-             let status = $elt.data('notify-status')
+         /* htmx.onLoad(function(elt){
+          *     console.log(elt);
+          *     const $elt = $(elt);
+          *     let status = $elt.data('notify-status')
 
-             switch (status) {
-                 case '<?=PayloadStatus::SUCCESS?>':
-                     status = 'success';
-                     break;
-                 case '<?=PayloadStatus::FAILURE?>':
-                     status = 'warn';
-                     break;
-                 default:
-                     status = 'info';
-                     break;
-             }
+          *     switch (status) {
+          *         case '<?=PayloadStatus::SUCCESS?>':
+          *             status = 'success';
+          *             break;
+          *         case '<?=PayloadStatus::FAILURE?>':
+          *             status = 'warn';
+          *             break;
+          *         default:
+          *             status = 'info';
+          *             break;
+          *     }
 
-             const msg = $elt.data('notify-message');
-             if (null != msg && null != status) {
-                 $.notify(msg, status);
-             }
-         });
+          *     const msg = $elt.data('notify-message');
+          *     if (null != msg && null != status) {
+          *         $.notify(msg, status);
+          *     }
+          * }); */
 
          $(document).on("click", "[type='submit']", function(e) {
              const $form = $(e.currentTarget).parents("form");
@@ -176,15 +168,5 @@ $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DA
          });
 
         </script>
-        <? if (true === DEBUG) { ?>
-            <button type="button"
-                    class="button alert"
-                    style="position:fixed;left:0;bottom:0"
-                    name='drop-food-records'
-                    onclick="delayedReload(1100)"
-                    hx-swap='none'
-                    hx-post="/drop-food-log">
-                    DELETE ENTIRE FOOD LOG</button>
-        <? } ?>
     </body>
 </html>
