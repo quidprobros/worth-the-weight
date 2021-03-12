@@ -8,8 +8,8 @@
             <th scope="col">Action</th>
         </tr>
     </thead>
-    <!--  hx-target="closest tr" hx-swap="outerHTML swap:1s" -->
-    <tbody>
+
+    <tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML swap:1s">
         <? if (empty($records)) { ?>
             <tr class="empty-row-notice">
                 <td class="text-center" colspan="100%"><em>Your food log is empty.</em></td>
@@ -38,8 +38,7 @@
                 <td>
                     <div class="button-group stacked" role="group">
                         <button type="button" class="button"
-                                hx-target="body" hx-swap="beforeend"
-                                hx-get="/prompt-to-delete-record/<?=$record->id?>">
+                                hx-delete="/journal-entry/<?=$record->id?>">
                             delete
                         </button>
                     </div>

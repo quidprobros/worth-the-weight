@@ -35,7 +35,8 @@ window.Inputmask = Inputmask
 import * as select2 from "select2"
 $.fn.select2 = select2
 
-import "notifyjs-browser"
+import notify from "notifyjs-browser"
+$.notify = notify
 
 import 'foundation-sites'
 
@@ -68,6 +69,7 @@ window.delayedReload = delayedReload
 
 
 $(() => {
+    $.notify("LOL")
     $("select").select2();
 
     Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);

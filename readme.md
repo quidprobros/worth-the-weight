@@ -37,7 +37,8 @@ Just a website for *local* personal use.
 
 # sprint 3
 - [x] rework submit food log
-- [ ] editing content or deleting from journal should update big picture
+- [x] remove cell editing
+- [ ] deleting from journal should update 'big picture'
 - [x] use Eloqent models instead of PDO
 - [ ] update code to use more fully html application state management
 - [ ] fix rounding error in big-picture display

@@ -74,8 +74,7 @@ use Aura\Payload_Interface\PayloadStatus;
                                 </fieldset>
                                 <button type="submit" class="button success large"
                                         hx-post="/submit-food-log"
-                                        hx-swap="none"
-                                        hx-target='#big-picture'>submit</button>
+                                        hx-swap="none">submit</button>
                             </form>
                         </div>
 
@@ -93,6 +92,7 @@ use Aura\Payload_Interface\PayloadStatus;
                 </div>
             </div>
         </div>
+        
         <script>
 
          $(document).on("keydown", "table td[contenteditable]", function(e) {
@@ -137,28 +137,29 @@ use Aura\Payload_Interface\PayloadStatus;
                  });
          }, 700, false));
 
-         /* htmx.onLoad(function(elt){
-          *     console.log(elt);
-          *     const $elt = $(elt);
-          *     let status = $elt.data('notify-status')
+         htmx.onLoad(function(elt){
+             const $elt = $(elt);
+             let status = $elt.data('notify-status')
 
-          *     switch (status) {
-          *         case '<?=PayloadStatus::SUCCESS?>':
-          *             status = 'success';
-          *             break;
-          *         case '<?=PayloadStatus::FAILURE?>':
-          *             status = 'warn';
-          *             break;
-          *         default:
-          *             status = 'info';
-          *             break;
-          *     }
+             switch (status) {
+                 case '<?=PayloadStatus::SUCCESS?>':
+                     status = 'success';
+                     break;
+                 case '<?=PayloadStatus::FAILURE?>':
+                     status = 'warn';
+                     break;
+                 default:
+                     status = 'info';
+                     break;
+             }
 
-          *     const msg = $elt.data('notify-message');
-          *     if (null != msg && null != status) {
-          *         $.notify(msg, status);
-          *     }
-          * }); */
+             const msg = $elt.data('notify-message');
+             if (null != msg && null != status) {
+                 $.notify(msg, status);
+             }
+
+
+         });
 
          $(document).on("click", "[type='submit']", function(e) {
              const $form = $(e.currentTarget).parents("form");

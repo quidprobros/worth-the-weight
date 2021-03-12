@@ -213,17 +213,11 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     try {
         $item = Flight::journalItem()::findOrFail($id);
         $item->delete();
-        Flight::render("partials/big-picture", [
-            "journal_day_offset" => 1,
-            "oob" => "true:#big-picture",
-        ]);
         return Flight::render("partials/message", [
             "status" => "success",
             "message" => "Journal entry deleted"
         ]);
     } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
-        echo '<div hx-swap-oob="true:#big-picture">OMFG</div>';
         return Flight::render("partials/message", [
             "status" => "error",
             "message" => "A non-existant resouce was requested. Contact Chris."
@@ -327,11 +321,11 @@ Flight::route('POST /exercised/rel/@offset', function ($offset) {
 });
 
 Flight::map("welcome", function () {
-    if(date("H") < 12){
+    if(6 <= date("H") && 12 > date("H")){
         return "good morning";
-    } elseif(date("H") > 11 && date("H") < 18) {
+    } elseif(12 <= date("H") && 18 > date("H")) {
         return "good afternoon";
-    }elseif(date("H") > 17){
+    } else {
         return "good evening";
     }
 });

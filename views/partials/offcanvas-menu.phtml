@@ -32,12 +32,7 @@ $today_points = $stats->points($journal_day_offset);
 $exercised = $stats->exercised($journal_day_offset);
 
 ?>
-<style>
- .fade-me-out.htmx-swapping {
-     opacity: 0;
-     transition: opacity 1s ease-out;
- }
-</style>
+
 <!-- Your menu or Off-canvas content goes here -->
 <div id='this-container' class="grid-y">
     <div class="cell">
@@ -52,7 +47,7 @@ $exercised = $stats->exercised($journal_day_offset);
                path-deps="/submit-food-log"
                hx-trigger="click, path-deps"
                hx-target='#this-container'><h1 style='margin:0'><?=$journal_view_date?></h1></a>
-            <a class="button fade-me-out" title="see entry for tomorrow"
+            <a title="see entry for tomorrow"
                hx-get="/journal/rel/<?=($journal_day_offset + 1)?>"
                hx-swap="outerHTML"
                hx-target='#this-container'>⮕</a>

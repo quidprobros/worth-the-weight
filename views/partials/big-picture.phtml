@@ -39,7 +39,14 @@ if (empty($daily_model)) {
 $exercised = $daily_model->exercised;
 
 ?>
-<div id="big-picture" class="card custom-shadow" <?=!empty($oob) ? "hx-swap-oob='{$oob}'" : ""?>>
+<div style='display:none'
+     hx-trigger="path-deps"
+     hx-target="#big-picture"
+     hx-swap="outerHTML swap:200ms"
+     hx-get="/big-picture/rel/<?=($journal_day_offset)?>"
+     path-deps="/journal-entry/*"></div>
+
+<div id="big-picture" class="card custom-shadow">
     <div class="card-divider button-group align-justify">
         <a class="button" title="see total for previous day"
            hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"

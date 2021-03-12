@@ -47,17 +47,5 @@ $offcanvas-sizes: (
 
 tr.htmx-swapping td {
     opacity: 0;
-    transition: opacity 1s ease-out;
-}
-
-
-[contenteditable]:hover {
-    cursor: cell;
-}
-[contenteditable]:focus {
-    cursor: text;
-}
-
-.editing {
-    text-decoration: underline;
+    transition: opacity 200ms ease-out;
 }
