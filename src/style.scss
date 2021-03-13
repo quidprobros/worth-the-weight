@@ -49,3 +49,19 @@ tr.htmx-swapping td {
     opacity: 0;
     transition: opacity 200ms ease-out;
 }
+
+.card-divider {
+    border-left: 1px solid white
+}
+
+.calendar .cell:before {
+    content: '3';
+    display: block;
+    padding-top: 85.71%;
+}
+
+.calendar .cell {
+    background: white;
+    border: grey 1px solid;
+    height: auto;
+}

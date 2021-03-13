@@ -37,6 +37,11 @@ use Aura\Payload_Interface\PayloadStatus;
             <div class="title-bar-right">
                 <span><?=(1 == DEBUG) ? " The date is " . Flight::now("D M j, Y") : ""?></span>
             </div>
+            <div class="title-bar-right">
+                <span class="title-bar-title">View graphs</span>
+                <button class="menu-icon" type="button" data-toggle="offCanvas2"></button>
+
+            </div>
         </div>
         
         <div class="off-canvas-wrapper">
@@ -45,6 +50,12 @@ use Aura\Payload_Interface\PayloadStatus;
                  hx-trigger="path-deps"
                  path-deps="/journal-entry">
                 <?=Flight::render("partials/offcanvas-menu", [
+                    "journal_day_offset" => 0
+                ])?>
+            </div>
+
+            <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
+                <?=Flight::render("partials/offcanvas-graphs", [
                     "journal_day_offset" => 0
                 ])?>
             </div>
@@ -161,8 +172,6 @@ use Aura\Payload_Interface\PayloadStatus;
              if (null != msg && null != status) {
                  $.notify(msg, status);
              }
-
-
          });
 
          $(document).on("click", "[type='submit']", function(e) {

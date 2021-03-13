@@ -78,10 +78,10 @@ $exercised = $daily_model->exercised;
         <div class="cell auto">
             <div id="statistics" class="callout">
                 <p>
-                    You are averaging <strong><?=number_format(Flight::stats()->avgDaily(), 2)?></strong> points/day.
+                    You are averaging <strong><?=number_format(Flight::stats()->avgDaily(), 2)?></strong> points per logged-day.
                 </p>
                 <p>
-                    Trailing 7-day average: <strong><?=number_format(Flight::stats()->avgDailyTrailing7(), 2)?></strong> points/day
+                    Trailing 7-day average: <strong><?=number_format(Flight::stats()->avgDailyTrailing7(), 2)?></strong> points per logged-day
                 </p>
             </div>
         </div>

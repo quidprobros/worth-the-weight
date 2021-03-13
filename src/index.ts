@@ -69,7 +69,6 @@ window.delayedReload = delayedReload
 
 
 $(() => {
-    $.notify("LOL")
     $("select").select2();
 
     Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);

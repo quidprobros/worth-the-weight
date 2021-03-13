@@ -39,9 +39,9 @@ Just a website for *local* personal use.
 - [x] rework submit food log
 - [x] remove cell editing
 - [x] deleting from journal should update 'big picture'
-- [x] use Eloqent models instead of PDO
+- [ ] use Eloqent models instead of PDO style
 - [x] update code to use more fully html application state management
-- [ ] fix rounding error in big-picture display
+- [x] fix rounding error in big-picture display
 - [x] when adding food, it should update journal properly
 - [ ] basic graph to see progress
 - [ ] fix stats calculations
@@ -50,6 +50,7 @@ Just a website for *local* personal use.
 # spring 4 (reach)
 - [ ] store and track goals
 - [ ] submit new foods
+- [ ] show popup when user's been a way for a while
 
 
 # security sprint
