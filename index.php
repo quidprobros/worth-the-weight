@@ -69,11 +69,6 @@ Flight::register(
 );
 
 Flight::register(
-    'record',
-    'App\Record'
-);
-
-Flight::register(
     'journalItem',
     'App\Models\JournalItem'
 );
@@ -102,37 +97,6 @@ Flight::route('GET /', function () {
         "today_points" => $today_points,
         "checkbox_date" => $checkbox_date,
         "exercised" => $daily_model->exercised,
-    ]);
-});
-
-Flight::route("GET /prompt-to-delete-record/(@id)", function ($id) {
-    $payload = new Payload();
-    if (false == is_numeric($id)) {
-        return Flight::render("partials/message", [
-            "status" => "error",
-            "message" => "A non-existant resouce was requested. Contact Chris."
-        ]);
-    }
-    Flight::render("partials/modals/prompt-to-delete-record", [
-        "id" => $id
-    ]);
-
-});
-
-Flight::route("/test", function () {
-    $payload = new Payload();
-    $payload->setStatus(PayloadStatus::ACCEPTED);
-
-    $s = new stdClass();
-    $s->a = "a";
-    $s->b = "b";
-
-    $payload->setOutput($s);
-
-    Flight::render("test", [
-        "status" => $payload->getStatus(),
-        "messages" => $payload->getMessages(),
-        "data" => $payload->getOutput(),
     ]);
 });
 
@@ -172,20 +136,19 @@ SQL;
 
         $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        echo Flight::json([
+        return Flight::json([
             "error" => 0,
             "response" => [
                 "data" => $results
             ]
         ]);
     } catch (\Exception $e) {
-        echo Flight::json([
+        return Flight::json([
             "error" => 1,
             "response" => [
                 "message" => $e->getMessage(),
             ]
         ]);
-        exit;
     }
 });
 
@@ -258,9 +221,9 @@ Flight::route('POST /exercised/rel/@offset', function ($offset) {
 });
 
 Flight::map("welcome", function () {
-    if(6 <= date("H") && 12 > date("H")){
+    if (6 <= date("H") && 12 > date("H")){
         return "good morning";
-    } elseif(12 <= date("H") && 18 > date("H")) {
+    } elseif (12 <= date("H") && 18 > date("H")) {
         return "good afternoon";
     } else {
         return "good evening";
