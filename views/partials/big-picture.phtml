@@ -45,7 +45,7 @@ $exercised = $daily_model->exercised;
         <h4><a title="see total for today"
                hx-trigger="click, path-deps, keyup[shiftKey&&key=='S'] from:body"
                path-deps="/journal-entry"
-               hx-get="/big-picture/rel/<?=($journal_day_offset)?>"
+               hx-get="/big-picture/rel/0"
                hx-swap="outerHTML swap:200ms"
                hx-target='#big-picture'><?=$title?></a></h4>
         <a class="button" title="see total for next day"

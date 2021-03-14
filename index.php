@@ -23,6 +23,10 @@ Debugger::enable(Debugger::DETECT, __DIR__ . '/tracy/');
 
 define("DEBUG", true);
 
+if (true != DEBUG) {
+    Debugger::$showBar = false;
+}
+
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.extension', ".phtml");
 
@@ -84,34 +88,24 @@ Flight::route('GET|POST *', function () {
 });
 
 Flight::route('GET /', function () {
-    $foods = Flight::db()->query("SELECT * FROM food_records");
 
-    // STATS
-    $journal_dates = Flight::db()->query("SELECT strftime(\"%Y-%m-%d\", \"date\") as thisDate from points_records group by thisDate")->fetchAll();
+    $foods = Flight::food()::all();
 
-    $journaling_days = count($journal_dates);
-
-    $avg_points_daily = Flight::db()->query("SELECT strftime(\"%d\", \"date\") as day, avg(points) as average from points_records where points > 0 group by day")->fetch()["average"];
-    $avg_points_daily = number_format($avg_points_daily, 2);
-
-    $today_points = Flight::db()->query("SELECT sum(points) as today_points, date(date) as th, date('now', 'localtime') as tt from points_records where th = tt")->fetch()["today_points"];
+    $today_points = Flight::journalItem()->getSum(date("Y-m-d"));
 
     $checkbox_date = date("Y-m-d");
 
-    $exercised = Flight::db()->query("SELECT `exercised` from `day_records` WHERE DATE(`date`, 'localtime') = '{$checkbox_date}'")->fetch()['exercised'];
-
+    $daily_model = \App\Models\Daily::firstWhere("date", $checkbox_date);
 
     Flight::render('index', [
         "foods" => $foods,
-        "journaling_days" => $journaling_days,
-        "avg_points_daily" => $avg_points_daily,
         "today_points" => $today_points,
         "checkbox_date" => $checkbox_date,
-        "exercised" => $exercised,
+        "exercised" => $daily_model->exercised,
     ]);
 });
 
-Flight::route("GET /prompt-to-delete-record/(@id)", function($id) {
+Flight::route("GET /prompt-to-delete-record/(@id)", function ($id) {
     $payload = new Payload();
     if (false == is_numeric($id)) {
         return Flight::render("partials/message", [
@@ -125,7 +119,7 @@ Flight::route("GET /prompt-to-delete-record/(@id)", function($id) {
 
 });
 
-Flight::route("/test" , function () {
+Flight::route("/test", function () {
     $payload = new Payload();
     $payload->setStatus(PayloadStatus::ACCEPTED);
 

@@ -1,10 +1,11 @@
 <?
 use Aura\Payload_Interface\PayloadStatus;
+use Tracy\Debugger;
 ?>
 <!-- mode: web -->
 <!doctype html>
 <html lang="en">
-    <?php Tracy\Debugger::renderLoader() ?>
+    <?php Debugger::renderLoader() ?>
     <head>
         <meta charset="UTF-8"/>
         <title>Worth the Weight!</title>

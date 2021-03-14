@@ -45,6 +45,7 @@ Just a website for *local* personal use.
 - [x] when adding food, it should update journal properly
 - [ ] basic graph to see progress
 - [ ] fix stats calculations
+- [ ] make sure carbon is using localtime
 
 
 # spring 4 (reach)
@@ -54,7 +55,7 @@ Just a website for *local* personal use.
 
 
 # security sprint
-- [ ] use UUIDs instead of ids
+- [ ] use UUIDs instead of ids (?)
 - [ ] doorway to manage walks
 
 # OWASP Zap (passive scan)
