@@ -102,7 +102,7 @@ Flight::route('*', function ($route) {
 }, true);
 
 
-Flight::route('GET /', function () {
+Flight::route('GET /(home|index)', function () {
 
     $foods = Flight::food()::all();
 
