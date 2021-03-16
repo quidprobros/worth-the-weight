@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Aura\Payload\Payload;
 use Aura\Payload_Interface\PayloadStatus;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Spatie\UrlSigner\MD5UrlSigner;
 
 require_once __DIR__ . "/vendor/autoload.php";
 
@@ -27,6 +28,8 @@ if (true != DEBUG) {
     Debugger::$showBar = false;
 }
 
+
+
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.extension', ".phtml");
 
@@ -37,6 +40,12 @@ Flight::map('now', function ($format = 'Y-m-d') {
     $dt->setTimestamp($timestamp); //adjust the object to correct timestamp
     return $dt->format($format);
 });
+
+Flight::register(
+    'url',
+    'App\SignUrl',
+    [(new MD5UrlSigner(App\URL_SIG_KEY))],
+);
 
 $capsule = new Capsule();
 
@@ -78,9 +87,20 @@ Flight::register(
     'App\Models\Food'
 );
 
-Flight::route('GET|POST *', function () {
+Flight::map("verifySignature", function () {
+    if (
+        empty(Flight::request()->query->signature) || 
+        true != Flight::url()->validate(Flight::request()->url)
+    ) {
+        return false;
+    }
     return true;
 });
+
+Flight::route('*', function ($route) {
+    return true;
+}, true);
+
 
 Flight::route('GET /', function () {
 
@@ -100,20 +120,27 @@ Flight::route('GET /', function () {
     ]);
 });
 
+
 Flight::route('GET /journal/rel/@offset', function ($offset) {
+    if (!Flight::verifySignature()) {
+        Flight::notFound();
+    }
     $offset = (int) $offset;
     Flight::render("partials/offcanvas-menu", [
         "journal_day_offset" => $offset
     ]);
 });
 
-Flight::route('GET /off-canvas-left/rel/@offset', function($offset) {
+Flight::route('GET /off-canvas-left/rel/@offset', function ($offset) {
     return Flight::render("partials/offcanvas-menu", [
         "journal_day_offset" => $offset
     ]);
 });
 
 Flight::route('GET /big-picture/rel/@offset', function ($offset) {
+    if (!Flight::verifySignature()) {
+        Flight::notFound();
+    }
     $offset = (int) $offset;
     Flight::render("partials/big-picture", [
         "journal_day_offset" => $offset,
@@ -200,6 +227,9 @@ Flight::route('POST /drop-food-log', function () {
 });
 
 Flight::route('POST /exercised/rel/@offset', function ($offset) {
+    if (!Flight::verifySignature()) {
+        Flight::notFound();
+    }
     $offset = (int) $offset;
     $exercised = Flight::request()->data['exercised'];
 
@@ -354,6 +384,7 @@ Flight::route("GET /bootstrap", function () {
 
 
 Flight::map('notFound', function () {
+    Debugger::log("Not found called. Possible fuzzer");
     echo "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
     exit;
 });
@@ -362,30 +393,5 @@ Flight::map('error', function ($ex) {
     Debugger::log($ex);
     Debugger::dump($ex);
 });
-
-
-/* Flight::before('start', function (&$params) {
- *     $query_data = Flight::request()->query->getData();
- * 
- *     $sanitized_query_data = [];
- * 
- *     foreach ($query_data as $k => $v) {
- *         switch ($k) {
- *             case "day_offset":
- *                 $sanitized_query_data[$k] = (int) $v;
- *             case "journal_day_offset":
- *                 $sanitized_query_data[$k] = (int) $v;
- *             case "searchvalue":
- *                 ;
- *             default:
- *                 // Debugger::log([
- *                 //     "d" => $query_data,
- *                 //     "c" => $sanitized_query_data,
- *                 //     "p" => $params
- *                 // ]);
- *         }
- *     }
- * }); */
-
 
 Flight::start();

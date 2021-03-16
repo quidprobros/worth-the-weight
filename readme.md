@@ -46,6 +46,7 @@ Just a website for *local* personal use.
 - [ ] basic graph to see progress
 - [ ] fix stats calculations
 - [ ] make sure carbon is using localtime
+- [ ] https://laravel.com/docs/8.x/urls#signed-urls
 
 
 # spring 4 (reach)

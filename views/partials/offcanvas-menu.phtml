@@ -25,12 +25,15 @@ if (empty($journal_day_offset)) {
 
 $stats = Flight::stats();
 
-$records = \Flight::journalItem()->whereDate("date", "=", $journal_date)->get();
+$records = Flight::journalItem()->whereDate("date", "=", $journal_date)->get();
 
 $today_points = $stats->points($journal_day_offset);
 
 $exercised = $stats->exercised($journal_day_offset);
 
+
+$prev = $journal_day_offset - 1;
+$next = $journal_day_offset + 1;
 ?>
 
 <!-- Your menu or Off-canvas content goes here -->
@@ -39,15 +42,15 @@ $exercised = $stats->exercised($journal_day_offset);
         <div class="button-group align-spaced align-middle">
             <a class="button" title="see entry for yesterday"
                hx-indicator="#indicator"
-               hx-get="/journal/rel/<?=($journal_day_offset - 1)?>"
+               hx-get='<?=Flight::url()->sign("/journal/rel/{$prev}")?>'
                hx-swap="outerHTML"
                hx-target='#this-container'>⬅</a>
-            <a hx-get="/journal/rel/0"
+            <a hx-get='<?=Flight::url()->sign("/journal/rel/0")?>'
                hx-swap="outerHTML"
                hx-trigger="click"
                hx-target='#this-container'><h1 style='margin:0'><?=$journal_view_date?></h1></a>
             <a class='button' title="see entry for tomorrow"
-               hx-get="/journal/rel/<?=($journal_day_offset + 1)?>"
+               hx-get='<?=Flight::url()->sign("/journal/rel/{$next}")?>'
                hx-swap="outerHTML"
                hx-target='#this-container'>⮕</a>
         </div>

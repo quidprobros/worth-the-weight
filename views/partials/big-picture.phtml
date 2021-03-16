@@ -33,24 +33,25 @@ if (empty($daily_model)) {
 }
 
 $exercised = $daily_model->exercised;
-
+$prev = $journal_day_offset - 1;
+$next = $journal_day_offset + 1;
 ?>
 <div id="big-picture" class="card custom-shadow">
     <div class="card-divider button-group align-justify">
         <a class="button" title="see total for previous day"
            hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
-           hx-get="/big-picture/rel/<?=($journal_day_offset - 1)?>"
+           hx-get='<?=Flight::url()->sign("/big-picture/rel/{$prev}")?>'
            hx-swap="outerHTML swap:200ms"
            hx-target='#big-picture'>⬅</a>
         <h4><a title="see total for today"
                hx-trigger="click, path-deps, keyup[shiftKey&&key=='S'] from:body"
                path-deps="/journal-entry"
-               hx-get="/big-picture/rel/0"
+               hx-get="<?=Flight::url()->sign("/big-picture/rel/0")?>"
                hx-swap="outerHTML swap:200ms"
                hx-target='#big-picture'><?=$title?></a></h4>
         <a class="button" title="see total for next day"
            hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
-           hx-get="/big-picture/rel/<?=($journal_day_offset + 1)?>"
+           hx-get="<?=Flight::url()->sign("/big-picture/rel/{$next}")?>"
            hx-swap="outerHTML swap:200ms"
            hx-target='#big-picture'>⮕</a>
     </div>
@@ -64,7 +65,7 @@ $exercised = $daily_model->exercised;
             <fieldset class="cell small-12 fieldset">
                 <input name="exercised"
                        type="checkbox"
-                       hx-post="/exercised/rel/<?=$journal_day_offset?>"
+                       hx-post='<?=Flight::url()->sign("/exercised/rel/{$journal_day_offset}")?>'
                        hx-target="#exercised-statement"
                        <?=(1 == $exercised) ? "checked":""?>
                 />
