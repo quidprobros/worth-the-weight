@@ -29,8 +29,16 @@ $records = Flight::journalItem()->whereDate("date", "=", $journal_date)->get();
 
 $today_points = $stats->points($journal_day_offset);
 
-$exercised = $stats->exercised($journal_day_offset);
 
+$daily_model = \App\Models\Daily::firstWhere("date", $journal_date);
+if (empty($daily_model)) {
+    $daily_model = \App\Models\Daily::create([
+        "date" => $journal_date,
+        "exercised" => 0
+    ]);
+}
+
+$exercised = $daily_model->exercised;
 
 $prev = $journal_day_offset - 1;
 $next = $journal_day_offset + 1;

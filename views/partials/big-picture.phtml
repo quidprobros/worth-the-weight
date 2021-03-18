@@ -22,7 +22,9 @@ switch(strtotime($journal_date)) {
         break;
 };
 
-$today_points = \Flight::journalItem()->getSum($journal_date);
+$stats = Flight::stats();
+
+$today_points = $stats->getPointsByDate($journal_date);
 
 $daily_model = \App\Models\Daily::firstWhere("date", $journal_date);
 if (empty($daily_model)) {
@@ -57,7 +59,7 @@ $next = $journal_day_offset + 1;
     </div>
     <div class="card-section">
         <div class="callout secondary text-center">
-            <div id="today-total" style="font-size:5rem"><?=number_format($today_points,2)?> points</div>
+            <div id="today-total" style="font-size:5rem"><?=number_format($today_points, 2)?> points</div>
         </div>
     </div>
     <div class="card-section">
@@ -79,10 +81,10 @@ $next = $journal_day_offset + 1;
         <div class="cell auto">
             <div id="statistics" class="callout">
                 <p>
-                    You are averaging <strong><?=number_format(Flight::stats()->avgDaily(), 2)?></strong> points per logged-day.
+                    You are averaging <strong><?=number_format($stats->avgDaily(), 2)?></strong> points per logged-day.
                 </p>
                 <p>
-                    Trailing 7-day average: <strong><?=number_format(Flight::stats()->avgDailyTrailing7(), 2)?></strong> points per logged-day
+                    Trailing 7-day average: <strong><?=number_format($stats->avgDailyTrailing7(), 2)?></strong> points per logged-day
                 </p>
             </div>
         </div>

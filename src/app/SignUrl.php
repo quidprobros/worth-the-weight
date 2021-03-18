@@ -14,7 +14,7 @@ class SignUrl
     public function __construct(MD5UrlSigner $signer)
     {
         $this->signer = $signer;
-        $this->validTime = (new \DateTime("2021-03-16 04:45:50.784429 UTC"))->modify('-30 seconds');
+        $this->validTime = (new DateTime())->modify('30 minutes');
     }
 
     public function setDays(int $days): SignUrl

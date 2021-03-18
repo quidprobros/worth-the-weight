@@ -2,43 +2,65 @@
 
 namespace App;
 
+use Illuminate\Database\Capsule\Manager as DB;
+use Carbon\Carbon;
+
 class Stats
 {
     public function avgDaily()
     {
-        return \Flight::db()
-                      ->query("SELECT sum(`points`)/count(`date`) from `points_records` where `points` > 0 ")
-                      ->fetchColumn();
+        $aggregateDays = \Flight::journalItem()
+                       ->select("date", DB::raw('sum(points) points'), DB::raw('count(date) quantity'))
+                       ->where("points", ">", 0)
+                       ->groupBy(DB::raw('date(date)'))
+                       ->get()
+                       ;
+
+        $sum = 0;
+        $days = $aggregateDays->count();
+
+        foreach ($aggregateDays as $model) {
+            $sum += $model->points;
+        }
+
+        if (0 == $days) {
+            return 0;
+        }
+
+        return $sum / $days;
     }
 
     public function avgDailyTrailing7()
     {
-        return \Flight::db()
-            ->query("SELECT sum(`points`)/count(`date`) from `points_records` where `points` > 0 and `date` >= date('now', 'localtime', '-7 days')")
-            ->fetchColumn();
+        $aggregateDays = \Flight::journalItem()
+                       ->select("date", DB::raw('sum(points) points'), DB::raw('count(date) quantity'))
+                       ->where("points", ">", 0)
+                       ->whereDate("date", ">=", Carbon::now()->subDays(7))
+                       ->groupBy(DB::raw('date(date)'))
+                       ->get()
+                       ;
+
+        $sum = 0;
+        $days = $aggregateDays->count();
+
+        foreach ($aggregateDays as $model) {
+            $sum += $model->points;
+        }
+
+        if (0 == $days) {
+            return 0;
+        }
+
+        return $sum / $days;
     }
 
-    public function journalEntries(int $index)
+    public function points(int $index): int
     {
-        return \Flight::db()
-                 ->query("SELECT `id`, * FROM `points_records` WHERE DATE(`date`) = DATE('now', 'localtime', '{$index} days') ORDER BY date DESC")
-                 ->fetchAll()
-                 ;
+        return (int) \Flight::journalItem()->whereDate("date", "=", Carbon::now()->addDays($index))->sum('points');
     }
 
-    public function exercised(int $index)
+    public function getPointsByDate(string $journalDate)
     {
-        return (int) \Flight::db()
-            ->query("SELECT `exercised` from `day_records` WHERE DATE(`date`) = DATE('NOW', 'localtime', '{$index} days')")
-            ->fetch()
-            ;
-    }
-
-    public function points(int $index)
-    {
-        return (int) \Flight::db()
-            ->query("SELECT sum(points) as today_points, date(date) as th, date('now', 'localtime', '{$index} days') as tt from points_records where th = tt")
-            ->fetch()["today_points"]
-            ;
+        return \Flight::journalItem()->getSum($journalDate);
     }
 }

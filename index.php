@@ -58,16 +58,6 @@ $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 Flight::register(
-    'db',
-    'PDO',
-    array('sqlite:db/wtw.db', '', ''),
-    function ($db) {
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    }
-);
-
-Flight::register(
     'stats',
     'App\Stats'
 );
@@ -111,6 +101,11 @@ Flight::route('GET /(home|index)', function () {
     $checkbox_date = date("Y-m-d");
 
     $daily_model = \App\Models\Daily::firstWhere("date", $checkbox_date);
+    if (null == $daily_model) {
+        $daily_model = \App\Models\Daily::create([
+            "date" =>  $checkbox_date
+        ]);
+    }
 
     Flight::render('index', [
         "foods" => $foods,
@@ -148,35 +143,7 @@ Flight::route('GET /big-picture/rel/@offset', function ($offset) {
 });
 
 Flight::route('POST /search', function () {
-
-    $searchTerm = "%" . Flight::request()->data["searchvalue"] . "%";
-
-    $statement = <<<SQL
-SELECT id,food from food_records where food LIKE :searchTerm LIMIT 1000
-SQL;
-
-    try {
-        $stmt = Flight::db()->prepare($statement);
-
-        $stmt->bindValue(":searchTerm", $searchTerm, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        return Flight::json([
-            "error" => 0,
-            "response" => [
-                "data" => $results
-            ]
-        ]);
-    } catch (\Exception $e) {
-        return Flight::json([
-            "error" => 1,
-            "response" => [
-                "message" => $e->getMessage(),
-            ]
-        ]);
-    }
+    
 });
 
 
@@ -391,7 +358,6 @@ Flight::map('notFound', function () {
 
 Flight::map('error', function ($ex) {
     Debugger::log($ex);
-    Debugger::dump($ex);
 });
 
 Flight::start();
