@@ -2,7 +2,7 @@
 use Carbon\Carbon;
 
 if (empty($journal_day_offset)) {
-    $journal_view_date = Carbon::now->format("D M j, Y");
+    $journal_view_date = Carbon::now()->format("D M j, Y");
     $journal_date = Carbon::now()->format("Y-m-d");
     $colloqial_date = "&nbsp";
 } else {

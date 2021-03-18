@@ -45,8 +45,8 @@ Just a website for *local* personal use.
 - [x] when adding food, it should update journal properly
 - [ ] basic graph to see progress
 - [x] fix stats calculations
-- [ ] make sure carbon is using localtime
-- [ ] https://laravel.com/docs/8.x/urls#signed-urls
+- [x] make sure carbon is using localtime
+- [x] signed urls to prevent arbitrary access to resources
 
 
 # spring 4 (reach)

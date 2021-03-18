@@ -2,8 +2,8 @@
 use Carbon\Carbon;
 
 if (empty($journal_day_offset)) {
-    $journal_view_date = Carbon::now->format("D M j, Y");
-    $journal_date = Carbon::now->format("Y-m-d");
+    $journal_view_date = Carbon::now()->format("D M j, Y");
+    $journal_date = Carbon::now()->format("Y-m-d");
     $colloqial_date = "&nbsp";
 } else {
     $journal_view_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("D M j, Y");
