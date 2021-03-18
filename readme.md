@@ -39,12 +39,12 @@ Just a website for *local* personal use.
 - [x] rework submit food log
 - [x] remove cell editing
 - [x] deleting from journal should update 'big picture'
-- [ ] use Eloqent models instead of PDO style
+- [x] use Eloqent models instead of PDO style
 - [x] update code to use more fully html application state management
 - [x] fix rounding error in big-picture display
 - [x] when adding food, it should update journal properly
 - [ ] basic graph to see progress
-- [ ] fix stats calculations
+- [x] fix stats calculations
 - [ ] make sure carbon is using localtime
 - [ ] https://laravel.com/docs/8.x/urls#signed-urls
 

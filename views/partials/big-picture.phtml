@@ -2,8 +2,8 @@
 use Carbon\Carbon;
 
 if (empty($journal_day_offset)) {
-    $journal_view_date = Flight::now("D M j, Y");
-    $journal_date = date("Y-m-d");
+    $journal_view_date = Carbon::now->format("D M j, Y");
+    $journal_date = Carbon::now()->format("Y-m-d");
     $colloqial_date = "&nbsp";
 } else {
     $journal_view_date = Carbon::now()->addDays($journal_day_offset)->format("D M j, Y");

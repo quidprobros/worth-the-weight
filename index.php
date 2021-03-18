@@ -28,18 +28,8 @@ if (true != DEBUG) {
     Debugger::$showBar = false;
 }
 
-
-
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.extension', ".phtml");
-
-Flight::map('now', function ($format = 'Y-m-d') {
-    $tz = 'America/New_York';
-    $timestamp = time();
-    $dt = new DateTime("now", new \DateTimeZone($tz));
-    $dt->setTimestamp($timestamp); //adjust the object to correct timestamp
-    return $dt->format($format);
-});
 
 Flight::register(
     'url',
