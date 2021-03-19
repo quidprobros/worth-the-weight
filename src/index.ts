@@ -33,7 +33,10 @@ import SlimSelect from 'slim-select'
 import notify from "notifyjs-browser"
 notify(window, $)
 
-import 'foundation-sites'
+import { Foundation } from 'foundation-sites/js/foundation.core'
+Foundation.addToJquery($);
+import {OffCanvas} from 'foundation-sites/js/foundation.offcanvas'
+
 
 async function delay(duration = 0) {
     await new Promise(r => setTimeout(r, duration));
@@ -78,5 +81,6 @@ $(() => {
 
     $("#journal-table").DataTable(dtSettings) as DataTables.Api
 
-    $(document).foundation();
+    new OffCanvas($("#offCanvas"));
+    new OffCanvas($("#offCanvas2"));
 });

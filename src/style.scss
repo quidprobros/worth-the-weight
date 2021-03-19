@@ -17,7 +17,11 @@ $offcanvas-sizes: (
 
 @import "./htmx.scss";
 
-@include foundation-everything;
+//@include foundation-everything;
+// Global styles
+@include foundation-global-styles;
+@include foundation-forms;
+@include foundation-typography;
 
 @include foundation-xy-grid-classes(
     /* options
@@ -31,6 +35,27 @@ $offcanvas-sizes: (
   $frame-grid: true
    */
 );
+
+// Menu-based containers
+@include foundation-menu;
+@include foundation-menu-icon;
+
+// Generic components
+@include foundation-button;
+@include foundation-button-group;
+@include foundation-table;
+
+// Basic components
+@include foundation-callout;
+@include foundation-card;
+
+// Layout components
+@include foundation-off-canvas;
+@include foundation-title-bar;
+@include foundation-top-bar;
+
+// Helpers
+@include foundation-flex-classes;
 
 .button {
     font-weight: bold;
