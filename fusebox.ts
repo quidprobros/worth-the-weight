@@ -47,7 +47,6 @@ class Context {
     }
 }
 
-
 const {
     rm,
     src,
@@ -73,7 +72,7 @@ task("build", async (ctx: Context) => {
     rm("./wwwroot/dist")
 
     await ctx.getConfig().runProd({
-        
+
         bundles: {
             distRoot: 'wwwroot/dist',
         },
@@ -82,7 +81,6 @@ task("build", async (ctx: Context) => {
         src("./wwwroot/dist/resources.phtml")
             .dest("views/generated", "dist")
             .exec()
-
     })
 })
 
