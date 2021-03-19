@@ -1,14 +1,13 @@
 
-// <settings>
-$offcanvas-background: "black";
-$offcanvas-shadow: 0 0 10px rgba(green, 0.7);
+// <foundation_settings>
+$offcanvas-background: white;
 
 $offcanvas-sizes: (
     small: 100vw,
     medium: 50vw,
 );
 
-// </settings>
+// </foundation_settings>
 
 
 @import "@/foundation-sites/scss/foundation";

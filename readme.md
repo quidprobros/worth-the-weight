@@ -47,8 +47,8 @@ Just a website for *local* personal use.
 - [x] make sure carbon is using localtime
 - [x] signed urls to prevent arbitrary access to resources
 - [ ] basic graph to see progress
-- [ ] webroot is wrong!
-- [ ] optimize resource loading (js/css)
+- [x] webroot is wrong!
+- [x] optimize resource loading (js/css)
 
 # spring 4 (reach)
 - [ ] store and track goals
