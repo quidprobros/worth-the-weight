@@ -28,7 +28,10 @@ class Context {
                 level: 'verbose',
             },
             target: 'browser',
-            webIndex: false,
+            webIndex: { template: 'src/resources.html',
+                        distFileName: 'resources.phtml',
+                        publicPath: "/dist"
+                      },
             devServer: false,
             cache: false,
             hmr: true,
@@ -38,7 +41,7 @@ class Context {
                     tsConfig: './tsconfig.json',
                 }),
                 pluginSass(),
-                //pluginCSS(),
+//                pluginCSS(),
             ],
         })
     }
@@ -47,41 +50,40 @@ class Context {
 
 const {
     rm,
+    src,
     task,
 } = sparky<Context>(Context)
 
 task("default", async (ctx: Context) => {
-    await ctx.getConfig().runDev({
+    rm("./dist")
 
+    await ctx.getConfig().runDev({
+        // bundles: {
+        //     exported: true,
+        // },
+        // manifest: false,
     })
         .then(function() {
-
+            src("./dist/resources.phtml")
+                .dest("./views/generated", "dist")
+                .exec()
         })
-    // await fuse.runDev({
-    //     bundles: {
-    //         distRoot: "./dist/js",
-    //         app: 'index.js',
-    //     },
-    // })
 })
 
 task("build", async (ctx: Context) => {
     rm("./dist")
 
-    // ctx.extendConfig({
-    //     webIndex: false,
-    //     devServer: false,
-    // })
-
     await ctx.getConfig().runProd({
-        manifest: false,
-        bundles: {
-            app: 'index.js',
-        },
+        // bundles: {
+        //     exported: true,
+        // },
+        // manifest: false,
+    }).then(() => {
+        src("./dist/resources.phtml")
+            .dest("views/generated", "dist")
+            .exec()
+
     })
-        .then(function() {
-            console.log("Done building ESM module")
-        })
 })
 
 task("watch", () => {
@@ -90,4 +92,4 @@ task("watch", () => {
 
     typeChecker.worker_watch('./');
 })
- 
+

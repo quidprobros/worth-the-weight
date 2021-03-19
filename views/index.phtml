@@ -10,9 +10,7 @@ use Tracy\Debugger;
     <head>
         <meta charset="UTF-8"/>
         <title>Worth the Weight!</title>
-
-        <script type="text/javascript" src="/dist/app.js"></script>
-        <script type="text/javascript" src="/dist/vendor.js"></script>
+        <?=Flight::render("generated/resources", [])?>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
     <body hx-ext="path-deps">
@@ -42,7 +40,6 @@ use Tracy\Debugger;
             <div class="title-bar-right">
                 <span class="title-bar-title">View graphs</span>
                 <button class="menu-icon" type="button" data-toggle="offCanvas2"></button>
-
             </div>
         </div>
         
@@ -75,7 +72,7 @@ use Tracy\Debugger;
                                     </div>
                                     <div class="form-group">
                                         <label><strong>Select food:</strong></label>
-                                        <select name='food-selection' class='form-control' required>
+                                        <select id="food-selection" name='food-selection' class='form-control' required>
                                             <option value="" selected>Select food ...</option>
                                             <? foreach ($foods as $food) { ?>
                                                 <option value="<?=$food['id']?>"><?=$food['food']?> (<?=$food['points']?> points)</option>
@@ -112,17 +109,6 @@ use Tracy\Debugger;
         
         <script>
 
-         $(document).on("keydown", "table td[contenteditable]", function(e) {
-             const $target  = $(e.currentTarget)
-             if (13 == e.which) {
-                 e.preventDefault();
-             }
-             if (27 == e.which) {
-                 document.execCommand('undo');
-                 e.preventDefault();
-             }
-         });
-
          $(document).on("keyup", "[name='searchbox']", debounce(function(e) {
 
              const $searchbox = $(e.currentTarget);
@@ -155,9 +141,10 @@ use Tracy\Debugger;
          }, 700, false));
 
          htmx.onLoad(function(elt){
+             console.log(elt)
              const $elt = $(elt);
              let status = $elt.data('notify-status')
-
+             console.log(status)
              switch (status) {
                  case '<?=PayloadStatus::SUCCESS?>':
                      status = 'success';
@@ -171,7 +158,9 @@ use Tracy\Debugger;
              }
 
              const msg = $elt.data('notify-message');
+             console.log(msg)
              if (null != msg && null != status) {
+                 console.log('wtf')
                  $.notify(msg, status);
              }
          });
@@ -180,7 +169,6 @@ use Tracy\Debugger;
              const $form = $(e.currentTarget).parents("form");
              $form[0].reset();
              $('select', $form).val('').trigger('change');
-
          });
 
         </script>

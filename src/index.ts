@@ -4,15 +4,15 @@ declare global {
         debounce: (func: Function, wait: number, immediate: boolean) => void
         delayedReload: (ms: number) => void
 
-        $: any
+        $: JQueryStatic
     }
 }
-
 
 import "./style.scss"
 
 import $ from "jquery"
 window.$ = $
+export {$}
 
 import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
@@ -22,20 +22,16 @@ dt($)
 
 import dlv from "@paxperscientiam/dlv.ts"
 window.dlv = dlv
-
-
-// //window.htmx.config.historyEnabled = false
+export {dlv}
 
 
 import Inputmask from "inputmask"
-window.Inputmask = Inputmask
+export {Inputmask}
 
-
-import * as select2 from "select2"
-$.fn.select2 = select2
+import SlimSelect from 'slim-select'
 
 import notify from "notifyjs-browser"
-$.notify = notify
+notify(window, $)
 
 import 'foundation-sites'
 
@@ -68,7 +64,9 @@ window.delayedReload = delayedReload
 
 
 $(() => {
-    $("select").select2();
+    new SlimSelect({
+        select: '#food-selection'
+    })
 
     Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);
 

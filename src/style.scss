@@ -13,7 +13,7 @@ $offcanvas-sizes: (
 
 @import "@/foundation-sites/scss/foundation";
 
-@import "@/select2/dist/css/select2.min.css";
+@import "@/slim-select/src/slim-select/slimselect";
 
 @import "./htmx.scss";
 

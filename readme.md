@@ -43,11 +43,12 @@ Just a website for *local* personal use.
 - [x] update code to use more fully html application state management
 - [x] fix rounding error in big-picture display
 - [x] when adding food, it should update journal properly
-- [ ] basic graph to see progress
 - [x] fix stats calculations
 - [x] make sure carbon is using localtime
 - [x] signed urls to prevent arbitrary access to resources
-
+- [ ] basic graph to see progress
+- [ ] webroot is wrong!
+- [ ] optimize resource loading (js/css)
 
 # spring 4 (reach)
 - [ ] store and track goals
