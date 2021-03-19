@@ -7,28 +7,30 @@ use Aura\Payload_Interface\PayloadStatus;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Spatie\UrlSigner\MD5UrlSigner;
 
-require_once __DIR__ . "/vendor/autoload.php";
+
+const WEB_ROOT = __DIR__;
+const FILE_ROOT = __DIR__ . "/..";
+const DEBUG = true;
+
+require_once FILE_ROOT . "/vendor/autoload.php";
 
 App\Config::init();
 
-const WEB_ROOT = __DIR__;
-
-if (!file_exists(WEB_ROOT.'/tracy')) {
-    mkdir(WEB_ROOT . '/tracy', 0755, true);
+if (!file_exists(FILE_ROOT . '/tracy')) {
+    mkdir(FILE_ROOT . '/tracy', 0755, true);
 }
 
 session_start();
 Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
-Debugger::enable(Debugger::DETECT, __DIR__ . '/tracy/');
-
-define("DEBUG", true);
+Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
 
 if (true != DEBUG) {
     Debugger::$showBar = false;
 }
 
 Flight::set('flight.log_errors', true);
+Flight::set('flight.views.path', '../views');
 Flight::set('flight.views.extension', ".phtml");
 
 Flight::register(
