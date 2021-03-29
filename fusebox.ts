@@ -54,31 +54,31 @@ const {
 } = sparky<Context>(Context)
 
 task("default", async (ctx: Context) => {
-    rm("./wwwroot/dist")
+    rm("./public/dist")
 
     await ctx.getConfig().runDev({
         bundles: {
-            distRoot: 'wwwroot/dist',
+            distRoot: 'public/dist',
         },
     })
         .then(function() {
-            src("./wwwroot/dist/resources.phtml")
+            src("./public/dist/resources.phtml")
                 .dest("./views/generated", "dist")
                 .exec()
         })
 })
 
 task("build", async (ctx: Context) => {
-    rm("./wwwroot/dist")
+    rm("./public/dist")
 
     await ctx.getConfig().runProd({
 
         bundles: {
-            distRoot: 'wwwroot/dist',
+            distRoot: 'public/dist',
         },
         manifest: false,
     }).then(() => {
-        src("./wwwroot/dist/resources.phtml")
+        src("./public/dist/resources.phtml")
             .dest("views/generated", "dist")
             .exec()
     })
