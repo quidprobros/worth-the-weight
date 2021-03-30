@@ -16,6 +16,9 @@ $offcanvas-sizes: (
 
 @import "./htmx.scss";
 
+@import "@/css.gg/icons/scss/arrow-left-r";
+@import "@/css.gg/icons/scss/arrow-right-r";
+
 //@include foundation-everything;
 // Global styles
 @include foundation-global-styles;
@@ -89,3 +92,7 @@ tr.htmx-swapping td {
     border: grey 1px solid;
     height: auto;
 }
+
+//@import url('https://css.gg/arrow-left-r.css');
+
+

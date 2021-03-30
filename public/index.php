@@ -7,7 +7,6 @@ use Aura\Payload_Interface\PayloadStatus;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Spatie\UrlSigner\MD5UrlSigner;
 
-
 const WEB_ROOT = __DIR__;
 const FILE_ROOT = __DIR__ . "/..";
 const DEBUG = true;
@@ -71,7 +70,7 @@ Flight::register(
 
 Flight::map("verifySignature", function () {
     if (
-        empty(Flight::request()->query->signature) || 
+        empty(Flight::request()->query->signature) ||
         true != Flight::url()->validate(Flight::request()->url)
     ) {
         return false;
@@ -134,13 +133,8 @@ Flight::route('GET /big-picture/rel/@offset', function ($offset) {
     ]);
 });
 
-Flight::route('POST /search', function () {
-    
-});
-
-
 Flight::route('GET /example', function () {
-    echo '<div>SHIT</div>';
+    echo '<div>example</div>';
 });
 
 Flight::route('DELETE /journal-entry/@id', function ($id) {
@@ -239,7 +233,7 @@ Flight::route('POST /journal-entry', function () {
     if (false == is_numeric($formData['amount'])) {
         $payload->setStatus(PayloadStatus::FAILURE);
         $payload->setMessages([
-            "Amount must be numeric, but you entered '" . $formData['amount']."'",
+            "Amount must be numeric, but you entered '" . $formData['amount'] . "'",
         ]);
 
         return Flight::render("partials/big-picture", [
@@ -340,7 +334,6 @@ Flight::route('POST /journal-entry', function () {
 Flight::route("GET /bootstrap", function () {
     Flight::render("bootstrap", []);
 });
-
 
 Flight::map('notFound', function () {
     Debugger::log("Not found called. Possible fuzzer");

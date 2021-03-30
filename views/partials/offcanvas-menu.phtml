@@ -52,7 +52,7 @@ $next = $journal_day_offset + 1;
                hx-indicator="#indicator"
                hx-get='<?=Flight::url()->sign("/journal/rel/{$prev}")?>'
                hx-swap="outerHTML"
-               hx-target='#this-container'>⬅</a>
+               hx-target='#this-container'><i class="gg-arrow-left-r"></i></a>
             <a hx-get='<?=Flight::url()->sign("/journal/rel/0")?>'
                hx-swap="outerHTML"
                hx-trigger="click"
@@ -60,7 +60,7 @@ $next = $journal_day_offset + 1;
             <a class='button' title="see entry for tomorrow"
                hx-get='<?=Flight::url()->sign("/journal/rel/{$next}")?>'
                hx-swap="outerHTML"
-               hx-target='#this-container'>⮕</a>
+               hx-target='#this-container'><i class="gg-arrow-right-r"></i></a>
         </div>
         <? if (0 == $journal_day_offset) { ?>
             <p class="text-center"><small>today</small></p>

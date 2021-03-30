@@ -44,7 +44,7 @@ $next = $journal_day_offset + 1;
            hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
            hx-get='<?=Flight::url()->sign("/big-picture/rel/{$prev}")?>'
            hx-swap="outerHTML swap:200ms"
-           hx-target='#big-picture'>⬅</a>
+           hx-target='#big-picture'><i class="gg-arrow-left-r"></i></a>
         <h4><a title="see total for today"
                hx-trigger="click, path-deps, keyup[shiftKey&&key=='S'] from:body"
                path-deps="/journal-entry"
@@ -55,7 +55,7 @@ $next = $journal_day_offset + 1;
            hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
            hx-get="<?=Flight::url()->sign("/big-picture/rel/{$next}")?>"
            hx-swap="outerHTML swap:200ms"
-           hx-target='#big-picture'>⮕</a>
+           hx-target='#big-picture'><i class="gg-arrow-right-r"></i></a>
     </div>
     <div class="card-section">
         <div class="callout secondary text-center">
