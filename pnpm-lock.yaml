@@ -1,5 +1,6 @@
 dependencies:
   '@paxperscientiam/dlv.ts': 1.2.5
+  chart.js: 2.9.4
   css.gg: 2.0.0
   datatables.net: 1.10.24
   foundation-sites: 6.6.3_jquery@3.6.0
@@ -7,6 +8,7 @@ dependencies:
   inputmask: 5.0.5
   jquery: 3.6.0
   notifyjs-browser: 0.4.2_jquery@3.6.0
+  simple-jscalendar: github.com/paxperscientiam/jsCalendar/6eb0d605ff2472bdeda6d933f094b1a5b71e4f58
   slim-select: 1.27.0
 devDependencies:
   '@types/datatables.net': 1.10.19
@@ -719,6 +721,26 @@ packages:
       node: '>=10'
     resolution:
       integrity: sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==
+  /chart.js/2.9.4:
+    dependencies:
+      chartjs-color: 2.4.1
+      moment: 2.29.1
+    dev: false
+    resolution:
+      integrity: sha512-B07aAzxcrikjAPyV+01j7BmOpxtQETxTSlQ26BEYJ+3iUkbNKaOJ/nDbT6JjyqYxseM0ON12COHYdU2cTIjC7A==
+  /chartjs-color-string/0.6.0:
+    dependencies:
+      color-name: 1.1.4
+    dev: false
+    resolution:
+      integrity: sha512-TIB5OKn1hPJvO7JcteW4WY/63v6KwEdt6udfnDE9iCAZgy+V4SrbSxoIbTw/xkUIapjEI4ExGtD0+6D3KyFd7A==
+  /chartjs-color/2.4.1:
+    dependencies:
+      chartjs-color-string: 0.6.0
+      color-convert: 1.9.3
+    dev: false
+    resolution:
+      integrity: sha512-haqOg1+Yebys/Ts/9bLo/BqUcONQOdr/hoEr2LLTRl6C5LXctUdHxsCYfvQVg5JIxITrfCNUDr4ntqmQk9+/0w==
   /chokidar/3.4.3:
     dependencies:
       anymatch: 3.1.1
@@ -829,7 +851,6 @@ packages:
     resolution:
       integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=
   /color-name/1.1.4:
-    dev: true
     resolution:
       integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
   /colorette/1.2.2:
@@ -2777,6 +2798,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
+  /moment/2.29.1:
+    dev: false
+    resolution:
+      integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
   /ms/2.0.0:
     dev: true
     resolution:
@@ -4458,6 +4483,12 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
+  github.com/paxperscientiam/jsCalendar/6eb0d605ff2472bdeda6d933f094b1a5b71e4f58:
+    dev: false
+    name: simple-jscalendar
+    resolution:
+      tarball: https://codeload.github.com/paxperscientiam/jsCalendar/tar.gz/6eb0d605ff2472bdeda6d933f094b1a5b71e4f58
+    version: 1.4.4
 specifiers:
   '@paxperscientiam/dlv.ts': ^1.2.5
   '@types/datatables.net': ^1.10.19
@@ -4467,6 +4498,7 @@ specifiers:
   '@types/notifyjs-browser': ^0.0.0
   '@typescript-eslint/eslint-plugin': ^4.20.0
   '@typescript-eslint/parser': ^4.20.0
+  chart.js: ^2.9.4
   css.gg: ^2.0.0
   datatables.net: ^1.10.24
   eslint: ^7.23.0
@@ -4479,6 +4511,7 @@ specifiers:
   jquery: ^3.6.0
   node-sass: ^5.0.0
   notifyjs-browser: ^0.4.2
+  simple-jscalendar: github:paxperscientiam/jsCalendar
   slim-select: ^1.27.0
   ts-node: ^9.1.1
   typescript: ^4.2.3

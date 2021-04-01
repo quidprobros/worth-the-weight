@@ -141,10 +141,8 @@ use Tracy\Debugger;
          }, 700, false));
 
          htmx.onLoad(function(elt){
-             console.log(elt)
              const $elt = $(elt);
              let status = $elt.data('notify-status')
-             console.log(status)
              switch (status) {
                  case '<?=PayloadStatus::SUCCESS?>':
                      status = 'success';
@@ -158,9 +156,7 @@ use Tracy\Debugger;
              }
 
              const msg = $elt.data('notify-message');
-             console.log(msg)
              if (null != msg && null != status) {
-                 console.log('wtf')
                  $.notify(msg, status);
              }
          });

@@ -106,6 +106,33 @@ Flight::route('GET /(home|index)', function () {
     ]);
 });
 
+Flight::route('GET /journal/date/@min(/@max)', function ($min, $max) {
+    $dates = [$min, $max];
+    usort($dates, "strcmp");
+
+    list($min, $max) = $dates;
+
+    if (false === strtotime($min)) {
+        return 'error';
+    }
+
+    $query = Flight::journalItem()
+           ->whereDate("date", ">=", $min);
+
+    if (true === strtotime($max)) {
+        $query->whereDate("date", "<=", $max);
+    }
+
+    $records = $query->orderBy('date')
+                     ->get()
+                     ->groupBy(function ($val) {
+                         return Carbon::parse($val->date)->format('Y-m-d');
+                     });
+    // this is now ready to use in a chart or something
+    foreach ($records as $date => $item) {
+        Debugger::log([$date, $item->sum('points')]);
+    }
+});
 
 Flight::route('GET /journal/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {

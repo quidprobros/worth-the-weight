@@ -3,7 +3,7 @@ declare global {
         Inputmask: any
         debounce: (func: Function, wait: number, immediate: boolean) => void
         delayedReload: (ms: number) => void
-
+//        jsCalendar: any
         $: JQueryStatic
     }
 }
@@ -14,8 +14,13 @@ import $ from "jquery"
 window.$ = $
 export {$}
 
+import Chart from 'chart.js'
+
 import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
+
+import {jsCalendar} from 'simple-jscalendar/source/jsCalendar'
+export {jsCalendar}
 
 import dt from "datatables.net"
 dt($)
@@ -65,10 +70,41 @@ function delayedReload(ms: number) {
 }
 window.delayedReload = delayedReload
 
+const datePair = [] as string[]
+const dates = [] as Date[]
+
 
 $(() => {
+
     new SlimSelect({
         select: '#food-selection'
+    })
+
+    const elCalendar = document.getElementById("my-jsCalendar");
+    // @ts-ignore
+    const myCalendar = new jsCalendar(elCalendar);
+
+    myCalendar.onDateClick((event: Event, date: Date) => {
+        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
+        if (true === myCalendar.isSelected(date)) {
+            myCalendar.clearselect()
+            return;
+        }
+        datePair.push(strDate)
+        dates.push(date)
+
+        if (2 < datePair.length) {
+            datePair.shift()
+            datePair.splice(2)
+            //
+            myCalendar.unselect(dates[0])
+            dates.shift()
+            dates.splice(2)
+        }
+        if (0 < datePair.length) {
+            myCalendar.select(dates)
+        }
+        htmx.ajax('GET', `/journal/date/${datePair[0]}/${datePair[1]}`, "#calendar-date-data");
     })
 
     Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);
@@ -80,6 +116,12 @@ $(() => {
     } as DataTables.Settings
 
     $("#journal-table").DataTable(dtSettings) as DataTables.Api
+
+    var myBarChart = new Chart("myChart", {
+        type: 'bar',
+        data: [0,1,3,4]
+    });
+
 
     new OffCanvas($("#offCanvas"));
     new OffCanvas($("#offCanvas2"));

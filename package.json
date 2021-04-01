@@ -16,6 +16,7 @@
     "license": "ISC",
     "dependencies": {
         "@paxperscientiam/dlv.ts": "^1.2.5",
+        "chart.js": "^2.9.4",
         "css.gg": "^2.0.0",
         "datatables.net": "^1.10.24",
         "foundation-sites": "^6.6.3",
@@ -23,6 +24,7 @@
         "inputmask": "^5.0.5",
         "jquery": "^3.6.0",
         "notifyjs-browser": "^0.4.2",
+        "simple-jscalendar": "github:paxperscientiam/jsCalendar",
         "slim-select": "^1.27.0"
     },
     "devDependencies": {

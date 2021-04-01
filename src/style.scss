@@ -19,6 +19,9 @@ $offcanvas-sizes: (
 @import "@/css.gg/icons/scss/arrow-left-r";
 @import "@/css.gg/icons/scss/arrow-right-r";
 
+@import "@/simple-jscalendar/source/jsCalendar.css";
+@import "@/simple-jscalendar/themes/jsCalendar.darkseries.css";
+
 //@include foundation-everything;
 // Global styles
 @include foundation-global-styles;

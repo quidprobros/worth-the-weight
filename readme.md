@@ -49,6 +49,8 @@ Just a website for *local* personal use.
 - [ ] basic graph to see progress
 - [x] webroot is wrong!
 - [x] optimize resource loading (js/css)
+- [ ] setup htmx listen on "graph" sidebar
+- [ ] return data should just be sums and diffs
 
 # spring 4 (reach)
 - [ ] store and track goals

@@ -33,6 +33,12 @@ class Context {
                         publicPath: "/dist"
                       },
             devServer: false,
+            dependencies: {
+                // not needed as using modified version
+                include: [
+                    //'simple-jscalendar/source/jsCalendar.js'
+                ]
+            },
             cache: false,
             hmr: true,
             plugins: [
@@ -59,6 +65,7 @@ task("default", async (ctx: Context) => {
     await ctx.getConfig().runDev({
         bundles: {
             distRoot: 'public/dist',
+            exported: true,
         },
     })
         .then(function() {
@@ -75,6 +82,7 @@ task("build", async (ctx: Context) => {
 
         bundles: {
             distRoot: 'public/dist',
+            exported: true,
         },
         manifest: false,
     }).then(() => {
