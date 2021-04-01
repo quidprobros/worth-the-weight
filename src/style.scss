@@ -22,6 +22,8 @@ $offcanvas-sizes: (
 @import "@/simple-jscalendar/source/jsCalendar.css";
 @import "@/simple-jscalendar/themes/jsCalendar.darkseries.css";
 
+@import "@/microtip/microtip";
+
 //@include foundation-everything;
 // Global styles
 @include foundation-global-styles;

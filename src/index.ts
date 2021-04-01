@@ -14,8 +14,6 @@ import $ from "jquery"
 window.$ = $
 export {$}
 
-import Chart from 'chart.js'
-
 import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
 
@@ -74,38 +72,45 @@ const datePair = [] as string[]
 const dates = [] as Date[]
 
 
+export function initCalendar() {
+    const elCalendar = document.getElementById("my-jsCalendar");
+    // @ts-ignore
+    const myCalendar = new jsCalendar(elCalendar);
+
+    myCalendar.onDateRender(function(date: Date, element: HTMLElement, info: any) {
+        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
+        fetch(`/journal-total/${strDate}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then((json) => {
+                if (true == json.has_entries) {
+                    if (!info.isCurrent) {
+			                  element.style.fontWeight = 'bold';
+			                  element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
+                        element.dataset.microtipPosition = "top-right"
+                        element.setAttribute("aria-label", `${json.total} points`)
+                        element.setAttribute("role", "tooltip")
+                    }
+                }
+            })
+            .catch(err => {
+                $.notify("Sorry, something went wrong! Contact Chris for help.")
+            });
+	  });
+	  // Refresh layout
+	  myCalendar.refresh();
+}
+
 $(() => {
 
     new SlimSelect({
         select: '#food-selection'
     })
 
-    const elCalendar = document.getElementById("my-jsCalendar");
-    // @ts-ignore
-    const myCalendar = new jsCalendar(elCalendar);
-
-    myCalendar.onDateClick((event: Event, date: Date) => {
-        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
-        if (true === myCalendar.isSelected(date)) {
-            myCalendar.clearselect()
-            return;
-        }
-        datePair.push(strDate)
-        dates.push(date)
-
-        if (2 < datePair.length) {
-            datePair.shift()
-            datePair.splice(2)
-            //
-            myCalendar.unselect(dates[0])
-            dates.shift()
-            dates.splice(2)
-        }
-        if (0 < datePair.length) {
-            myCalendar.select(dates)
-        }
-        htmx.ajax('GET', `/journal/date/${datePair[0]}/${datePair[1]}`, "#calendar-date-data");
-    })
 
     Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);
 
@@ -117,12 +122,8 @@ $(() => {
 
     $("#journal-table").DataTable(dtSettings) as DataTables.Api
 
-    var myBarChart = new Chart("myChart", {
-        type: 'bar',
-        data: [0,1,3,4]
-    });
+    initCalendar()
 
-
-    new OffCanvas($("#offCanvas"));
-    new OffCanvas($("#offCanvas2"));
+    new OffCanvas($("#offCanvas"))
+    new OffCanvas($("#offCanvas2"))
 });

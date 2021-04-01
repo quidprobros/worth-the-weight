@@ -132,6 +132,21 @@ Flight::route('GET /journal/date/@min(/@max)', function ($min, $max) {
     foreach ($records as $date => $item) {
         Debugger::log([$date, $item->sum('points')]);
     }
+    echo 'ok';
+});
+
+Flight::route('GET /journal-total/@date', function ($date) {
+    $sum = Flight::journalItem()->getSum($date);
+
+    $payload = new Payload();
+
+    $payload->setStatus(PayloadStatus::SUCCESS);
+    $payload->setOutput([
+        "has_entries" => (0 < $sum ? true : false),
+        "total" => $sum
+    ]);
+
+    return Flight::json($payload->getOutput());
 });
 
 Flight::route('GET /journal/rel/@offset', function ($offset) {
@@ -141,6 +156,14 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
     $offset = (int) $offset;
     Flight::render("partials/offcanvas-menu", [
         "journal_day_offset" => $offset
+    ]);
+});
+
+Flight::route('GET /right-canvas', function () {
+    if (!Flight::verifySignature()) {
+        Flight::notFound();
+    }
+    Flight::render("partials/offcanvas-graphs", [
     ]);
 });
 

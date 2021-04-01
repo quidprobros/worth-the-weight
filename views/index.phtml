@@ -155,6 +155,10 @@ use Tracy\Debugger;
                      break;
              }
 
+             if ("this-container2" == elt.id) {
+                 initCalendar()
+             }
+
              const msg = $elt.data('notify-message');
              if (null != msg && null != status) {
                  $.notify(msg, status);

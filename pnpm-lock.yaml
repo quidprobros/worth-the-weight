@@ -7,6 +7,7 @@ dependencies:
   htmx.org: 1.3.2
   inputmask: 5.0.5
   jquery: 3.6.0
+  microtip: 0.2.2
   notifyjs-browser: 0.4.2_jquery@3.6.0
   simple-jscalendar: github.com/paxperscientiam/jsCalendar/6eb0d605ff2472bdeda6d933f094b1a5b71e4f58
   slim-select: 1.27.0
@@ -2732,6 +2733,10 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-y7FpHSbMUMoyPbYUSzO6PaZ6FyRnQOpHuKwbo1G+Knck95XVU4QAiKdGEnj5wwoS7PlOgthX/09u5iFJ+aYf5Q==
+  /microtip/0.2.2:
+    dev: false
+    resolution:
+      integrity: sha512-oah38eH5vSHVFP6yXjbKWOYt92mav++0j3zh844h1vhOscqEg7Rf4agDEIwUTFCcAPPdlhYUQMe6eZfHgD+4oQ==
   /mime-db/1.46.0:
     dev: true
     engines:
@@ -4509,6 +4514,7 @@ specifiers:
   htmx.org: ^1.3.2
   inputmask: ^5.0.5
   jquery: ^3.6.0
+  microtip: ^0.2.2
   node-sass: ^5.0.0
   notifyjs-browser: ^0.4.2
   simple-jscalendar: github:paxperscientiam/jsCalendar
