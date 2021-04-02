@@ -19,6 +19,7 @@ if (!file_exists(FILE_ROOT . '/tracy')) {
     mkdir(FILE_ROOT . '/tracy', 0755, true);
 }
 
+
 session_start();
 Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
@@ -84,7 +85,6 @@ Flight::route('*', function ($route) {
 
 
 Flight::route('GET /(home|index)', function () {
-
     $foods = Flight::food()::all();
 
     $today_points = Flight::journalItem()->getSum(date("Y-m-d"));
@@ -190,6 +190,8 @@ Flight::route('GET /example', function () {
 });
 
 Flight::route('DELETE /journal-entry/@id', function ($id) {
+    Flight::halt(204);
+
     if (false == is_numeric($id)) {
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Unknown deletion candidate"}}');
         Flight::stop();
@@ -349,7 +351,7 @@ Flight::route('POST /journal-entry', function () {
     $interval = $later->diff($earlier);
     $days = $interval->format("%a") * (1 == $interval->invert ? -1 : 1);
 
-    header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Success"}}', true, 204);
+    header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Success"}}');
 
     Flight::render("partials/big-picture", [
         "journal_day_offset" => $days,
