@@ -98,6 +98,8 @@ Flight::route('GET /(home|index)', function () {
         ]);
     }
 
+    header('HX-Trigger-After-Settle: {"showMessage":{"level" : "info", "message" : "Here Is A Message"}}');
+
     Flight::render('index', [
         "foods" => $foods,
         "today_points" => $today_points,
@@ -189,24 +191,19 @@ Flight::route('GET /example', function () {
 
 Flight::route('DELETE /journal-entry/@id', function ($id) {
     if (false == is_numeric($id)) {
-        return Flight::render("partials/message", [
-            "status" => "error",
-            "message" => "A non-existant resouce was requested. Contact Chris."
-        ]);
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Unknown deletion candidate"}}');
+        Flight::stop();
     }
 
     try {
         $item = Flight::journalItem()::findOrFail($id);
         $item->delete();
-        return Flight::render("partials/message", [
-            "status" => "success",
-            "message" => "Journal entry deleted"
-        ]);
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Deleted"}}');
+        Flight::stop();
     } catch (\Exception $e) {
-        return Flight::render("partials/message", [
-            "status" => "error",
-            "message" => "A non-existant resouce was requested. Contact Chris."
-        ]);
+        Debugger::log($e->getMessage());
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Something went wrong. Contact Chris."}}');
+        Flight::stop();
     }
 });
 
@@ -216,16 +213,12 @@ Flight::route('POST /drop-food-log', function () {
     }
     try {
         Flight::journalItem()::truncate();
-        return Flight::render("partials/message", [
-            "status" => "success",
-            "message" => "Food log emptied"
-        ]);
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "info", "message" : "Food log emptied"}}');
+        Flight::stop();
     } catch (\Exection $e) {
         Tracy\Debugger::log($e->getMessage());
-        return Flight::render("partials/message", [
-            "status" => "error",
-            "message" => "Error deleting journal! Contact Chris."
-        ]);
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Unable to dump food log table"}}');
+        Flight::stop();
     }
 });
 
@@ -278,43 +271,33 @@ Flight::route('GET /food-support-message', function () {
 Flight::route('POST /journal-entry', function () {
     $formData = Flight::request()->data;
 
-    $payload = new Payload();
-
     if (false == is_numeric($formData['amount'])) {
-        $payload->setStatus(PayloadStatus::FAILURE);
-        $payload->setMessages([
-            "Amount must be numeric, but you entered '" . $formData['amount'] . "'",
-        ]);
+
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Amount must be numeric"}}');
 
         return Flight::render("partials/big-picture", [
             "journal_day_offset" => 0,
-            "payload" => $payload,
         ]);
     }
 
     if (!isset($formData['amount']) || 0 >= $formData['amount']) {
-        $payload->setStatus(PayloadStatus::FAILURE);
-        $payload->setMessages(["Must enter food amount"]);
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Must enter food amount"}}');
 
         return Flight::render("partials/big-picture", [
             "journal_day_offset" => 0,
-            "payload" => $payload,
         ]);
     }
 
     if (false == strtotime($formData['date'])) {
-        $payload->setStatus(PayloadStatus::FAILURE);
-        $payload->setMessages(["Date value is unrecognized: " . $formData['date']]);
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Must enter food amount"}}');
 
         return Flight::render("partials/big-picture", [
             "journal_day_offset" => 0,
-            "payload" => $payload,
         ]);
     }
 
     if (empty($formData['food-selection']) || false == is_numeric($formData['food-selection'])) {
-        $payload->setStatus(PayloadStatus::FAILURE);
-        $payload->setMessages(["Must enter food name"]);
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Must enter food name"}}');
 
         return Flight::render("partials/big-picture", [
             "journal_day_offset" => 0,
@@ -326,13 +309,9 @@ Flight::route('POST /journal-entry', function () {
         $food_model = Flight::food()::findOrFail($formData['food-selection']);
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
-
-        $payload->setStatus(PayloadStatus::FAILURE);
-        $payload->setMessages(["Sorry, this food item is not recognized."]);
-
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Sorry, this food item is not recognized."}}');
         return Flight::render("partials/big-picture", [
             "journal_day_offset" => 0,
-            "payload" => $payload,
         ]);
     }
 
@@ -357,12 +336,10 @@ Flight::route('POST /journal-entry', function () {
     try {
         Flight::journalItem()->create($data);
     } catch (\Exception $e) {
-        $payload->setStatus(PayloadStatus::FAILURE);
-        $payload->setMessages([$e->getMessage()]);
-
+        Debugger::log($e->getMessage());
+        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Sorry, your progress was not recorded. Ask chris for help."}}');
         return Flight::render("partials/big-picture", [
             "journal_day_offset" => 0,
-            "payload" => $payload,
         ]);
     }
 
@@ -372,12 +349,10 @@ Flight::route('POST /journal-entry', function () {
     $interval = $later->diff($earlier);
     $days = $interval->format("%a") * (1 == $interval->invert ? -1 : 1);
 
-    $payload->setStatus(PayloadStatus::SUCCESS);
-    $payload->setMessages(["Success"]);
+    header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Success"}}', true, 204);
 
     Flight::render("partials/big-picture", [
         "journal_day_offset" => $days,
-        "payload" => $payload,
     ]);
 });
 

@@ -24,6 +24,7 @@ use Tracy\Debugger;
                     hx-post="/drop-food-log">
                 DELETE ENTIRE FOOD LOG</button>
         <? } ?>
+        <div hx-trigger="showMessage"></div>
         <div class="title-bar">
             <div class="title-bar-left">
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
@@ -63,7 +64,7 @@ use Tracy\Debugger;
 
                     <div class="grid-x grid-margin-x align-middle">
                         <div class="cell small-12 large-4">
-                            <form name='food-log-form' class="grid-x">
+                            <form name='food-log-form' class="grid-x" onsubmit="this.reset()">
                                 <fieldset class="cell small-12 fieldset">
                                     <legend>food info</legend>
                                     <div class='form-group'>
@@ -141,34 +142,24 @@ use Tracy\Debugger;
          }, 700, false));
 
          htmx.onLoad(function(elt){
-             const $elt = $(elt);
-             let status = $elt.data('notify-status')
-             switch (status) {
-                 case '<?=PayloadStatus::SUCCESS?>':
-                     status = 'success';
-                     break;
-                 case '<?=PayloadStatus::FAILURE?>':
-                     status = 'warn';
-                     break;
-                 default:
-                     status = 'info';
-                     break;
-             }
-
              if ("this-container2" == elt.id) {
                  initCalendar()
              }
-
-             const msg = $elt.data('notify-message');
-             if (null != msg && null != status) {
-                 $.notify(msg, status);
-             }
          });
 
-         $(document).on("click", "[type='submit']", function(e) {
-             const $form = $(e.currentTarget).parents("form");
-             $form[0].reset();
-             $('select', $form).val('').trigger('change');
+         // looks to be causing issues
+         /* $(document).on("submit", "form", function (e) {
+          *     console.log(e)
+          * }); */
+
+         /* $(document).on("click", "[type='submit']", function(e) {
+          *     const $form = $(e.currentTarget).parents("form");
+          *     $form[0].reset();
+          *     $('select', $form).val('').trigger('change');
+          * }); */
+
+         $(document).on("showMessage", function (e) {
+             $.notify(e.detail.message, e.detail.level);
          });
 
         </script>

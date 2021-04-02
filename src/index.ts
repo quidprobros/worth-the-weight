@@ -71,7 +71,6 @@ window.delayedReload = delayedReload
 const datePair = [] as string[]
 const dates = [] as Date[]
 
-
 export function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
     // @ts-ignore
@@ -98,7 +97,8 @@ export function initCalendar() {
                 }
             })
             .catch(err => {
-                $.notify("Sorry, something went wrong! Contact Chris for help.")
+                console.log(err)
+               // $.notify("Sorry, something went wrong! Contact Chris for help.")
             });
 	  });
 	  // Refresh layout
@@ -110,7 +110,6 @@ $(() => {
     new SlimSelect({
         select: '#food-selection'
     })
-
 
     Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);
 

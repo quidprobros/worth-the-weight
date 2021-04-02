@@ -51,6 +51,7 @@ Just a website for *local* personal use.
 - [x] optimize resource loading (js/css)
 - [ ] setup htmx listen on "graph" sidebar
 - [ ] return data should just be sums and diffs
+- [ ] finish swapping weird html solution for header triggered events (htmx)
 
 # spring 4 (reach)
 - [ ] store and track goals
