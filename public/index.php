@@ -98,8 +98,6 @@ Flight::route('GET /(home|index)', function () {
         ]);
     }
 
-    header('HX-Trigger-After-Settle: {"showMessage":{"level" : "info", "message" : "Here Is A Message"}}');
-
     Flight::render('index', [
         "foods" => $foods,
         "today_points" => $today_points,
@@ -274,37 +272,19 @@ Flight::route('POST /journal-entry', function () {
     $formData = Flight::request()->data;
 
     if (false == is_numeric($formData['amount'])) {
-
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Amount must be numeric"}}');
-
-        return Flight::render("partials/big-picture", [
-            "journal_day_offset" => 0,
-        ]);
     }
 
     if (!isset($formData['amount']) || 0 >= $formData['amount']) {
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Must enter food amount"}}');
-
-        return Flight::render("partials/big-picture", [
-            "journal_day_offset" => 0,
-        ]);
     }
 
     if (false == strtotime($formData['date'])) {
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Must enter food amount"}}');
-
-        return Flight::render("partials/big-picture", [
-            "journal_day_offset" => 0,
-        ]);
     }
 
     if (empty($formData['food-selection']) || false == is_numeric($formData['food-selection'])) {
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Must enter food name"}}');
-
-        return Flight::render("partials/big-picture", [
-            "journal_day_offset" => 0,
-            "payload" => $payload,
-        ]);
     }
 
     try {
@@ -312,9 +292,7 @@ Flight::route('POST /journal-entry', function () {
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Sorry, this food item is not recognized."}}');
-        return Flight::render("partials/big-picture", [
-            "journal_day_offset" => 0,
-        ]);
+        return;
     }
 
     $amount = (float) $formData['amount'];
@@ -340,9 +318,7 @@ Flight::route('POST /journal-entry', function () {
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Sorry, your progress was not recorded. Ask chris for help."}}');
-        return Flight::render("partials/big-picture", [
-            "journal_day_offset" => 0,
-        ]);
+        return;
     }
 
     // offset of submitted value
@@ -351,11 +327,7 @@ Flight::route('POST /journal-entry', function () {
     $interval = $later->diff($earlier);
     $days = $interval->format("%a") * (1 == $interval->invert ? -1 : 1);
 
-    header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Success"}}');
-
-    Flight::render("partials/big-picture", [
-        "journal_day_offset" => $days,
-    ]);
+    header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Success!"}}');
 });
 
 Flight::route("GET /bootstrap", function () {

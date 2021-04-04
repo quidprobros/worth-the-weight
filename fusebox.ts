@@ -83,6 +83,9 @@ task("build", async (ctx: Context) => {
         bundles: {
             distRoot: 'public/dist',
             exported: true,
+            app: 'app.$hash.js',
+            vendor: 'vendor.$hash.js',
+            styles: 'styles/styles.$hash.css',
         },
         manifest: false,
     }).then(() => {
