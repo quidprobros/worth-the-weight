@@ -25,6 +25,7 @@
         "jquery": "^3.6.0",
         "microtip": "^0.2.2",
         "notifyjs-browser": "^0.4.2",
+        "query-state": "^4.3.0",
         "simple-jscalendar": "github:paxperscientiam/jsCalendar",
         "slim-select": "^1.27.0"
     },

@@ -9,6 +9,7 @@ dependencies:
   jquery: 3.6.0
   microtip: 0.2.2
   notifyjs-browser: 0.4.2_jquery@3.6.0
+  query-state: 4.3.0
   simple-jscalendar: github.com/paxperscientiam/jsCalendar/6eb0d605ff2472bdeda6d933f094b1a5b71e4f58
   slim-select: 1.27.0
 devDependencies:
@@ -2843,6 +2844,10 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
+  /ngraph.events/0.0.4:
+    dev: false
+    resolution:
+      integrity: sha1-css2RIjdD9fwV0WESfajsXpyLZo=
   /node-emoji/1.10.0:
     dependencies:
       lodash.toarray: 4.4.0
@@ -3385,6 +3390,12 @@ packages:
       node: '>=0.6'
     resolution:
       integrity: sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
+  /query-state/4.3.0:
+    dependencies:
+      ngraph.events: 0.0.4
+    dev: false
+    resolution:
+      integrity: sha512-M4QU3S8BLmBMke98i2Yogi6Xqs69GYd6H0wdIBiCgYk6Y9UR+UqSfJvk8ckJYzzoP2ImYQBS6NjNrpfIUl9/zA==
   /queue-microtask/1.2.3:
     dev: true
     resolution:
@@ -4517,6 +4528,7 @@ specifiers:
   microtip: ^0.2.2
   node-sass: ^5.0.0
   notifyjs-browser: ^0.4.2
+  query-state: ^4.3.0
   simple-jscalendar: github:paxperscientiam/jsCalendar
   slim-select: ^1.27.0
   ts-node: ^9.1.1

@@ -83,6 +83,39 @@ Flight::route('*', function ($route) {
     return true;
 }, true);
 
+Flight::route('GET *', function ($route) {
+    $data = Flight::request()->query;
+
+    // big picture offset
+    if (
+        true != isset($data['bpo']) ||
+        true != is_numeric($data['bpo'])
+    ) {
+        $data['bpo'] = 0;
+    }
+
+    // offcanvas menu offset
+    if (
+        true != isset($data['omo']) ||
+        true != is_numeric($data['omo'])
+    ) {
+        $data['omo'] = 0;
+    }
+
+    // offcanvas graph offset
+    if (
+        true != isset($data['ogo']) ||
+        true != is_numeric($data['ogo'])
+    ) {
+        $data['ogo'] = 0;
+    }
+
+    Flight::set("bpo", $data['bpo']);
+    Flight::set("omo", $data['omo']);
+    Flight::set("ogo", $data['ogo']);
+    return true;
+}, true);
+
 
 Flight::route('GET /(home|index)', function () {
     $foods = Flight::food()::all();
@@ -103,6 +136,7 @@ Flight::route('GET /(home|index)', function () {
         "today_points" => $today_points,
         "checkbox_date" => $checkbox_date,
         "exercised" => $daily_model->exercised,
+        "journal_day_offset" => 17,
     ]);
 });
 

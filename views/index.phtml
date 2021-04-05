@@ -43,20 +43,20 @@ use Tracy\Debugger;
                 <button class="menu-icon" type="button" data-toggle="offCanvas2"></button>
             </div>
         </div>
-        
+
         <div class="off-canvas-wrapper">
             <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
                  hx-get="/off-canvas-left/rel/0"
                  hx-trigger="path-deps"
                  path-deps="/journal-entry">
                 <?=Flight::render("partials/offcanvas-menu", [
-                    "journal_day_offset" => 0
+                    "journal_day_offset" => Flight::get('omo')
                 ])?>
             </div>
 
             <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
                 <?=Flight::render("partials/offcanvas-graphs", [
-                    "journal_day_offset" => 0
+                    "journal_day_offset" => Flight::get('ogo')
                 ])?>
             </div>
             <div class="off-canvas-content" data-off-canvas-content>
@@ -97,8 +97,7 @@ use Tracy\Debugger;
                             <div class="grid-x grid-margin-x align-center-middle">
                                 <?
                                 Flight::render("partials/big-picture", [
-                                    "journal_day_offset" => 0,
-                                    "payload" => Flight::payload(),
+                                    "journal_day_offset" => Flight::get('bpo'),
                                 ])
                                 ?>
                             </div>
@@ -107,7 +106,7 @@ use Tracy\Debugger;
                 </div>
             </div>
         </div>
-        
+
         <script>
 
          $(document).on("keyup", "[name='searchbox']", debounce(function(e) {

@@ -90,7 +90,8 @@ $next = $journal_day_offset + 1;
         </div>
     </div>
 </div>
-<?=Flight::render("partials/message", [
-    "message" => isset($payload) ? $payload->getMessages()[0] : "",
-    "status" => isset($payload) ? $payload->getStatus() : ""
-])?>
+<script type="text/javascript">
+ qs.set({
+     bpo: <?=$journal_day_offset?>
+ });
+</script>

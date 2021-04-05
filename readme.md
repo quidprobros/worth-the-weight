@@ -46,14 +46,13 @@ Just a website for *local* personal use.
 - [x] fix stats calculations
 - [x] make sure carbon is using localtime
 - [x] signed urls to prevent arbitrary access to resources
-- [ ] basic graph to see progress
+- [ ] add a calendar that summarizes progress
 - [x] webroot is wrong!
 - [x] optimize resource loading (js/css)
-- [ ] setup htmx listen on "graph" sidebar
-- [ ] return data should just be sums and diffs
-- [ ] finish swapping weird html solution for header triggered events (htmx)
+- [x] finish swapping weird html solution for header triggered events (htmx)
 
 # spring 4 (reach)
+- [ ] querystring for management of certain states
 - [ ] store and track goals
 - [ ] submit new foods
 - [ ] show popup when user's been a way for a while

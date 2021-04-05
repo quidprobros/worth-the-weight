@@ -10,6 +10,15 @@ declare global {
 
 import "./style.scss"
 
+import queryState from "query-state"
+
+// initialize
+const qs = queryState({
+}, {
+    useSearch: true
+});
+export {qs}
+
 import $ from "jquery"
 window.$ = $
 export {$}
@@ -74,7 +83,10 @@ const dates = [] as Date[]
 export function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
     // @ts-ignore
-    const myCalendar = new jsCalendar(elCalendar);
+    const myCalendar = new jsCalendar(elCalendar, new Date(), {
+        dayFormat: "DDD",
+        monthFormat: "MONTH YYYY"
+    });
 
     myCalendar.onDateRender(function(date: Date, element: HTMLElement, info: any) {
         const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
