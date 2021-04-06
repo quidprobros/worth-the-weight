@@ -91,7 +91,11 @@ $next = $journal_day_offset + 1;
     </div>
 </div>
 <script type="text/javascript">
- qs.set({
-     bpo: <?=$journal_day_offset?>
- });
+ if ("undefined" != typeof $) {
+     $(function() {
+         qs.set({
+             bpo: <?=$journal_day_offset?>
+         });
+     });
+ }
 </script>

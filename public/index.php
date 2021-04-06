@@ -222,22 +222,23 @@ Flight::route('GET /example', function () {
 });
 
 Flight::route('DELETE /journal-entry/@id', function ($id) {
-    Flight::halt(204);
-
     if (false == is_numeric($id)) {
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Unknown deletion candidate"}}');
-        Flight::stop();
+        Flight::halt(204);
+        //Flight::stop();
     }
 
     try {
         $item = Flight::journalItem()::findOrFail($id);
         $item->delete();
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Deleted"}}');
-        Flight::stop();
+        Flight::halt(204);
+        // Flight::stop();
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Something went wrong. Contact Chris."}}');
-        Flight::stop();
+        Flight::halt(204);
+        //Flight::stop();
     }
 });
 
@@ -281,7 +282,7 @@ Flight::route('POST /exercised/rel/@offset', function ($offset) {
 });
 
 Flight::map("welcome", function () {
-    if (6 <= date("H") && 12 > date("H")){
+    if (6 <= date("H") && 12 > date("H")) {
         return "good morning";
     } elseif (12 <= date("H") && 18 > date("H")) {
         return "good afternoon";

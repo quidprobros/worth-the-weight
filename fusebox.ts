@@ -72,6 +72,7 @@ task("default", async (ctx: Context) => {
             src("./public/dist/resources.phtml")
                 .dest("./views/generated", "dist")
                 .exec()
+       //     rm("./public/dist/resources.phtml")
         })
 })
 
@@ -92,6 +93,7 @@ task("build", async (ctx: Context) => {
         src("./public/dist/resources.phtml")
             .dest("views/generated", "dist")
             .exec()
+      //  rm("./public/dist/resources.phtml")
     })
 })
 
