@@ -19,7 +19,6 @@ if (!file_exists(FILE_ROOT . '/tracy')) {
     mkdir(FILE_ROOT . '/tracy', 0755, true);
 }
 
-
 session_start();
 Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;

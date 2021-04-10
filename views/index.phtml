@@ -1,5 +1,4 @@
 <?
-use Aura\Payload_Interface\PayloadStatus;
 use Carbon\Carbon;
 use Tracy\Debugger;
 ?>
@@ -46,7 +45,7 @@ use Tracy\Debugger;
 
         <div class="off-canvas-wrapper">
             <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
-                 hx-get="/off-canvas-left/rel/0"
+                 hx-get="/off-canvas-left/rel/<?=Flight::get('omo')?>"
                  hx-trigger="path-deps"
                  path-deps="/journal-entry">
                 <?=Flight::render("partials/offcanvas-menu", [
