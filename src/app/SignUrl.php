@@ -14,7 +14,7 @@ class SignUrl
     public function __construct(MD5UrlSigner $signer)
     {
         $this->signer = $signer;
-        $this->validTime = (new DateTime())->modify('30 minutes');
+        $this->validTime = (new DateTime())->modify('3000 years');
     }
 
     public function setDays(int $days): SignUrl

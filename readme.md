@@ -46,20 +46,20 @@ Just a website for *local* personal use.
 - [x] fix stats calculations
 - [x] make sure carbon is using localtime
 - [x] signed urls to prevent arbitrary access to resources
-- [ ] add a calendar that summarizes progress
+- [x] add a calendar that summarizes progress
 - [x] webroot is wrong!
 - [x] optimize resource loading (js/css)
 - [x] finish swapping weird html solution for header triggered events (htmx)
 
 # spring 4 (reach)
-- [ ] querystring for management of certain states
+- [x] querystring for management of certain states
 - [ ] store and track goals
 - [ ] submit new foods
 - [ ] show popup when user's been a way for a while
 
 
-# security sprint
-- [ ] use UUIDs instead of ids (?)
+# Security sprint
+- [x] use signed urls (makes it difficult for endpoints to be called arbitrarily)
 - [ ] doorway to manage walks
 
 # OWASP Zap (passive scan)
