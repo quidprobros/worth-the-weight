@@ -48,10 +48,15 @@ notify(window, $)
 import { Foundation } from 'foundation-sites/js/foundation.core'
 Foundation.addToJquery($);
 import {OffCanvas} from 'foundation-sites/js/foundation.offcanvas'
+import {Reveal} from 'foundation-sites/js/foundation.reveal'
 
 
 async function delay(duration = 0) {
     await new Promise(r => setTimeout(r, duration));
+}
+
+function confirm() {
+    
 }
 
 // extended from https://davidwalsh.name/javascript-debounce-function
@@ -80,7 +85,8 @@ window.delayedReload = delayedReload
 const datePair = [] as string[]
 const dates = [] as Date[]
 
-export function initCalendar() {
+
+function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
     // @ts-ignore
     const myCalendar = new jsCalendar(elCalendar, new Date(), {
@@ -88,7 +94,33 @@ export function initCalendar() {
         monthFormat: "MONTH YYYY"
     });
 
-    myCalendar.onDateRender(function(date: Date, element: HTMLElement, info: any) {
+    myCalendar.onDateClick((event: Event, date: Date) => {
+        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
+        fetch("/modals/go-to-date-modal?" + new URLSearchParams({
+            date: strDate,
+        }).toString(), {
+            method: "GET",
+            headers: {
+                'Content-Type': 'text/html'
+            },
+        })
+            .then(response => response.text())
+            .then(text => {
+                const $text = $(text)
+                const modal = new Reveal($text)
+                modal.open()
+
+                $("[data-accept]", $text).on("click", (e) => {
+                    window.location.pathname = `/goto/${strDate}`
+                });
+
+                $text.on("closed.zf.reveal", () => {
+                    $text.remove()
+                })
+            })
+    })
+
+    myCalendar.onDateRender((date: Date, element: HTMLElement, info: any) => {
         const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
         fetch(`/journal-total/${strDate}`, {
             method: "GET",
@@ -102,15 +134,14 @@ export function initCalendar() {
                     if (!info.isCurrent) {
 			                  element.style.fontWeight = 'bold';
 			                  element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
-                        element.dataset.microtipPosition = "top-right"
-                        element.setAttribute("aria-label", `${json.total} points`)
-                        element.setAttribute("role", "tooltip")
                     }
+                    element.dataset.microtipPosition = "top-right"
+                    element.setAttribute("aria-label", `${json.total} points`)
+                    element.setAttribute("role", "tooltip")
                 }
             })
             .catch(err => {
                 console.log(err)
-               // $.notify("Sorry, something went wrong! Contact Chris for help.")
             });
 	  });
 	  // Refresh layout

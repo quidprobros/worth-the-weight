@@ -50,6 +50,7 @@ Just a website for *local* personal use.
 - [x] webroot is wrong!
 - [x] optimize resource loading (js/css)
 - [x] finish swapping weird html solution for header triggered events (htmx)
+- [x] click date to jump to page state
 
 # spring 4 (reach)
 - [x] querystring for management of certain states

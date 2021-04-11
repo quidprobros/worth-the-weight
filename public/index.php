@@ -139,6 +139,19 @@ Flight::route('GET /(home|index)', function () {
     ]);
 });
 
+Flight::route('GET /goto/@date', function ($date) {
+
+    if (false === strtotime($date)) {
+        Debugger::log("Bad date value: ${$date}");
+        Flight::halt(404);
+    }
+
+    $date1 = new Carbon($date);
+    $now = new Carbon("today");
+    $diff = $now->diffInDays($date1, false);
+    Flight::redirect("/?omo={$diff}&bpo={$diff}");
+});
+
 Flight::route('GET /journal/date/@min(/@max)', function ($min, $max) {
     $dates = [$min, $max];
     usort($dates, "strcmp");
@@ -166,6 +179,37 @@ Flight::route('GET /journal/date/@min(/@max)', function ($min, $max) {
         Debugger::log([$date, $item->sum('points')]);
     }
     echo 'ok';
+});
+
+Flight::route('GET /modals/(@modal)', function ($modal) {
+    if (true != preg_match('/^[a-z0-9\-]+$/i', $modal)) {
+        Debugger::log("Bad modal name: {$modal}");
+        Flight::halt(404);
+    }
+
+    $date = Flight::request()->query['date'];
+
+    if (false === strtotime($date)) {
+        Debugger::log("Bad date value: ${$date}");
+        Flight::halt(404);
+    }
+
+    $displayDate = (new Carbon($date))->format("D M j, Y");
+
+    $modalPath = "partials/modals/{$modal}";
+
+    try {
+        if (true != Flight::view()->exists($modalPath)) {
+            throw new Exception("template not found: ${modalPath}");
+        }
+        Flight::render($modalPath, [
+            "date" => $date,
+            "displayDate" => $displayDate,
+        ]);
+    } catch (Exception $e) {
+        dump($e);
+        Flight::halt(404);
+    }
 });
 
 Flight::route('GET /journal-total/@date', function ($date) {
@@ -216,15 +260,10 @@ Flight::route('GET /big-picture/rel/@offset', function ($offset) {
     ]);
 });
 
-Flight::route('GET /example', function () {
-    echo '<div>example</div>';
-});
-
 Flight::route('DELETE /journal-entry/@id', function ($id) {
     if (false == is_numeric($id)) {
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Unknown deletion candidate"}}');
         Flight::halt(204);
-        //Flight::stop();
     }
 
     try {
@@ -232,12 +271,10 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
         $item->delete();
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Deleted"}}');
         Flight::halt(204);
-        // Flight::stop();
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
         header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Something went wrong. Contact Chris."}}');
         Flight::halt(204);
-        //Flight::stop();
     }
 });
 
