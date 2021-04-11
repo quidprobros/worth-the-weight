@@ -86,7 +86,7 @@ const datePair = [] as string[]
 const dates = [] as Date[]
 
 
-function initCalendar() {
+export function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
     // @ts-ignore
     const myCalendar = new jsCalendar(elCalendar, new Date(), {
@@ -110,7 +110,7 @@ function initCalendar() {
                 const modal = new Reveal($text)
                 modal.open()
 
-                $("[data-accept]", $text).on("click", (e) => {
+                $("[data-accept]", $text).on("click", () => {
                     window.location.pathname = `/goto/${strDate}`
                 });
 
