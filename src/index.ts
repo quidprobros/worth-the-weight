@@ -80,6 +80,11 @@ function delayedReload(ms: number) {
 }
 window.delayedReload = delayedReload
 
+const siteData = {
+    calendarSelection: []
+}
+export {siteData}
+
 export function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
     // @ts-ignore
@@ -117,6 +122,7 @@ export function initCalendar() {
 
 
     myCalendar.onMonthRender(<T extends {start: Date, end:Date}>(_index: number, _element: HTMLElement, info: T) => {
+        //siteData.calendarSelection = []
         // @ts-ignore
         const min = jsCalendar.tools.dateToString(info.start, "YYYY-MM-DD") as string
         // @ts-ignore
@@ -136,8 +142,8 @@ export function initCalendar() {
                             const date = item.date // this is CORRECT
                             const points = item.points
 
-                            console.log(date)
-                            // selecting causes paint, so don't do it as it induces recursion
+                            siteData.calendarSelection.push({date, points})
+
                             myCalendar.select(new Date(`${date} 00:00:00`), false)
                         })
                     }
@@ -146,41 +152,23 @@ export function initCalendar() {
                     myCalendar._isSelectionComplete = true
                     myCalendar.refresh()
                     myCalendar._isSelectionComplete = false
-                    console.log(jsCalendar.get("#my-jsCalendar").getSelected())
                 })
         }
     })
 
-    myCalendar.onDateRender(<T extends {isSelected: boolean, isCurrentMonth: boolean}>(_date: Date, element: HTMLElement, info: T) => {
-        // console.log("date called")
-        // console.log(myCalendar.getSelected())
-        // console.log(jsCalendar.get("#my-jsCalendar").getSelected())
+    myCalendar.onDateRender(<T extends {isSelected: boolean, isCurrentMonth: boolean}>(date: Date, element: HTMLElement, info: T) => {
         if (true == info.isSelected) {
             element.style.fontWeight = 'bold';
 			      element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
+            siteData.calendarSelection.forEach((item, index) => {
+                const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD") as string
+                if (strDate == item.date) {
+                    element.dataset.microtipPosition = "top-right"
+                    element.setAttribute("aria-label", `${item.points} points`)
+                    element.setAttribute("role", "tooltip")
+                }
+            })
         }
-        // const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
-        // fetch(`/journal-total/${strDate}`, {
-        //     method: "GET",
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        // })
-        //     .then(response => response.json())
-        //     .then((json) => {
-        //         if (true == json.has_entries) {
-        //             if (!info.isCurrent) {
-			  //                 element.style.fontWeight = 'bold';
-			  //                 element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
-        //             }
-        //             element.dataset.microtipPosition = "top-right"
-        //             element.setAttribute("aria-label", `${json.total} points`)
-        //             element.setAttribute("role", "tooltip")
-        //         }
-        //     })
-        //     .catch(err => {
-        //         console.log(err)
-        //     });
 	  });
 	  // Refresh layout
 	  myCalendar.refresh();
