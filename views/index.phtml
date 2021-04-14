@@ -108,37 +108,6 @@ use Tracy\Debugger;
 
         <script>
 
-         $(document).on("keyup", "[name='searchbox']", debounce(function(e) {
-
-             const $searchbox = $(e.currentTarget);
-             const data = {
-                 searchvalue: $searchbox.val()
-             };
-
-             fetch("/search", {
-                 method: "POST",
-                 headers: {
-                     'Content-Type': 'application/json'
-                 },
-                 body: JSON.stringify(data),
-             })
-                 .then(response => response.json())
-                 .then((json) => {
-                     const data = dlv(json, 'response.data');
-                     if (true == Array.isArray(data)) {
-                         const $select = $("[name='food-selection']");
-                         $select.empty();
-                         $.each(data, function(index, item) {
-                             $select.append(`<option value="${item.id}">${item.food}</option>`);
-                         });
-
-                         if (0 == data.length) {
-                             $select.append(`<option>NO RESULTS</option>`);
-                         }
-                     }
-                 });
-         }, 700, false));
-
          htmx.onLoad(function(elt){
              if ("this-container2" == elt.id) {
                  initCalendar()

@@ -2,7 +2,9 @@
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
 use Carbon\Carbon;
-use Aura\Payload\Payload;
+use Aura\Payload\PayloadFactory;
+use App\Payload;
+// use Aura\Payload\Payload;
 use Aura\Payload_Interface\PayloadStatus;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Spatie\UrlSigner\MD5UrlSigner;
@@ -152,33 +154,37 @@ Flight::route('GET /goto/@date', function ($date) {
     Flight::redirect("/?omo={$diff}&bpo={$diff}");
 });
 
-Flight::route('GET /journal/date/@min(/@max)', function ($min, $max) {
+Flight::route('GET /beef/@min/@max', function ($min, $max) {
+    $payload = new Payload();
+
     $dates = [$min, $max];
     usort($dates, "strcmp");
 
     list($min, $max) = $dates;
 
-    if (false === strtotime($min)) {
-        return 'error';
+    if (false === strtotime($min)  || false == strtotime($max)) {
+        $payload->setStatus(PayloadStatus::ERROR);
+        $payload->setMessages(["One or both dates are invalid"]);
+        return Flight::json($payload->getAll());
     }
 
     $query = Flight::journalItem()
-           ->whereDate("date", ">=", $min);
-
-    if (true === strtotime($max)) {
-        $query->whereDate("date", "<=", $max);
-    }
-
+           ->whereDate("date", ">=", $min)
+           ->whereDate("date", "<=", $max);
+    
     $records = $query->orderBy('date')
                      ->get()
                      ->groupBy(function ($val) {
                          return Carbon::parse($val->date)->format('Y-m-d');
                      });
-    // this is now ready to use in a chart or something
+
+    $return = [];
     foreach ($records as $date => $item) {
-        Debugger::log([$date, $item->sum('points')]);
+        $return[] = ["date" => $date, "points" => $item->sum('points')];
     }
-    echo 'ok';
+    $payload->setStatus(PayloadStatus::SUCCESS);
+    $payload->setOutput($return);
+    return Flight::json($payload->getAll());
 });
 
 Flight::route('GET /modals/(@modal)', function ($modal) {

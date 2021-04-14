@@ -10,6 +10,7 @@ declare global {
 
 import "./style.scss"
 
+// @ts-ignore
 import queryState from "query-state"
 
 // initialize
@@ -42,6 +43,7 @@ export {Inputmask}
 
 import SlimSelect from 'slim-select'
 
+// @ts-ignore
 import notify from "notifyjs-browser"
 notify(window, $)
 
@@ -53,10 +55,6 @@ import {Reveal} from 'foundation-sites/js/foundation.reveal'
 
 async function delay(duration = 0) {
     await new Promise(r => setTimeout(r, duration));
-}
-
-function confirm() {
-    
 }
 
 // extended from https://davidwalsh.name/javascript-debounce-function
@@ -82,10 +80,6 @@ function delayedReload(ms: number) {
 }
 window.delayedReload = delayedReload
 
-const datePair = [] as string[]
-const dates = [] as Date[]
-
-
 export function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
     // @ts-ignore
@@ -94,8 +88,9 @@ export function initCalendar() {
         monthFormat: "MONTH YYYY"
     });
 
-    myCalendar.onDateClick((event: Event, date: Date) => {
-        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
+    myCalendar.onDateClick((_event: Event, date: Date) => {
+        // @ts-ignore
+        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD") as string
         fetch("/modals/go-to-date-modal?" + new URLSearchParams({
             date: strDate,
         }).toString(), {
@@ -120,29 +115,72 @@ export function initCalendar() {
             })
     })
 
-    myCalendar.onDateRender((date: Date, element: HTMLElement, info: any) => {
-        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
-        fetch(`/journal-total/${strDate}`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-            .then(response => response.json())
-            .then((json) => {
-                if (true == json.has_entries) {
-                    if (!info.isCurrent) {
-			                  element.style.fontWeight = 'bold';
-			                  element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
-                    }
-                    element.dataset.microtipPosition = "top-right"
-                    element.setAttribute("aria-label", `${json.total} points`)
-                    element.setAttribute("role", "tooltip")
-                }
+
+    myCalendar.onMonthRender(<T extends {start: Date, end:Date}>(_index: number, _element: HTMLElement, info: T) => {
+        // @ts-ignore
+        const min = jsCalendar.tools.dateToString(info.start, "YYYY-MM-DD") as string
+        // @ts-ignore
+        const max = jsCalendar.tools.dateToString(info.end, "YYYY-MM-DD") as string
+
+        if (true !== myCalendar._isSelectionComplete) {
+            fetch(`/beef/${min}/${max}`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
             })
-            .catch(err => {
-                console.log(err)
-            });
+                .then(response => response.json())
+                .then((json) => {
+                    if (Array.isArray(json.output)) {
+                        json.output.forEach(<T extends {date:string,points:number}>(item: T) => {
+                            const date = item.date // this is CORRECT
+                            const points = item.points
+
+                            console.log(date)
+                            // selecting causes paint, so don't do it as it induces recursion
+                            myCalendar.select(new Date(`${date} 00:00:00`), false)
+                        })
+                    }
+                })
+                .finally(() => {
+                    myCalendar._isSelectionComplete = true
+                    myCalendar.refresh()
+                    myCalendar._isSelectionComplete = false
+                    console.log(jsCalendar.get("#my-jsCalendar").getSelected())
+                })
+        }
+    })
+
+    myCalendar.onDateRender(<T extends {isSelected: boolean, isCurrentMonth: boolean}>(_date: Date, element: HTMLElement, info: T) => {
+        // console.log("date called")
+        // console.log(myCalendar.getSelected())
+        // console.log(jsCalendar.get("#my-jsCalendar").getSelected())
+        if (true == info.isSelected) {
+            element.style.fontWeight = 'bold';
+			      element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
+        }
+        // const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD")
+        // fetch(`/journal-total/${strDate}`, {
+        //     method: "GET",
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        // })
+        //     .then(response => response.json())
+        //     .then((json) => {
+        //         if (true == json.has_entries) {
+        //             if (!info.isCurrent) {
+			  //                 element.style.fontWeight = 'bold';
+			  //                 element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
+        //             }
+        //             element.dataset.microtipPosition = "top-right"
+        //             element.setAttribute("aria-label", `${json.total} points`)
+        //             element.setAttribute("role", "tooltip")
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     });
 	  });
 	  // Refresh layout
 	  myCalendar.refresh();

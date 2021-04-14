@@ -51,6 +51,7 @@ Just a website for *local* personal use.
 - [x] optimize resource loading (js/css)
 - [x] finish swapping weird html solution for header triggered events (htmx)
 - [x] click date to jump to page state
+- [ ] fix bug that causes wrong date to be highlighted on calendar
 
 # spring 4 (reach)
 - [x] querystring for management of certain states
