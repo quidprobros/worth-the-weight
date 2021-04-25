@@ -1,0 +1,56 @@
+<?
+use Tracy\Debugger;
+?>
+<!doctype html>
+<html lang="en">
+    <?php Debugger::renderLoader() ?>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Worth the Weight!</title>
+        <?=Flight::render("generated/resources", [])?>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
+    </head>
+    <body>
+        <div class="grid-container">
+            <? if (Flight::auth()->isLoggedIn()) { ?>
+                <h1>You are currently logged in as "<?=Flight::auth()->getUsername()?>"</h1>
+                <a href="/logout">Not <?=Flight::auth()->getUsername()?>?</a>
+            <? } ?>
+            <form hx-post="/signin" class="log-in-form" hx-swap="none">
+                <h4 class="text-center">Log in with your email address</h4>
+                <label>Email
+                    <input type="email" name="login_email" placeholder="somebody@somewhere.com">
+                </label>
+                <label>Password
+                    <input type="password" name="login_password" placeholder="Password">
+                </label>
+                <input id="show-password" type="checkbox"><label for="show-password">Show password</label>
+                <p><input type="submit" class="button expanded" value="Log in"></input></p>
+                <p class="text-center"><a href="#">Forgot your password?</a></p>
+            </form>
+
+
+            <form hx-post="/register" class="log-in-form" hx-swap='none'>
+                <h4 class="text-center">Register to be a part of Worth the Weight!</h4>
+                <label for="register-form-email">Email
+                    <input type="email" class="register-form-email" id="register-form-email" name="register_email" placeholder="somebody@somewhere.com">
+                </label>
+
+                <label for="register-form-username">Username (use numbers and letters only)
+                    <input type="text"
+                           pattern="[a-zA-Z0-9]+"
+                           class="register-form-username" id="register-form-username" name="register_username">
+                </label>
+
+                <label for="register-form-password">Password (<?=\App\MIN_PASSWORD_LENGTH?> character minimum)
+                    <input  id="register-form-password"
+                            type="password"
+                            minlength="<?=\App\MIN_PASSWORD_LENGTH?>"
+                            class="register-form-password"
+                            name="register_password">
+                </label>
+                <button type="submit" class="button expanded sign-in-form-button">Register</button>
+            </form>
+        </div>
+    </body>
+</html>

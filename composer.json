@@ -10,7 +10,8 @@
         "aura/payload": "^3.0",
         "illuminate/database": "^8.31",
         "illuminate/http": "^8.32",
-        "spatie/url-signer": "^1.2"
+        "spatie/url-signer": "^1.2",
+        "delight-im/auth": "^8.2"
     },
     "authors": [
         {
@@ -19,8 +20,9 @@
         }
     ],
     "require-dev": {
-        "filp/whoops": "^2.9",
+        "filp/whoops": "^2.12",
         "kint-php/kint": "^3.3",
-        "tracy/tracy": "^2.8"
+        "tracy/tracy": "^2.8",
+        "jdorn/sql-formatter": "dev-master"
     }
 }

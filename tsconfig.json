@@ -20,11 +20,11 @@
             "./node_modules/@types"
         ],
         "types": [
-            "htmx.org"
+            "htmx.org",
+            "foundation"
         ]
     },
     "allowSyntheticDefaultImports": true,
-    "types": ["jquery", "htmx.org"],
     "include": [
         "src/**/*"
     ]

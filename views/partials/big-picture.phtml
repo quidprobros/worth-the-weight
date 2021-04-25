@@ -1,40 +1,6 @@
 <?
-use Carbon\Carbon;
 
-if (empty($journal_day_offset)) {
-    $journal_view_date = Carbon::now()->format("D M j, Y");
-    $journal_date = Carbon::now()->format("Y-m-d");
-    $colloqial_date = "&nbsp";
-} else {
-    $journal_view_date = Carbon::now()->addDays($journal_day_offset)->format("D M j, Y");
-    $journal_date = Carbon::now()->addDays($journal_day_offset)->format("Y-m-d");
-}
-
-switch(strtotime($journal_date)) {
-    case (strtotime("yesterday")):
-        $title = "yesterday";
-        break;
-    case (date("Y-m-d")):
-        $title = "today";
-        break;
-    default:
-        $title = "Count for {$journal_view_date}";
-        break;
-};
-
-$stats = Flight::stats();
-
-$today_points = $stats->getPointsByDate($journal_date);
-
-$daily_model = \App\Models\Daily::firstWhere("date", $journal_date);
-if (empty($daily_model)) {
-    $daily_model = \App\Models\Daily::create([
-        "date" => $journal_date,
-        "exercised" => 0
-    ]);
-}
-
-$exercised = $daily_model->exercised;
+$exercised = 0;
 $prev = $journal_day_offset - 1;
 $next = $journal_day_offset + 1;
 ?>
@@ -94,7 +60,7 @@ $next = $journal_day_offset + 1;
  if ("undefined" != typeof $) {
      $(function() {
          qs.set({
-             bpo: <?=$journal_day_offset?>
+             bpo: '<?=Flight::get('bpo')?>'
          });
      });
  }

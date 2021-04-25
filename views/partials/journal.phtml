@@ -20,6 +20,7 @@
             </tr>
         <? } ?>
         <? foreach ($records as $record) { ?>
+            <? Debugger::log($record)?>
             <tr data-id='<?=$record->id?>'>
                 <?
                 $_date = $record->date;
@@ -30,7 +31,7 @@
                 }
                 ?>
                 <td id="date-<?=$record->id?>" data-rowid='<?=$record->id?>' data-sort="<?=strtotime($_date)?>" data-name='date'><?=$date?></td>
-                <td id="food-<?=$record->id?>" data-rowid='<?=$record->id?>' data-name='food'><?=$record->getFood($record->food)?></td>
+                <td id="food-<?=$record->id?>" data-rowid='<?=$record->id?>' data-name='food'><?=$record->food->food_name?></td>
                 <td id="quantity-<?=$record->id?>" class="text-right">
                     <?=$record->quantity?>
                 </td>
@@ -38,7 +39,7 @@
                 <td>
                     <div class="button-group stacked" role="group">
                         <button type="button" class="button"
-                                hx-delete="/journal-entry/<?=$record->id?>">
+                                hx-delete='<?Flight::url()->sign("/journal-entry/{$record->id}")?>'>
                             delete
                         </button>
                     </div>

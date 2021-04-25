@@ -1,0 +1,31 @@
+<?PHP
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\ActiveUser;
+use Illuminate\Database\Capsule\Manager as DB;
+use App\Payload;
+
+?>
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Document</title>
+    </head>
+    <body>
+        <h1><?=$ok()?></h1>
+        <h1><?=$user->username?></h1>
+        <ul>journal
+            <?foreach($user->journal as $entry) {?>
+                <li><?=$entry->food->food_name?> (<?=$entry->points?>) on <?=$entry->date?></li>
+            <? } ?>
+        </ul>
+        <ul>foods
+            <?foreach($foods as $food) { ?>
+                <li><?=$food->food_name?></li>
+            <? } ?>
+        </ul>
+    </body>
+</html>

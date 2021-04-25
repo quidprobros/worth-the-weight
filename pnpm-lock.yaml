@@ -16,7 +16,7 @@ devDependencies:
   '@types/datatables.net': 1.10.19
   '@types/inputmask': 5.0.0
   '@types/jquery': 3.5.5
-  '@types/node': 14.14.37
+  '@types/node': 14.14.40
   '@types/notifyjs-browser': 0.0.0
   '@typescript-eslint/eslint-plugin': 4.22.0_9acede93a3623dd7abe65c65a7010e73
   '@typescript-eslint/parser': 4.22.0_eslint@7.24.0+typescript@4.2.4
@@ -167,7 +167,7 @@ packages:
       integrity: sha512-WuzgytEmsIpVYZbkce+EvK1UqBI7/cwcC/WgYeAtXdq2zi+yWzJwMT5Yb6irAiOi52DBjeAEeRt3bYzFYvHWCQ==
   /@types/http-proxy/1.17.5:
     dependencies:
-      '@types/node': 14.14.37
+      '@types/node': 14.14.40
     dev: true
     resolution:
       integrity: sha512-GNkDE7bTv6Sf8JbV2GksknKOsk7OznNYHSdrtvPJXO0qJ9odZig6IZKUi5RFGi6d1bf6dgIAe4uXi3DBc7069Q==
@@ -185,10 +185,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-cxWFQVseBm6O9Gbw1IWb8r6OS4OhSt3hPZLkFApLjM8TEXROBuQGLAH2i2gZpcXdLBIrpXuTDhH7Vbm1iXmNGA==
-  /@types/node/14.14.37:
+  /@types/node/14.14.40:
     dev: true
     resolution:
-      integrity: sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
+      integrity: sha512-2HoZZGylcnz19ZSbvWhgWHqvprw1ZGHanxIrDWYykPD4CauLW4gcyLzCVfUN2kv/1t1F3CurQIdi+s1l9+XgEA==
   /@types/notifyjs-browser/0.0.0:
     dependencies:
       '@types/jquery': 3.5.5
@@ -1326,7 +1326,7 @@ packages:
       semver: 7.3.5
       strip-ansi: 6.0.0
       strip-json-comments: 3.1.1
-      table: 6.0.9
+      table: 6.1.0
       text-table: 0.2.0
       v8-compile-cache: 2.3.0
     dev: true
@@ -1727,7 +1727,7 @@ packages:
       fuse-concat-with-sourcemaps: 1.0.5
       get-port: 5.1.1
       glob: 7.1.6
-      http-proxy-middleware: 1.1.1
+      http-proxy-middleware: 1.1.2
       ieee754: 1.2.1
       lego-api: 1.0.8
       lodash.merge: 4.6.2
@@ -2077,7 +2077,7 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha512-ZTTX0MWrsQ2ZAhA1cejAwDLycFsd7I7nVtnkT3Ol0aqodaKW+0CTZDQ1uBv5whptCnc8e8HeRRJxRs0kmm/Qfw==
-  /http-proxy-middleware/1.1.1:
+  /http-proxy-middleware/1.1.2:
     dependencies:
       '@types/http-proxy': 1.17.5
       http-proxy: 1.18.1
@@ -2088,7 +2088,7 @@ packages:
     engines:
       node: '>=8.0.0'
     resolution:
-      integrity: sha512-FIDg9zPvOwMhQ3XKB2+vdxK6WWbVAH7s5QpqQCif7a1TNL76GNAATWA1sy6q2gSfss8UJ/Nwza3N6QnFkKclpA==
+      integrity: sha512-YRFUeOG3q85FJjAaYVJUoNRW9a73SDlOtAyQOS5PHLr18QeZ/vEhxywNoOPiEO8BxCegz4RXzTHcvyLEGB78UA==
   /http-proxy/1.18.1:
     dependencies:
       eventemitter3: 4.0.7
@@ -4034,7 +4034,7 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
-  /table/6.0.9:
+  /table/6.1.0:
     dependencies:
       ajv: 8.1.0
       is-boolean-object: 1.1.0
@@ -4049,7 +4049,7 @@ packages:
     engines:
       node: '>=10.0.0'
     resolution:
-      integrity: sha512-F3cLs9a3hL1Z7N4+EkSscsel3z55XT950AvB05bwayrNg5T1/gykXtigioTAjbltvbMSJvvhFCbnf6mX+ntnJQ==
+      integrity: sha512-T4G5KMmqIk6X87gLKWyU5exPpTjLjY5KyrFWaIjv3SvgaIUGXV7UEzGEnZJdTA38/yUS6f9PlKezQ0bYXG3iIQ==
   /tar/6.1.0:
     dependencies:
       chownr: 2.0.0
@@ -4503,7 +4503,7 @@ specifiers:
   '@types/datatables.net': ^1.10.19
   '@types/inputmask': ^5.0.0
   '@types/jquery': ^3.5.5
-  '@types/node': ^14.14.37
+  '@types/node': ^14.14.40
   '@types/notifyjs-browser': ^0.0.0
   '@typescript-eslint/eslint-plugin': ^4.22.0
   '@typescript-eslint/parser': ^4.22.0

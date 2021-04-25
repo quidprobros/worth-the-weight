@@ -6,14 +6,15 @@ class JournalItem extends \Illuminate\Database\Eloquent\Model
 {
     protected $primaryKey = "id";
     protected $table = "points_records";
-    protected $fillable = ["food", "points", "quantity", "date"];
+    protected $fillable = ["userID", "food_id", "points", "quantity", "date"];
 
-    public function getFood(int $foodID)
-    {
-        return (new Food())->where("id", $foodID)->first()->food;
-    }
     public function getSum($date)
     {
         return $this->whereDate("date", "=", $date)->sum("points");
+    }
+
+    public function food()
+    {
+        return $this->hasOneThrough(Food::class, JournalItem::class, "id", "id");
     }
 }

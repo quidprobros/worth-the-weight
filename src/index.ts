@@ -3,7 +3,6 @@ declare global {
         Inputmask: any
         debounce: (func: Function, wait: number, immediate: boolean) => void
         delayedReload: (ms: number) => void
-//        jsCalendar: any
         $: JQueryStatic
     }
 }
@@ -81,12 +80,14 @@ function delayedReload(ms: number) {
 window.delayedReload = delayedReload
 
 const siteData = {
-    calendarSelection: []
+    calendarSelection: [] as {date: string, points: number}[]
 }
+
 export {siteData}
 
 export function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
+    if (null == elCalendar) return
     // @ts-ignore
     const myCalendar = new jsCalendar(elCalendar, new Date(), {
         dayFormat: "DDD",
@@ -176,22 +177,42 @@ export function initCalendar() {
 
 $(() => {
 
-    new SlimSelect({
-        select: '#food-selection'
-    })
+    if (0 < $("#food-selection").length) {
+        new SlimSelect({
+            select: '#food-selection'
+        })
+    }
 
-    Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);
+    if (0 < $("[name='food-log-form']").length) {
+        Inputmask({"alias": "decimal"}).mask($("[name='amount']", "[name='food-log-form']")[0]);
+    }
 
-    const dtSettings = {
-        paging: false,
-        lengthChange: false,
-        searching: false,
-    } as DataTables.Settings
+    if (0 < $("#journal-table").length) {
+        const dtSettings = {
+            paging: false,
+            lengthChange: false,
+            searching: false,
+        } as DataTables.Settings
 
-    $("#journal-table").DataTable(dtSettings) as DataTables.Api
+        $("#journal-table").DataTable(dtSettings) as DataTables.Api
+    }
 
     initCalendar()
 
-    new OffCanvas($("#offCanvas"))
-    new OffCanvas($("#offCanvas2"))
+    if (0 < $("#offCanvas").length) {
+        new OffCanvas($("#offCanvas"))
+    }
+    if (0 < $("#offCanvas2").length) {
+        new OffCanvas($("#offCanvas2"))
+    }
+
+    $(document).on("showMessage", function (e) {
+        console.log(e)
+        if (dlv(e, "detail.message")) {
+            $.notify(e.detail.message, e.detail.level);
+        } else {
+            $.notify("unknown message", "success");
+        }
+    });
+
 });

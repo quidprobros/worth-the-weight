@@ -1,43 +1,7 @@
 <?
 use Carbon\Carbon;
 
-if (empty($journal_day_offset)) {
-    $journal_view_date = Carbon::now()->format("D M j, Y");
-    $journal_date = Carbon::now()->format("Y-m-d");
-    $colloqial_date = "&nbsp";
-} else {
-    $journal_view_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("D M j, Y");
-    $journal_date = date_create()->add(date_interval_create_from_date_string ("{$journal_day_offset} days"))->format("Y-m-d 00:00:00");
-
-    switch(strtotime($journal_date)) {
-        case (strtotime("yesterday")):
-            $colloqial_date = "yesterday";
-            break;
-        case (date("Y-m-d")):
-            $colloqial_date = "today";
-            break;
-        default:
-            $colloqial_date = "&nbsp;";
-            break;
-    }
-}
-
-$stats = Flight::stats();
-
-$records = Flight::journalItem()->whereDate("date", "=", $journal_date)->get();
-
-$today_points = $stats->points($journal_day_offset);
-
-
-$daily_model = \App\Models\Daily::firstWhere("date", $journal_date);
-if (empty($daily_model)) {
-    $daily_model = \App\Models\Daily::create([
-        "date" => $journal_date,
-        "exercised" => 0
-    ]);
-}
-
-$exercised = $daily_model->exercised;
+$exercised = 0;
 
 $prev = $journal_day_offset - 1;
 $next = $journal_day_offset + 1;
@@ -55,7 +19,7 @@ $next = $journal_day_offset + 1;
             <a hx-get='<?=Flight::url()->sign("/journal/rel/0")?>'
                hx-swap="outerHTML"
                hx-trigger="click"
-               hx-target='#this-container'><h1 style='margin:0'><?=$journal_view_date?></h1></a>
+               hx-target='#this-container'><h1 style='margin:0'><?=$date->format("D M j, Y")?></h1></a>
             <a class='button' title="see entry for tomorrow"
                hx-get='<?=Flight::url()->sign("/journal/rel/{$next}")?>'
                hx-swap="outerHTML"
@@ -78,8 +42,6 @@ $next = $journal_day_offset + 1;
         <div class='callout'>
             <div class="table-scroll">
                 <?=Flight::render("partials/journal", [
-                    "records" => \Flight::journalItem()->whereDate("date", "=", Carbon::now()->addDays($journal_day_offset))->get(),
-                    "offset" => $journal_day_offset,
                 ])?>
             </div>
         </div>
@@ -89,7 +51,7 @@ $next = $journal_day_offset + 1;
  if ("undefined" != typeof $) {
      $(function() {
          qs.set({
-             omo: <?=$journal_day_offset?>
+             omo: '<?Flight::get('omo')?>'
          });
      });
  }

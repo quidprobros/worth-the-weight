@@ -51,14 +51,21 @@ Just a website for *local* personal use.
 - [x] optimize resource loading (js/css)
 - [x] finish swapping weird html solution for header triggered events (htmx)
 - [x] click date to jump to page state
-- [ ] fix bug that causes wrong date to be highlighted on calendar
+- [x] fix bug that causes wrong date to be highlighted on calendar
+- [ ] bootstrap script
+- [ ] multiuser support
 
 # spring 4 (reach)
+- [ ] when to use flight mapped or not?
 - [x] querystring for management of certain states
 - [ ] store and track goals
 - [ ] submit new foods
 - [ ] show popup when user's been a way for a while
+- [ ] add tooltip with 'multiplier' explaination
+- [ ] reduce redundant queries
 
+
+- [ ] going through query log help me to reduce redundancies
 
 # Security sprint
 - [x] use signed urls (makes it difficult for endpoints to be called arbitrarily)
