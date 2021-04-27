@@ -69,7 +69,9 @@ $capsule->addConnection([
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
-Capsule::enableQueryLog();
+if (DEBUG) {
+    Capsule::enableQueryLog();
+}
 
 try {
     Flight::set("ActiveUser", \App\Models\ActiveUser::init());
@@ -303,6 +305,7 @@ Flight::route('GET /modals/(@modal)', function ($modal) {
 Flight::route('GET /journal/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
+        echo 'lol';
     }
     try {
         $controller = new App\Controllers\HomeController(
@@ -311,7 +314,6 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
             Flight::get("bpo")
         );
         $controller->useOtherRoute("partials/offcanvas-menu");
-        bdump(get_object_vars($controller));
         $controller();
     } catch (Exception $e) {
         Debugger::log($e->getMessage());
@@ -463,8 +465,8 @@ if (true === DEBUG) {
 }
 
 Flight::map('notFound', function () {
-    echo "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
-    return;
+    $message = "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
+    Flight::halt('404', $message);
 });
 
 Flight::map('error', function ($ex) {
