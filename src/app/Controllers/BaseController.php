@@ -28,6 +28,10 @@ abstract class BaseController
             throw new Exception("Route must be defined!");
         }
 
+        if (true != Flight::view()->exists($this->route)) {
+            throw new Exception("template not found: {$this->route}");
+        }
+
         return Flight::render(
             $this->route,
             get_object_vars($this),

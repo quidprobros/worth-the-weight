@@ -14,7 +14,7 @@ use App\Models\ActiveUser;
 
 const WEB_ROOT = __DIR__;
 const FILE_ROOT = __DIR__ . "/..";
-const DEBUG = true;
+define("DEBUG", "development" === $_SERVER['APPLICATION_ENV']);
 
 require_once FILE_ROOT . "/vendor/autoload.php";
 
@@ -30,15 +30,11 @@ Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
-
 if (true != DEBUG || "false" == Flight::request()->query['debug']) {
-    Debugger::$showBar = false;
-    //    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/tracy');
+    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/tracy');
 } else {
-    //    Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
+    Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
 }
-
-Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/tracy');
 
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', '../views');
@@ -309,8 +305,13 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
         Flight::notFound();
     }
     try {
-        $controller = new App\Controllers\HomeController(Flight::request(), $offset, Flight::get("bpo"));
+        $controller = new App\Controllers\HomeController(
+            Flight::request(),
+            $offset,
+            Flight::get("bpo")
+        );
         $controller->useOtherRoute("partials/offcanvas-menu");
+        bdump(get_object_vars($controller));
         $controller();
     } catch (Exception $e) {
         Debugger::log($e->getMessage());
@@ -327,7 +328,11 @@ Flight::route('GET /home/right-canvas', function () {
 
 Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
     try {
-        $controller = new App\Controllers\HomeController(Flight::request(), $offset, Flight::get('bpo'));
+        $controller = new App\Controllers\HomeController(
+            Flight::request(),
+            $offset,
+            Flight::get('bpo')
+        );
         $controller->useOtherRoute("partials/offcanvas-menu");
         $controller();
     } catch (Exception $e) {
@@ -395,6 +400,7 @@ Flight::route('POST /exercised/rel/@offset', function ($offset) {
             Flight::request(),
             $offset
         );
+        $controller->setRoute("partials/exercised-statement");
         $controller->saveUpdate();
 
         $controller();
@@ -462,8 +468,12 @@ Flight::map('notFound', function () {
 });
 
 Flight::map('error', function ($ex) {
-    $bs = new Tracy\BlueScreen();
-    $bs->render($ex);
+    if (DEBUG) {
+        $bs = new Tracy\BlueScreen();
+        $bs->render($ex);
+    } else {
+        Flight::halt("404", "BRB");
+    }
     Debugger::log($ex);
 });
 

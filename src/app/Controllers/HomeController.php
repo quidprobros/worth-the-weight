@@ -14,6 +14,14 @@ class HomeController extends BaseController
     public $date;
     public $journal_day_offset;
     public $big_picture_day_offset;
+    public $records;
+    public $exercised_omo;
+    public $exercised_bpo;
+    public $foods;
+    public $title;
+    public $stats;
+    public $today_points;
+    public $journal_points;
 
     public function __construct(
         Request $req,
@@ -32,14 +40,14 @@ class HomeController extends BaseController
         $this->date_bpo = date_create()
                         ->add(date_interval_create_from_date_string("{$this->big_picture_day_offset} days"));
 
-        $this->records = Flight::get("ActiveUser")->onDate($this->date);
+        $this->records = Flight::get("ActiveUser")->onDate($this->date_omo);
 
         $bpo_view_date = $this->date_bpo->format("D M j, Y");
         $bpo_date = $this->date_bpo->format("Y-m-d 00:00:00");
 
         switch (strtotime($bpo_date)) {
             case (strtotime("yesterday")):
-                $title = "yesterday";
+                $title = "Count for {$bpo_view_date}<br>yesterday";
                 break;
             case (date("Y-m-d")):
                 $title = "today";
@@ -53,6 +61,7 @@ class HomeController extends BaseController
         $this->title = $title;
         $this->stats = Flight::stats();
         $this->today_points = $this->stats->points($this->big_picture_day_offset);
+        $this->journal_points = $this->stats->points($this->journal_day_offset);
 
         $bpoExercisedModel = Flight::get("ActiveUser")
                            ->exercises()->whereDate("date", "=", $this->date_bpo)->get()->first();
@@ -61,5 +70,8 @@ class HomeController extends BaseController
         $omoExercisedModel = Flight::get("ActiveUser")
                            ->exercises()->whereDate("date", "=", $this->date_omo)->get()->first();
         $this->exercised_omo = empty($omoExercisedModel) ? 0 : $omoExercisedModel->exercised;
+
+        $this->count = $this->records->count();
+
     }
 }

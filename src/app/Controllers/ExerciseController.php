@@ -7,15 +7,17 @@ use flight\net\Request;
 use Flight;
 use App\Models\Exercise;
 
-class ExerciseController
+class ExerciseController extends BaseController
 {
     public $route;
 
     public function __construct(Request $request, $offset)
     {
+        bdump($request->data);
         $this->request = $request;
         $this->offset = $offset;
-        $this->exercised = (int) $request->data['exercised'];
+        $this->exercised = isset($request->data['exercised']) ? 1 : 0; // from checkbox
+        $this->exercised_bpo = &$this->exercised;
     }
 
     public function saveUpdate()

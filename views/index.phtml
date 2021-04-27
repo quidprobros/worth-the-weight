@@ -54,13 +54,11 @@ Tracy\Debugger;
                  hx-trigger="path-deps"
                  path-deps="/journal-entry">
                 <?=Flight::render("partials/offcanvas-menu", [
-                    "journal_day_offset" => Flight::get('omo'),
                 ])?>
             </div>
 
             <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
                 <?=Flight::render("partials/offcanvas-graphs", [
-                    "journal_day_offset" => Flight::get('ogo'),
                 ])?>
             </div>
             <div class="off-canvas-content" data-off-canvas-content>
