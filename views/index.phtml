@@ -31,14 +31,14 @@ Tracy\Debugger;
         <div class="title-bar">
             <div class="title-bar-left">
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
-                <span class="title-bar-title">View <?=Flight::auth()->getUsername()?>'s journal</span>
+                <span class="title-bar-title">View journal</span>
                 <span><button class="small button" hx-swap='none' hx-post="/logout">log out</button></span>
             </div>
             <div class='text-center'
                  hx-get='/food-support-message'
                  hx-trigger="path-deps"
                  hx-swap='innerHTML'
-                 path-deps="/journal-entry"><?=Flight::welcome()?></div>
+                 path-deps="/journal-entry"><?=Flight::welcome()?>, <?=Flight::auth()->getUsername()?></div>
             <div class="title-bar-right">
                 <span><?=" The date is " . Carbon::now()->format("D M j, Y")?></span>
             </div>
