@@ -20,12 +20,18 @@ class BeefController
 
         list($min, $max) = $dates;
 
-        $payload = new Payload();
+        $this->payload = new Payload();
 
-        if (false === strtotime($min)  || false == strtotime($max)) {
-            $payload->setStatus(PayloadStatus::ERROR);
-            $payload->setMessages(["One or both dates are invalid"]);
-            throw new \Exception("One or both dates are invalid");
+        if (false === strtotime($min) || false == strtotime($max)) {
+            $this->payload->setStatus(PayloadStatus::ERROR);
+            $this->payload->setMessages(["One or both dates are invalid"]);
+            throw new Exception("One or both dates are invalid");
+        }
+
+        $absoluteDiff = abs((new Carbon($min))->diffInDays(new Carbon($max)));
+
+        if (\App\MAX_DATA_REQUEST_RANGE < $absoluteDiff) {
+            throw new Exception("Too much data requested");
         }
 
         $query = Flight::get("ActiveUser")->journal()
@@ -42,10 +48,8 @@ class BeefController
         foreach ($records as $date => $item) {
             $return[] = ["date" => $date, "points" => $item->sum('points')];
         }
-        $payload->setStatus(PayloadStatus::SUCCESS);
-        $payload->setOutput($return);
-
-        $this->payload = $payload;
+        $this->payload->setStatus(PayloadStatus::SUCCESS);
+        $this->payload->setOutput($return);
     }
 
     public function getPayload()

@@ -8,7 +8,7 @@ use Tracy\Debugger;
 
 class RedirectDateController
 {
-    private $diff;
+    private $diff = 0;
 
     public function __construct(string $date)
     {

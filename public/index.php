@@ -18,9 +18,6 @@ const DEBUG = true;
 
 require_once FILE_ROOT . "/vendor/autoload.php";
 
-$whoops = new \Whoops\Run();
-$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
-
 App\Config::init();
 
 if (!file_exists(FILE_ROOT . '/tracy')) {
@@ -30,16 +27,18 @@ if (!file_exists(FILE_ROOT . '/tracy')) {
 session_start();
 Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
-
-Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
 Debugger::$strictMode = true;
+Debugger::getBar()->addPanel(new App\TracyExtension());
 
 
-if (true != DEBUG) {
+if (true != DEBUG || "false" == Flight::request()->query['debug']) {
     Debugger::$showBar = false;
+    //    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/tracy');
+} else {
+    //    Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
 }
 
-Tracy\Debugger::getBar()->addPanel(new App\TracyExtension());
+Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/tracy');
 
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', '../views');
@@ -133,13 +132,13 @@ Flight::route("GET /login", function () {
     Flight::render("login", []);
 });
 
-Flight::route("POST /signin", function () {
+Flight::route("POST /login", function () {
     /* This route MUST come SECOND */
 
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->loginUser();
-        Flight::hxheader('Logging in ...', 'error');
+        Flight::hxheader('Logging in ...');
         header("HX-Redirect: /home");
         //
     } catch (\Delight\Auth\InvalidEmailException $e) {
@@ -192,7 +191,7 @@ Flight::route("POST /register", function () {
     }
 });
 
-Flight::route("/logout", function () {
+Flight::route("POST /logout", function () {
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->logoutUser();
@@ -204,6 +203,15 @@ Flight::route("/logout", function () {
         Flight::hxheader("There was an error logging out. Oops!", "error");
     }
 });
+
+Flight::route('*', function ($route) {
+    /* This route MUST come SECOND */
+    if (false == Flight::auth()->isLoggedIn()) {
+        Flight::redirect("/login", 302);
+        return false;
+    }
+    return true;
+}, true);
 
 Flight::route('GET *', function ($route) {
     $data = Flight::request()->query;
@@ -232,27 +240,18 @@ Flight::route('GET *', function ($route) {
         $data['ogo'] = 0;
     }
 
-    Flight::set("bpo", $data['bpo']);
-    Flight::set("omo", $data['omo']);
+    Flight::set("bpo", $data['bpo']); // big-picture
+    Flight::set("omo", $data['omo']); // journal
     Flight::set("ogo", $data['ogo']);
-    return true;
-}, true);
-
-Flight::route('*', function ($route) {
-    /* This route MUST come SECOND */
-    if (false == Flight::auth()->isLoggedIn()) {
-        Flight::redirect("/login", 302);
-        return false;
-    }
     return true;
 }, true);
 
 Flight::route('GET /(home|index)', function () {
     $controller = new App\Controllers\HomeController(
         Flight::request(),
-        Flight::get('omo')
+        Flight::get('omo'),
+        Flight::get('bpo')
     );
-    $controller->index();
     $controller();
 });
 
@@ -270,6 +269,7 @@ Flight::route('GET /beef/@min/@max', function ($min, $max) {
         return Flight::json($controller->getPayload());
     } catch (Exception $e) {
         Debugger::log($e->getMessage());
+        return Flight::json([]);
     }
 });
 
@@ -304,27 +304,12 @@ Flight::route('GET /modals/(@modal)', function ($modal) {
     }
 });
 
-Flight::route('GET /journal-total/@date', function ($date) {
-    $sum = Flight::get("ActiveUser")->onDate($date)->sum("points");
-
-    $payload = new Payload();
-
-    $payload->setStatus(PayloadStatus::SUCCESS);
-    $payload->setOutput([
-        "has_entries" => (0 < $sum ? true : false),
-        "total" => $sum
-    ]);
-
-    return Flight::json($payload->getOutput());
-});
-
 Flight::route('GET /journal/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
     try {
-        $controller = new App\Controllers\HomeController(Flight::request(), $offset);
-        $controller->index();
+        $controller = new App\Controllers\HomeController(Flight::request(), $offset, Flight::get("bpo"));
         $controller->useOtherRoute("partials/offcanvas-menu");
         $controller();
     } catch (Exception $e) {
@@ -342,8 +327,7 @@ Flight::route('GET /home/right-canvas', function () {
 
 Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
     try {
-        $controller = new App\Controllers\HomeController(Flight::request(), $offset);
-        $controller->index();
+        $controller = new App\Controllers\HomeController(Flight::request(), $offset, Flight::get('bpo'));
         $controller->useOtherRoute("partials/offcanvas-menu");
         $controller();
     } catch (Exception $e) {
@@ -351,7 +335,7 @@ Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
     }
 });
 
-Flight::route('GET /big-picture/rel/@offset', function ($offset) {
+Flight::route('GET /home/big-picture/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -359,9 +343,9 @@ Flight::route('GET /big-picture/rel/@offset', function ($offset) {
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
+            Flight::get('omo'),
             $offset
         );
-        $controller->index();
         $controller->useOtherRoute("partials/big-picture");
         $controller();
     } catch (Exception $e) {
@@ -374,19 +358,14 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
         Flight::notFound();
     }
 
-    if (false == is_numeric($id)) {
-        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Unknown deletion candidate"}}');
-        Flight::halt(204);
-    }
-
     try {
-        $item = User::journalItem()::findOrFail($id);
-        $item->delete();
-        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "success", "message" : "Deleted"}}');
+        $controller = new App\Controllers\JournalEntryController(Flight::request());
+        $controller->deleteEntry($id);
+        Flight::hxheader("Deleted.");
         Flight::halt(204);
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
-        header('HX-Trigger-After-Settle: {"showMessage":{"level" : "error", "message" : "Something went wrong. Contact Chris."}}');
+        Flight::hxheader("Something went wrong. Contact Chris.", "error");
         Flight::halt(204);
     }
 });
@@ -410,16 +389,18 @@ Flight::route('POST /exercised/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
-    $offset = (int) $offset;
-    $exercised = (int) Flight::request()->data['exercised'];
 
-    $x = App\Models\JournalItem::updateOrCreate([
-        "date" => Carbon::now()->addDays($offset)->format("Y-m-d"),
-    ], [
-        "exercised" => 1,
-        "userID" => Flight::get("ActiveUser")->id,
-    ]);
-    return Flight::render("partials/exercised-statement", ["exercised" => $exercised]);
+    try {
+        $controller = new App\Controllers\ExerciseController(
+            Flight::request(),
+            $offset
+        );
+        $controller->saveUpdate();
+
+        $controller();
+    } catch (Exception $e) {
+        Debugger::log($e->getMessage());
+    }
 });
 
 Flight::map("welcome", function () {
@@ -471,7 +452,7 @@ Flight::route("GET /bootstrap", function () {
 if (true === DEBUG) {
     Flight::route('GET /test', function () {
         $controller = new App\Controllers\TestController('test');
-        $controller->index();
+        $controller();
     });
 }
 
@@ -480,10 +461,9 @@ Flight::map('notFound', function () {
     return;
 });
 
-Flight::map('error', function ($ex) use ($whoops) {
-    if (Flight::request()->method === "GET") {
-        $whoops->handleException($ex);
-    }
+Flight::map('error', function ($ex) {
+    $bs = new Tracy\BlueScreen();
+    $bs->render($ex);
     Debugger::log($ex);
 });
 

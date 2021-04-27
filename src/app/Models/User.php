@@ -17,7 +17,12 @@ class User extends Model
     {
         return $this->hasMany(JournalItem::class, "userID");
     }
- 
+
+    public function exercises()
+    {
+        return $this->hasMany(Exercise::class, "user_id");
+    }
+
     public function today()
     {
         return $this->journal()
@@ -45,7 +50,4 @@ class User extends Model
             ;
     }
 
-    public function exercises() {
-        return $this->hasMany(Exercise::class, "user_id");
-    }
 }

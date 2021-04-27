@@ -1,8 +1,6 @@
 <?
 use Carbon\Carbon;
 
-$exercised = 0;
-
 $prev = $journal_day_offset - 1;
 $next = $journal_day_offset + 1;
 ?>
@@ -19,7 +17,7 @@ $next = $journal_day_offset + 1;
             <a hx-get='<?=Flight::url()->sign("/journal/rel/0")?>'
                hx-swap="outerHTML"
                hx-trigger="click"
-               hx-target='#this-container'><h1 style='margin:0'><?=$date->format("D M j, Y")?></h1></a>
+               hx-target='#this-container'><h1 style='margin:0'><?=$date_omo->format("D M j, Y")?></h1></a>
             <a class='button' title="see entry for tomorrow"
                hx-get='<?=Flight::url()->sign("/journal/rel/{$next}")?>'
                hx-swap="outerHTML"
@@ -35,7 +33,7 @@ $next = $journal_day_offset + 1;
         <div class="callout">
             <strong>Consumed: <?=$today_points?> points</strong>
             <br>
-            <strong>Exercised this day: <?=$exercised ? "YES!": "NOPE"?></strong>
+            <strong>Exercised this day: <?=$exercised_omo ? "YES!": "NOPE"?></strong>
         </div>
     </div>
     <div class="cell">
@@ -51,7 +49,7 @@ $next = $journal_day_offset + 1;
  if ("undefined" != typeof $) {
      $(function() {
          qs.set({
-             omo: '<?Flight::get('omo')?>'
+             omo: '<?=$journal_day_offset?>'
          });
      });
  }

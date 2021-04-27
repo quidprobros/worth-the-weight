@@ -20,7 +20,6 @@
         }
     ],
     "require-dev": {
-        "filp/whoops": "^2.12",
         "kint-php/kint": "^3.3",
         "tracy/tracy": "^2.8",
         "jdorn/sql-formatter": "dev-master"

@@ -65,4 +65,13 @@ class JournalEntryController
         ]);
         return $this->active_user->journal()->save($entry);
     }
+
+    public function deleteEntry($id)
+    {
+        if (true != is_numeric($id)) {
+            throw new \Exception("Unknown id");
+        }
+        $item = $this->active_user->journal()->findOrFail($id);
+        $item->delete();
+    }
 }

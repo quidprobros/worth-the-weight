@@ -16,7 +16,7 @@ use Tracy\Debugger;
                 <h1>You are currently logged in as "<?=Flight::auth()->getUsername()?>"</h1>
                 <a href="/logout">Not <?=Flight::auth()->getUsername()?>?</a>
             <? } ?>
-            <form hx-post="/signin" class="log-in-form" hx-swap="none">
+            <form hx-post="/login" class="log-in-form" hx-swap="none">
                 <h4 class="text-center">Log in with your email address</h4>
                 <label>Email
                     <input type="email" name="login_email" placeholder="somebody@somewhere.com">

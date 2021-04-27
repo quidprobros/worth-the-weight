@@ -12,12 +12,14 @@ dependencies:
   query-state: 4.3.0
   simple-jscalendar: github.com/paxperscientiam/jsCalendar/28f9b72d1c348e45135012d395d4b660e86419cc
   slim-select: 1.27.0
+  spark-md5: 3.0.1
 devDependencies:
   '@types/datatables.net': 1.10.19
   '@types/inputmask': 5.0.0
   '@types/jquery': 3.5.5
-  '@types/node': 14.14.40
+  '@types/node': 14.14.41
   '@types/notifyjs-browser': 0.0.0
+  '@types/spark-md5': 3.0.2
   '@typescript-eslint/eslint-plugin': 4.22.0_9acede93a3623dd7abe65c65a7010e73
   '@typescript-eslint/parser': 4.22.0_eslint@7.24.0+typescript@4.2.4
   eslint: 7.24.0
@@ -189,6 +191,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-2HoZZGylcnz19ZSbvWhgWHqvprw1ZGHanxIrDWYykPD4CauLW4gcyLzCVfUN2kv/1t1F3CurQIdi+s1l9+XgEA==
+  /@types/node/14.14.41:
+    dev: true
+    resolution:
+      integrity: sha512-dueRKfaJL4RTtSa7bWeTK1M+VH+Gns73oCgzvYfHZywRCoPSd8EkXBL0mZ9unPTveBn+D9phZBaxuzpwjWkW0g==
   /@types/notifyjs-browser/0.0.0:
     dependencies:
       '@types/jquery': 3.5.5
@@ -199,6 +205,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-7EJYyKTL7tFR8+gDbB6Wwz/arpGa0Mywk1TJbNzKzHtzbwVmY4HR9WqS5VV7dsBUKQmPNr192jHr/VpBluj/hg==
+  /@types/spark-md5/3.0.2:
+    dev: true
+    resolution:
+      integrity: sha512-82E/lVRaqelV9qmRzzJ1PKTpyrpnT7mwdneKNJB9hUtypZDMggloDfFUCIqRRx3lYRxteCwXSq9c+W71Vf0QnQ==
   /@typescript-eslint/eslint-plugin/4.22.0_9acede93a3623dd7abe65c65a7010e73:
     dependencies:
       '@typescript-eslint/experimental-utils': 4.22.0_eslint@7.24.0+typescript@4.2.4
@@ -3815,6 +3825,10 @@ packages:
       node: '>= 8'
     resolution:
       integrity: sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
+  /spark-md5/3.0.1:
+    dev: false
+    resolution:
+      integrity: sha512-0tF3AGSD1ppQeuffsLDIOWlKUd3lS92tFxcsrh5Pe3ZphhnoK+oXIBTzOAThZCiuINZLvpiLH/1VS1/ANEJVig==
   /spdx-correct/3.1.1:
     dependencies:
       spdx-expression-parse: 3.0.1
@@ -4503,8 +4517,9 @@ specifiers:
   '@types/datatables.net': ^1.10.19
   '@types/inputmask': ^5.0.0
   '@types/jquery': ^3.5.5
-  '@types/node': ^14.14.40
-  '@types/notifyjs-browser': ^0.0.0
+  '@types/node': ^14.14.41
+  '@types/notifyjs-browser': 0.0.0
+  '@types/spark-md5': ^3.0.2
   '@typescript-eslint/eslint-plugin': ^4.22.0
   '@typescript-eslint/parser': ^4.22.0
   chart.js: ^2.9.4
@@ -4524,5 +4539,6 @@ specifiers:
   query-state: ^4.3.0
   simple-jscalendar: github:paxperscientiam/jsCalendar
   slim-select: ^1.27.0
+  spark-md5: ^3.0.1
   ts-node: ^9.1.1
   typescript: ^4.2.4

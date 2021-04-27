@@ -19,8 +19,7 @@
                 <td></td>
             </tr>
         <? } ?>
-        <? foreach ($records as $record) { ?>
-            <? Debugger::log($record)?>
+        <? foreach ($records->get() as $record) { ?>
             <tr data-id='<?=$record->id?>'>
                 <?
                 $_date = $record->date;
