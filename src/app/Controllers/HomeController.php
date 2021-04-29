@@ -41,7 +41,6 @@ class HomeController extends BaseController
                         ->add(date_interval_create_from_date_string("{$this->big_picture_day_offset} days"));
 
         $this->records = Flight::get("ActiveUser")->onDate($this->date_omo);
-        bdump($this->records->first()->food->id);
 
         $bpo_view_date = $this->date_bpo->format("D M j, Y");
         $bpo_date = $this->date_bpo->format("Y-m-d 00:00:00");

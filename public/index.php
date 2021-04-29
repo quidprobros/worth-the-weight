@@ -292,7 +292,7 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
             $offset,
             Flight::get("bpo")
         );
-        $controller->useOtherRoute("partials/offcanvas-menu");
+        $controller->useOtherRoute("partials/journal");
         $controller();
     } catch (Exception $e) {
         Debugger::log($e->getMessage());
