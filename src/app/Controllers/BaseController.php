@@ -14,6 +14,9 @@ abstract class BaseController
 
     final public function setRoute(string $route)
     {
+        if (true != Flight::view()->exists($route)) {
+            throw new Exception("template not found: {$route}");
+        }
         $this->route = $route;
     }
 

@@ -115,6 +115,7 @@ Flight::map("verifySignature", function () {
         empty(Flight::request()->query->signature) ||
         true != Flight::url()->validate(Flight::request()->url)
     ) {
+        Debugger::log("Signature invalid");
         return false;
     }
     return true;
@@ -271,33 +272,12 @@ Flight::route('GET /beef/@min/@max', function ($min, $max) {
     }
 });
 
-Flight::route('GET /modals/(@modal)', function ($modal) {
-    if (true != preg_match('/^[a-z0-9\-]+$/i', $modal)) {
-        Debugger::log("Bad modal name: {$modal}");
-        Flight::halt(404);
-    }
-
-    $date = Flight::request()->query['date'];
-
-    if (false === strtotime($date)) {
-        Debugger::log("Bad date value: ${$date}");
-        Flight::halt(404);
-    }
-
-    $displayDate = (new Carbon($date))->format("D M j, Y");
-
-    $modalPath = "partials/modals/{$modal}";
-
+Flight::route('GET /modals/go-to-date-modal/@date', function ($date) {
     try {
-        if (true != Flight::view()->exists($modalPath)) {
-            throw new Exception("template not found: ${modalPath}");
-        }
-        Flight::render($modalPath, [
-            "date" => $date,
-            "displayDate" => $displayDate,
-        ]);
+        $controller = new App\Controllers\GotoDateModalController(Flight::request(), $date);
+        $controller();
     } catch (Exception $e) {
-        dump($e);
+        Debugger::log($e->getMessage());
         Flight::halt(404);
     }
 });
@@ -305,7 +285,6 @@ Flight::route('GET /modals/(@modal)', function ($modal) {
 Flight::route('GET /journal/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
-        echo 'lol';
     }
     try {
         $controller = new App\Controllers\HomeController(
@@ -366,13 +345,13 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     }
 
     try {
-        $controller = new App\Controllers\JournalEntryController(Flight::request());
+        $controller = new App\Controllers\JournalEntryRemoveController($id);
+        Debugger::log($controller->journal_entry_id);
         $controller->deleteEntry($id);
         Flight::hxheader("Deleted.");
-        Flight::halt(204);
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
-        Flight::hxheader("Something went wrong. Contact Chris.", "error");
+        Flight::hxheader("Something went wrong. Contact Chris!!", "error");
         Flight::halt(204);
     }
 });
@@ -436,7 +415,7 @@ Flight::route('GET /food-support-message', function () {
 Flight::route('POST /journal-entry', function () {
 
     try {
-        $controller = new App\Controllers\JournalEntryController(Flight::request());
+        $controller = new App\Controllers\JournalEntryCreateController(Flight::request());
     } catch (\App\Exceptions\FormException $e) {
         Flight::hxheader($e->getMessage(), "error");
         return;
@@ -477,6 +456,7 @@ Flight::map('error', function ($ex) {
         Flight::halt("404", "BRB");
     }
     Debugger::log($ex);
+    exit;
 });
 
 Flight::start();

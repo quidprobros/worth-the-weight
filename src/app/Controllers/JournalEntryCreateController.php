@@ -4,11 +4,12 @@ namespace App\Controllers;
 
 use App\Exceptions\FormException;
 use App\Models\JournalItem;
+use Exception;
 use Flight;
 use flight\net\Request;
 use Tracy\Debugger;
 
-class JournalEntryController
+class JournalEntryCreateController
 {
     private $active_user;
 
@@ -59,19 +60,11 @@ class JournalEntryController
         $entry = (new JournalItem())->create([
             "userID" => $this->active_user->id,
             "date" => $this->date,
-            "food" => $this->food_id,
+            "food_id" => $this->food_id,
             "quantity" => $this->amount,
             "points" => $this->amount * $this->food_model->points,
         ]);
-        return $this->active_user->journal()->save($entry);
-    }
 
-    public function deleteEntry($id)
-    {
-        if (true != is_numeric($id)) {
-            throw new \Exception("Unknown id");
-        }
-        $item = $this->active_user->journal()->findOrFail($id);
-        $item->delete();
+        return $this->active_user->journal()->save($entry);
     }
 }

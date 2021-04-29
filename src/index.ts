@@ -85,6 +85,8 @@ const siteData = {
 
 export {siteData}
 
+
+
 export function initCalendar() {
     const elCalendar = document.getElementById("my-jsCalendar");
     if (null == elCalendar) return
@@ -93,13 +95,11 @@ export function initCalendar() {
         dayFormat: "DDD",
         monthFormat: "MONTH YYYY"
     });
-
+-
     myCalendar.onDateClick((_event: Event, date: Date) => {
         // @ts-ignore
         const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD") as string
-        fetch("/modals/go-to-date-modal?" + new URLSearchParams({
-            date: strDate,
-        }).toString(), {
+        fetch(`/modals/go-to-date-modal/${strDate}`, {
             method: "GET",
             headers: {
                 'Content-Type': 'text/html'
@@ -119,8 +119,10 @@ export function initCalendar() {
                     $text.remove()
                 })
             })
+            .catch(err => {
+                console.log(err)
+            })
     })
-
 
     myCalendar.onMonthRender(<T extends {start: Date, end:Date}>(_index: number, _element: HTMLElement, info: T) => {
         //siteData.calendarSelection = []
@@ -173,6 +175,9 @@ export function initCalendar() {
 	  });
 	  // Refresh layout
 	  myCalendar.refresh();
+
+    
+
 }
 
 $(() => {

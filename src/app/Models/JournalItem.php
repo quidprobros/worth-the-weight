@@ -15,6 +15,6 @@ class JournalItem extends \Illuminate\Database\Eloquent\Model
 
     public function food()
     {
-        return $this->hasOneThrough(Food::class, JournalItem::class, "id", "id");
+        return $this->belongsTo(Food::class);
     }
 }

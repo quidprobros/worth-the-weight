@@ -6,9 +6,7 @@ use App\Models\ActiveUser;
 use Illuminate\Database\Capsule\Manager as DB;
 use App\Payload;
 
-$ex = $user->exercises;
+$ex = $user->journal()->findOrFail(16);
 
-foreach ($ex as $e) {
-    s($e->toArray());
-}
-?>
+
+!d($ex->delete());
