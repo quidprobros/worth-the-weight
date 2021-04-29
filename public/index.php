@@ -355,7 +355,6 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
 
     try {
         $controller = new App\Controllers\JournalEntryRemoveController($id);
-        Debugger::log($controller->journal_entry_id);
         $controller->deleteEntry($id);
         Flight::hxheader("Deleted.");
     } catch (\Exception $e) {

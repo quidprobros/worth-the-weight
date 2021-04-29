@@ -38,7 +38,6 @@ class JournalEntryCreateController
         try {
             $this->food_model = Flight::food()::findOrFail($formData['food-selection']);
         } catch (\Exception $e) {
-            Debugger::log($e->getMessage());
             throw new FormException("Sorry, this food item is not recognized.");
         }
 

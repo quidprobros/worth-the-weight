@@ -28,7 +28,6 @@ class SignUrl
         try {
             return $this->signer->sign($url, $this->validTime);
         } catch (\Exception $e) {
-            Debugger::log($e->getMessage());
             return "/404";
         }
     }

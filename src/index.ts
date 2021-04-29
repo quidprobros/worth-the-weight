@@ -125,7 +125,6 @@ export function initCalendar() {
     })
 
     myCalendar.onMonthRender(<T extends {start: Date, end:Date}>(_index: number, _element: HTMLElement, info: T) => {
-        //siteData.calendarSelection = []
         // @ts-ignore
         const min = jsCalendar.tools.dateToString(info.start, "YYYY-MM-DD") as string
         // @ts-ignore
