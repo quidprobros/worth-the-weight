@@ -444,7 +444,7 @@ Flight::route("GET /bootstrap", function () {
     Flight::render("bootstrap", []);
 });
 
-if (true === DEBUG) {
+if (true == Flight::get("debug_mode")) {
     Flight::route('GET /test', function () {
         $controller = new App\Controllers\TestController('test');
         $controller();
