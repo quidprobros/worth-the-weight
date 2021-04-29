@@ -30,10 +30,12 @@ Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
-if (true != DEBUG || "false" == Flight::request()->query['debug']) {
-    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/tracy');
-} else {
+Flight::set("debug_mode", true === DEBUG && "true" === Flight::request()->query['debug']);
+
+if (true == Flight::get("debug_mode")) {
     Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
+} else {
+    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/tracy');
 }
 
 Flight::set('flight.log_errors', true);
@@ -239,9 +241,16 @@ Flight::route('GET *', function ($route) {
         $data['ogo'] = 0;
     }
 
+    // debug
+    if (true == isset($data['debug'])) {
+        $data['debug'] = true;
+    }
+
     Flight::set("bpo", $data['bpo']); // big-picture
     Flight::set("omo", $data['omo']); // journal
     Flight::set("ogo", $data['ogo']);
+    Flight::set("debug_mode", $data['debug']);
+
     return true;
 }, true);
 
@@ -449,14 +458,13 @@ Flight::map('notFound', function () {
 });
 
 Flight::map('error', function ($ex) {
-    if (DEBUG) {
+    Debugger::log($ex->getMessage());
+    if (true == Flight::get("debug_mode")) {
         $bs = new Tracy\BlueScreen();
         $bs->render($ex);
     } else {
-        Flight::halt("404", "BRB");
+        throw $ex;
     }
-    Debugger::log($ex);
-    exit;
 });
 
 Flight::start();

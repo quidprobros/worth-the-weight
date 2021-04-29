@@ -1,7 +1,6 @@
 <?
 use Carbon\Carbon,
 Tracy\Debugger;
-
 ?>
 <!-- mode: web -->
 <!doctype html>
@@ -17,7 +16,7 @@ Tracy\Debugger;
         <? foreach ($records as $record) { ?>
             <?=$record->id?>
         <? } ?>
-        <? if (true === DEBUG) { ?>
+        <? if (true === Flight::get("debug_mode")) { ?>
             <button type="button"
                     onclick="delayedReload(500)"
                     class="button alert"
@@ -27,7 +26,6 @@ Tracy\Debugger;
                     hx-post="/drop-food-log">
                 DELETE ENTIRE FOOD LOG</button>
         <? } ?>
-        <div hx-trigger="showMessage"></div>
         <div class="title-bar">
             <div class="title-bar-left">
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>

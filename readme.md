@@ -63,13 +63,12 @@ Just a website for *local* personal use.
 - [ ] show popup when user's been a way for a while
 - [ ] add tooltip with 'multiplier' explaination
 - [ ] reduce redundant queries
-
-
-- [ ] going through query log help me to reduce redundancies
+- [ ] going through query log help me to find redudnant db queries
 
 # Security sprint
 - [x] use signed urls (makes it difficult for endpoints to be called arbitrarily)
 - [ ] doorway to manage walks
+- [ ] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model
 
 # OWASP Zap (passive scan)
 - [x] X-Frame-Options Header Not Set

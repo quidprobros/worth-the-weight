@@ -13,7 +13,7 @@ $next = $journal_day_offset + 1;
                hx-indicator="#indicator"
                hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$prev}")?>'
                hx-target='#offCanvas'><i class="gg-arrow-left-r"></i></a>
-            <a hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/rel/0")?>'
+            <a hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/0")?>'
                hx-trigger="click"
                hx-target='#offCanvas'><h1 style='margin:0'><?=$date_omo->format("D M j, Y")?></h1></a>
             <a class='button' title="see entry for tomorrow"

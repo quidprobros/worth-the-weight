@@ -23,7 +23,7 @@ Tracy\Debugger::log($records->count());
             </tr>
         <? } ?>
         <? foreach ($records->get() as $record) { ?>
-            <tr data-id='<?=$record->id?>'>
+            <tr>
                 <?
                 $_date = $record->date;
                 if (false == strtotime($_date)) {
@@ -32,12 +32,12 @@ Tracy\Debugger::log($records->count());
                     $date = date_create($_date)->format("m/d/Y");
                 }
                 ?>
-                <td id="date-<?=$record->id?>" data-rowid='<?=$record->id?>' data-sort="<?=strtotime($_date)?>" data-name='date'><?=$date?></td>
-                <td id="food-<?=$record->id?>" data-rowid='<?=$record->id?>' data-name='food'><?=$record->food->food_name?></td>
-                <td id="quantity-<?=$record->id?>" class="text-right">
+                <td data-sort="<?=strtotime($_date)?>" data-name='date'><?=$date?></td>
+                <td data-name='food'><?=$record->food->food_name?></td>
+                <td data-name="quantity" class="text-right">
                     <?=$record->quantity?>
                 </td>
-                <td id="points-<?=$record->id?>" class="text-right" data-rowid="<?=$record->id?>" data-name='points'><?=number_format($record->points, 2)?></td>
+                <td class="text-right" data-name='points'><?=number_format($record->points, 2)?></td>
                 <td>
                     <div class="button-group stacked" role="group">
                         <button type="button" class="button" hx-delete='<?=Flight::url()->sign("/journal-entry/{$record->id}")?>'>
