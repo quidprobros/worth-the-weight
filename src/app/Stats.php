@@ -61,7 +61,7 @@ class Stats
     public function points(int $index): int
     {
         return (int) \Flight::journalItem()
-            ->where("userID", Flight::auth()->getUserId())
+            ->where("user_id", Flight::auth()->getUserId())
             ->whereDate("date", "=", Carbon::now()->addDays($index))
             ->sum('points');
     }
@@ -69,7 +69,7 @@ class Stats
     public function getPointsByDate(string $journalDate)
     {
         return \Flight::journalItem()
-            ->where("userID", Flight::auth()->getUserId())
+            ->where("user_id", Flight::auth()->getUserId())
             ->first()
             ->getSum($journalDate);
     }

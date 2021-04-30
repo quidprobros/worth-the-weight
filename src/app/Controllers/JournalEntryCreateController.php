@@ -57,7 +57,7 @@ class JournalEntryCreateController
     public function saveEntry()
     {
         $entry = (new JournalItem())->create([
-            "userID" => $this->active_user->id,
+            "user_id" => $this->active_user->id,
             "date" => $this->date,
             "food_id" => $this->food_id,
             "quantity" => $this->amount,

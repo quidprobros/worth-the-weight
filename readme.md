@@ -64,6 +64,7 @@ Just a website for *local* personal use.
 - [ ] add tooltip with 'multiplier' explaination
 - [ ] reduce redundant queries
 - [ ] going through query log help me to find redudnant db queries
+- [ ] must have bootstrap
 
 # Security sprint
 - [x] use signed urls (makes it difficult for endpoints to be called arbitrarily)

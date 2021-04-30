@@ -18,7 +18,8 @@ define("DEBUG", "development" === $_SERVER['APPLICATION_ENV']);
 
 require_once FILE_ROOT . "/vendor/autoload.php";
 
-App\Config::init();
+// sets headers and stuff
+App\Config::init(App\DB_DATABASE);
 
 if (!file_exists(FILE_ROOT . '/tracy')) {
     mkdir(FILE_ROOT . '/tracy', 0755, true);
@@ -80,7 +81,7 @@ try {
 } catch (ModelNotFoundException $e) {
     Flight::set("ActiveUser", null);
 } catch (Exception $e) {
-    echo 'Unknown error';
+    Debugger::log($e->getMessage());
     Flight::stop();
 }
 
@@ -440,14 +441,13 @@ Flight::route('POST /journal-entry', function () {
     Flight::hxheader("Success!");
 });
 
-Flight::route("GET /bootstrap", function () {
-    Flight::render("bootstrap", []);
-});
-
 if (true == Flight::get("debug_mode")) {
     Flight::route('GET /test', function () {
         $controller = new App\Controllers\TestController('test');
         $controller();
+    });
+    Flight::route('GET /bootstrapper', function () {
+        Flight::render("bootstrapper", []);
     });
 }
 

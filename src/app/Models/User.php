@@ -15,7 +15,7 @@ class User extends Model
 
     public function journal()
     {
-        return $this->hasMany(JournalItem::class, "userID");
+        return $this->hasMany(JournalItem::class, "user_id");
     }
 
     public function exercises()

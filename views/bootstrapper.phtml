@@ -1,0 +1,69 @@
+<?PHP
+
+use Illuminate\Database\Capsule\Manager as Capsule;
+
+// oh shit, it's easy!
+//Capsule::connection($connection)
+$capsule = new Capsule();
+$capsule->addConnection([
+    "driver" => App\DB_DRIVER,
+    "database" => FILE_ROOT . "/db/test2.db",
+], "migrate");
+
+try {
+    $db = new PDO("sqlite:../db/test2.db");
+
+    // import and execute script for auth users
+    $auth_script = FILE_ROOT . '/vendor/delight-im/auth/Database/SQLite.sql';
+    $sql = file_get_contents($auth_script);
+    $db->exec($sql);
+
+
+    // drop all tables and then create
+    $capsule->getConnection('migrate')
+            ->getSchemaBuilder()
+            ->dropIfExists('exercise_records');
+
+    $capsule->getConnection('migrate')
+            ->getSchemaBuilder()
+            ->dropIfExists('points_records');
+
+    $capsule->getConnection('migrate')
+            ->getSchemaBuilder()
+            ->dropIfExists('food_records');
+
+    $capsule->getConnection('migrate')
+            ->getSchemaBuilder()
+            ->create('exercise_records', function ($table) {
+                $table->id();
+                $table->integer("user_id");
+                $table->foreign('user_id')->references("id")->on("users");
+                $table->integer('exercised')->default(0);
+                $table->date('date');
+                $table->timestamps();
+            });
+
+    $capsule->getConnection('migrate')
+            ->getSchemaBuilder()
+            ->create('points_records', function ($table) {
+                $table->id();
+                $table->integer("user_id");
+                $table->foreign('user_id')->references("id")->on("users");
+                $table->integer("food_id");
+                $table->foreign('food_id')->references("id")->on("food_records");
+                $table->float('quantity')->default(0.0);
+                $table->dateTime('date');
+                $table->timestamps();
+            });
+
+    $capsule->getConnection("migrate")
+            ->getSchemaBuilder()
+            ->create("food_records", function ($table) {
+                $table->id();
+                $table->string('food_name');
+                $table->float('points');
+                $table->timestamps();
+            });
+} catch (Exception $e) {
+    s($e->getMessage());
+}

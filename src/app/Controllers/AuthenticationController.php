@@ -11,8 +11,6 @@ use App\Exceptions\FormException;
 
 class AuthenticationController
 {
-    public $userID;
-
     private $data;
 
     // one year
