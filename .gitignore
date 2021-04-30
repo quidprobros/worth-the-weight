@@ -127,4 +127,4 @@ dist
 tracy/
 \.#*
 
-db
+/db

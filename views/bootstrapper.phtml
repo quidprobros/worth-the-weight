@@ -2,16 +2,75 @@
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-// oh shit, it's easy!
-//Capsule::connection($connection)
-$capsule = new Capsule();
-$capsule->addConnection([
-    "driver" => App\DB_DRIVER,
-    "database" => FILE_ROOT . "/db/test2.db",
-], "migrate");
+function red($text) {
+    $str = <<<HTML
+<p style='color:red;'>{$text}</p>
+HTML;
+    return $str;
+}
+
+$default = [
+    "dbname" => "wtw",
+];
+
+$custom = [];
+
+$shouldContinue = (1 == Flight::request()->query['build']) ? true : false;
+
+foreach (Flight::request()->query as $k => $v) {
+    switch ($k) {
+    case "dbname":
+        if (false == ctype_alpha($v)) {
+            echo red('dbname must be alphabetic, using default dbname "wtw"');
+            break;
+        }
+        $custom['dbname'] = $v;
+    }
+}
+
+$data = array_merge($default, $custom);
+
+$root = FILE_ROOT;
+$dbroot = $root . "/generated/db/";
+$dbpathrel = "./generated/db/" . $data['dbname'] . ".db";
+$dbpath = $dbroot . $data['dbname'] . ".db";
+
+$_dbpathrel = "./generated/db/" . $default['dbname'] . ".db";
+
+$dsn = "sqlite" . ":" . $dbpath;
+
+if (true !== $shouldContinue) {
+    echo <<<TXT
+This script will create a sqlite database with the structures required to run this application.
+<h1>Settings</h1>
+<ul>
+  <li>Project root is <strong>{$root}</strong></li>
+  <li>The database will be saved as <strong>{$dbpathrel}</strong> (default: {$_dbpathrel})</li>
+  <li>An existing database will <strong>not</strong> be overriden</li>
+</ul>
+<br>
+<h1>Actions</h1>
+<ul>
+  <li>To continue, load this page again with <code>build=1</code> to the query string.</li>
+  <li>To customize database name (not path), add <code>db=name</code> to the query string.</li>
+</ul>
+TXT;
+}
+
+
 
 try {
-    $db = new PDO("sqlite:../db/test2.db");
+
+    $capsule = new Capsule();
+    $capsule->addConnection([
+        "driver" => App\DB_DRIVER,
+        "database" => FILE_ROOT . "/db/test2.db",
+    ], "migrate");
+
+    s($dsn);
+    $db = new PDO($dsn);
+    !d($db);
+    exit;
 
     // import and execute script for auth users
     $auth_script = FILE_ROOT . '/vendor/delight-im/auth/Database/SQLite.sql';
