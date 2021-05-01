@@ -9,8 +9,8 @@ A web application for tracking food consumption. You can also record whether you
 
 
 # meta
-- [] bootstrap
-  - [] mock food data
+- [ ] bootstrap
+  - [ ] mock food data
 
 
 # sprint 1
