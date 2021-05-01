@@ -1,6 +1,6 @@
 # What is Worth the Weight?
 
-Just a website for *local* personal use. 
+A web application for tracking food consumption. You can also record whether you exercised on any given day.
 
 
 # Bootstrapping
