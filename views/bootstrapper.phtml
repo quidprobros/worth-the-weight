@@ -1,4 +1,11 @@
 <?PHP
+s(FILE_ROOT . '/generated/');
+
+// if (!file_exists(FILE_ROOT . '/generated/')) {
+//     mkdir(FILE_ROOT . '/generated/', 0755, true);
+// }
+
+
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
@@ -38,6 +45,10 @@ $dbpath = $dbroot . $data['dbname'] . ".db";
 $_dbpathrel = "./generated/db/" . $default['dbname'] . ".db";
 
 $dsn = "sqlite" . ":" . $dbpath;
+
+bdump($dsn);
+$db = new PDO($dsn);
+exit;
 
 if (true !== $shouldContinue) {
     echo <<<TXT

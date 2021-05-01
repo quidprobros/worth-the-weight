@@ -3,6 +3,10 @@
 Just a website for *local* personal use. 
 
 
+# Bootstrapping
+1. In project root, 
+
+
 
 # meta
 - [] bootstrap
