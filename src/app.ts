@@ -1,15 +1,7 @@
 export const App = {
-    get resetForms() {
-        return $("form").each((i, el: HTMLFormElement) => {
+    get resetForms(): HTMLFormElement[] {
+        return $.each($("form"), (_i: number, el: HTMLFormElement) => {
             el.reset()
-        })
+        }) as HTMLFormElement[]
     },
-
-    get do() {
-        return {
-            get bitch() {
-                return 33
-            }
-        }
-    }
 }

@@ -150,32 +150,32 @@ Flight::map("hxtrigger", function ($actions) {
     header('HX-Trigger: ' . $z);
 });
 
-Flight::route("POST /forgot", function () {
-    $data = Flight::request()->data;
-    $email = $data['reset_email'];
+// Flight::route("POST /forgot", function () {
+//     $data = Flight::request()->data;
+//     $email = $data['reset_email'];
 
-    try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+//     try {
+//         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
 
-        Flight::hxheader('Request has been generated');
-    }
-    catch (\Delight\Auth\InvalidEmailException $e) {
-        Flight::hxheader('Invalid email address');
-    }
-    catch (\Delight\Auth\EmailNotVerifiedException $e) {
-        Flight::hxheader('Email not verified');
-    }
-    catch (\Delight\Auth\ResetDisabledException $e) {
-        Flight::hxheader('Password reset is disabled');
-    }
-    catch (\Delight\Auth\TooManyRequestsException $e) {
-        Flight::hxheader('Too many requests');
-    } catch (\App\Exceptions\FormException $e) {
-        Flight::hxheader($e->getMessage(), 'error');
-    } catch (Exception $e) {
-        Flight::hxheader("There was an error", "error", $e);
-    }
-});
+//         Flight::hxheader('Request has been generated');
+//     }
+//     catch (\Delight\Auth\InvalidEmailException $e) {
+//         Flight::hxheader('Invalid email address');
+//     }
+//     catch (\Delight\Auth\EmailNotVerifiedException $e) {
+//         Flight::hxheader('Email not verified');
+//     }
+//     catch (\Delight\Auth\ResetDisabledException $e) {
+//         Flight::hxheader('Password reset is disabled');
+//     }
+//     catch (\Delight\Auth\TooManyRequestsException $e) {
+//         Flight::hxheader('Too many requests');
+//     } catch (\App\Exceptions\FormException $e) {
+//         Flight::hxheader($e->getMessage(), 'error');
+//     } catch (Exception $e) {
+//         Flight::hxheader("There was an error", "error", $e);
+//     }
+// });
 
 Flight::route("GET /login", function () {
     /* This route MUST come FIRST */

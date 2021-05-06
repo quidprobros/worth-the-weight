@@ -1,20 +1,6 @@
-JS frame could have methods called with header. Header could include a "doThis" property
-
-
 # What is Worth the Weight?
 
 A web application for tracking food consumption. You can also record whether you exercised on any given day.
-
-
-# Bootstrapping
-1. In project root, 
-
-
-
-# meta
-- [ ] bootstrap
-  - [ ] mock food data
-
 
 # sprint 1
 - [x] Add form to submit quantity of food, measurement unit, food item, and date.
@@ -59,24 +45,27 @@ A web application for tracking food consumption. You can also record whether you
 - [x] finish swapping weird html solution for header triggered events (htmx)
 - [x] click date to jump to page state
 - [x] fix bug that causes wrong date to be highlighted on calendar
-- [ ] bootstrap script
-- [ ] multiuser support
+- [x] multiuser support with login system
+
+# Security and fault tolerance sprint
+- [x] use signed urls (makes it difficult for endpoints to be called arbitrarily)
+- [x] doorway to manage walks (handled by HATEOS approach)
+- [x] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model (can happen through form manipulation)
 
 # sprint 4 (reach)
-- [ ] when to use flight mapped or not?
+- [ ] use HX-Trigger to handle other actions stored in global App object
 - [x] querystring for management of certain states
 - [ ] store and track goals
 - [ ] submit new foods
 - [ ] show popup when user's been a way for a while
 - [ ] add tooltip with 'multiplier' explaination
-- [ ] reduce redundant queries
-- [ ] going through query log help me to find redudnant db queries
-- [ ] must have bootstrap
+- [x] reduce redundant queries
+- [x] going through query log help me to find redudnant db queries
+- [ ] bootstrap to build fresh database for local use
 
-# Security and fault tolerance sprint
-- [x] use signed urls (makes it difficult for endpoints to be called arbitrarily)
-- [ ] doorway to manage walks
-- [ ] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model
+
+# Security tests on live
+- [ ] example
 
 # OWASP Zap (passive scan)
 - [x] X-Frame-Options Header Not Set
