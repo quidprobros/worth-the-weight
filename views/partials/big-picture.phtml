@@ -31,7 +31,7 @@ $next = $big_picture_day_offset + 1;
             <fieldset class="cell small-12 fieldset">
                 <input name="exercised"
                        type="checkbox"
-                       hx-post='<?=Flight::url()->sign("/exercised/rel/{$big_picture_day_offset}")?>'
+                       hx-post='<?=Flight::url()->sign("/journal-entry/exercised/rel/{$big_picture_day_offset}")?>'
                        hx-target="#exercised-statement"
                        <?=(1 == $exercised_bpo) ? "checked":""?>
                 />

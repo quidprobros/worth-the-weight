@@ -36,19 +36,19 @@ Tracy\Debugger;
                  hx-get='/food-support-message'
                  hx-trigger="path-deps"
                  hx-swap='innerHTML'
-                 path-deps="/journal-entry"><?=Flight::welcome()?>, <?=Flight::auth()->getUsername()?></div>
+                 path-deps="/journal-entry"><?=Flight::welcome()?>, <strong><?=Flight::auth()->getUsername()?></strong></div>
             <div class="title-bar-right">
                 <span><?=" The date is " . Carbon::now()->format("D M j, Y")?></span>
             </div>
             <div class="title-bar-right">
-                <span class="title-bar-title">View graphs</span>
+                <span class="title-bar-title">View calendar</span>
                 <button class="menu-icon" type="button" data-toggle="offCanvas2"></button>
             </div>
         </div>
 
         <div class="off-canvas-wrapper">
             <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
-                 hx-get="/home/left-canvas/rel/<?=Flight::get('omo')?>"
+                 hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$big_picture_day_offset}")?>'
                  hx-trigger="path-deps"
                  path-deps="/journal-entry">
                 <?=Flight::render("partials/offcanvas-menu", [

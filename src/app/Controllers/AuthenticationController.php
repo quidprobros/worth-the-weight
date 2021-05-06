@@ -2,12 +2,14 @@
 
 namespace App\Controllers;
 
+use Tracy\Debugger;
 use flight\net\Request;
 use Flight;
 use Exception;
 use Delight\Auth\InvalidPasswordException;
 use App\Exceptions\InvalidUsernameException;
 use App\Exceptions\FormException;
+use Mailgun\Mailgun;
 
 class AuthenticationController
 {
@@ -16,9 +18,10 @@ class AuthenticationController
     // one year
     private $rememberDuration = 31557600;
 
-    public function __construct(Request $req)
+    public function __construct(Request $req, Mailgun $client)
     {
         $this->data = $req->data;
+        $this->mailgun = $client;
     }
 
     public function loginUser()
@@ -35,6 +38,19 @@ class AuthenticationController
         }
 
         Flight::auth()->login($email, $password, $this->rememberDuration);
+    }
+
+    public function resetPassword()
+    {
+        $email = $this->data['reset_email'];
+
+        if (empty($email)) {
+            throw new FormException("Email cannot be blank.");
+        }
+
+        Flight::auth()->forgotPassword($email, function ($selector, $token) {
+            $this->sendVerificationEmail($selector, $token, $email, "Worth the Weight: Password reset");
+        });
     }
 
     public function registerUser()
@@ -55,11 +71,30 @@ class AuthenticationController
             throw new InvalidPasswordException();
         }
 
-        return Flight::auth()->register(
+        return Flight::auth()->registerWithUniqueUsername(
             $email,
             $password,
             $username,
+            // function ($selector, $token) use ($email) {
+            //     $this->sendVerificationEmail($selector, $token, $email, "Worth the Weight: Thanks for signing up!");
+            // }
         );
+    }
+
+    private function sendVerificationEmail($selector, $token, $email, $subject)
+    {
+        Debugger::log($email);
+        $url = 'http://wtw.paxperscientiam.com.lan/verify-email?selector='
+             . \urlencode($selector)
+             . '&token='
+             . \urlencode($token);
+        $this->mailgun->messages()->send(\App\APP_DOMAIN, [
+            'from'    => \App\MAILGUN_SANDBOX_EMAIL,
+            'to'      => $email,
+            'subject' => $subject,
+            'text'    => 'You are truly awesome! Here is your verification link: ' . $url
+            ]);
+        Debugger::log("registration link: {$url}");
     }
 
     public function logoutUser()

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\User;
 use App\Models\ActiveUser;
+use Mailgun\Mailgun;
 
 const WEB_ROOT = __DIR__;
 const FILE_ROOT = __DIR__ . "/..";
@@ -19,7 +20,7 @@ define("DEBUG", "development" === $_SERVER['APPLICATION_ENV']);
 require_once FILE_ROOT . "/vendor/autoload.php";
 
 // sets headers and stuff
-App\Config::init(App\DB_DATABASE);
+App\Config::init();
 
 if (!file_exists(FILE_ROOT . '/tracy')) {
     mkdir(FILE_ROOT . '/tracy', 0755, true);
@@ -52,6 +53,12 @@ Flight::register(
 );
 
 Flight::register(
+    'mail',
+    'Mailgun\Mailgun::create',
+    [App\MAILGUN_API_KEY]
+);
+
+Flight::register(
     'validate',
     'App\Validate'
 );
@@ -72,17 +79,8 @@ $capsule->addConnection([
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
-if (DEBUG) {
+if (true == Flight::get("debug_mode")) {
     Capsule::enableQueryLog();
-}
-
-try {
-    Flight::set("ActiveUser", \App\Models\ActiveUser::init());
-} catch (ModelNotFoundException $e) {
-    Flight::set("ActiveUser", null);
-} catch (Exception $e) {
-    Debugger::log($e->getMessage());
-    Flight::stop();
 }
 
 Flight::register(
@@ -124,13 +122,64 @@ Flight::map("verifySignature", function () {
     return true;
 });
 
-Flight::map("hxheader", function ($message, $status = "success") {
-    $x = "{\"showMessage\":{\"level\" : \"{$status}\", \"message\" : \"{$message}\"}}";
+
+Flight::map("hxheader", function ($message, $status = "success", $exception = null) {
+    $x = json_encode([
+        "showMessage" => [
+            "level" => $status,
+            "message" => $message,
+        ],
+        "action" => [
+            "xpath" => "resetForms",
+            "zpath" => "ok"
+        ]
+    ]);
+
     header('HX-Trigger: ' . $x);
+
+    if (empty($exception)) {
+        Debugger::log($message);
+    } else {
+        Debugger::log($exception->getMessage());
+    }
+});
+
+
+Flight::map("hxtrigger", function ($actions) {
+    $z = json_encode($actions);
+    header('HX-Trigger: ' . $z);
+});
+
+Flight::route("POST /forgot", function () {
+    $data = Flight::request()->data;
+    $email = $data['reset_email'];
+
+    try {
+        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+
+        Flight::hxheader('Request has been generated');
+    }
+    catch (\Delight\Auth\InvalidEmailException $e) {
+        Flight::hxheader('Invalid email address');
+    }
+    catch (\Delight\Auth\EmailNotVerifiedException $e) {
+        Flight::hxheader('Email not verified');
+    }
+    catch (\Delight\Auth\ResetDisabledException $e) {
+        Flight::hxheader('Password reset is disabled');
+    }
+    catch (\Delight\Auth\TooManyRequestsException $e) {
+        Flight::hxheader('Too many requests');
+    } catch (\App\Exceptions\FormException $e) {
+        Flight::hxheader($e->getMessage(), 'error');
+    } catch (Exception $e) {
+        Flight::hxheader("There was an error", "error", $e);
+    }
 });
 
 Flight::route("GET /login", function () {
     /* This route MUST come FIRST */
+    
     Flight::render("login", []);
 });
 
@@ -138,7 +187,7 @@ Flight::route("POST /login", function () {
     /* This route MUST come SECOND */
 
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
         $controller->loginUser();
         Flight::hxheader('Logging in ...');
         header("HX-Redirect: /home");
@@ -149,6 +198,9 @@ Flight::route("POST /login", function () {
     } catch (\Delight\Auth\InvalidPasswordException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader('Wrong password', 'error');
+    } catch (\Delight\Auth\EmailNotVerifiedException $e) {
+        Debugger::log($e->getMessage());
+        Flight::hxheader('Email not verified', 'error');
     } catch (\Delight\Auth\TooManyRequestsException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader('Too many requests', 'error');
@@ -157,24 +209,35 @@ Flight::route("POST /login", function () {
         Flight::hxheader($e->getMessage(), 'error');
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
-        Flight::hxheader($e->getMessage(), "error");
+        Flight::hxheader("Unable to login at this time. Please contact Chris.", "error");
     } catch (\Error $er) {
         Debugger::log($er->getMessage());
-        Flight::hxheader($er->getMessage(), "error");
+        Flight::hxheader("Unable to login at this time. PLease contact Chris.", "error");
     }
 });
 
 Flight::route("POST /register", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
-        $controller->registerUser();
-        Flight::hxheader("Registered successfully");
+        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+        $x = $controller->registerUser();
+        Flight::hxtrigger([
+            "action" => [
+                "xpath" => "resetForms",
+            ],
+            "showMessage" => [
+                "message" => "Success! You may now login",
+                "level" => "success"
+            ]
+        ]);
     } catch (\App\Exceptions\FormException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader($e->getMessage(), 'error');
     } catch (\Delight\Auth\InvalidEmailException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader("Invalid email address", "error");
+    } catch (\Delight\Auth\DuplicateUsernameException $e) {
+        Debugger::log($e->getMessage());
+        Flight::hxheader("That username is already taken", "error");
     } catch (\Delight\Auth\InvalidPasswordException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader("Invalid password", "error");
@@ -195,7 +258,7 @@ Flight::route("POST /register", function () {
 
 Flight::route("POST /logout", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
         $controller->logoutUser();
         Flight::hxheader("Logging out ...");
         header("HX-Redirect: /login");
@@ -206,12 +269,54 @@ Flight::route("POST /logout", function () {
     }
 });
 
+Flight::route(' GET /verify-email', function () {
+    $data = Flight::request()->query;
+    $selector = $data['selector'];
+    $token = $data['token'];
+    Debugger::log(['let us verify', $selector, $token]);
+
+    try {
+        Flight::auth()->confirmEmail($selector, $token);
+        echo 'Email address has been verified';
+        $message = "success";
+    } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
+        Flight::hxheader('Invalid token');
+        $message = "invalid";
+    } catch (\Delight\Auth\TokenExpiredException $e) {
+        Flight::hxheader('Token expired');
+        $message = "invalid";
+    } catch (\Delight\Auth\UserAlreadyExistsException $e) {
+        Flight::hxheader('Email address already exists');
+        $message = "Email address already exists";
+    } catch (\Delight\Auth\TooManyRequestsException $e) {
+        Flight::hxheader('Too many requests');
+        $message = "Try again later";
+    } catch (Exception $e) {
+        $message = "Something went wrong.";
+        Debugger::log($e->getMessage());
+    }
+
+    Flight::redirect(Flight::url()->sign("/login?message={$message}"));
+});
+
 Flight::route('*', function ($route) {
     /* This route MUST come SECOND */
+
     if (false == Flight::auth()->isLoggedIn()) {
         Flight::redirect("/login", 302);
         return false;
     }
+    bdump('passed login test');
+    try {
+        Flight::set("ActiveUser", \App\Models\ActiveUser::init());
+        bdump(Flight::get("ActiveUser")->id);
+    } catch (ModelNotFoundException $e) {
+        Flight::set("ActiveUser", null);
+    } catch (Exception $e) {
+        Debugger::log($e->getMessage());
+        Flight::stop();
+    }
+
     return true;
 }, true);
 
@@ -380,7 +485,7 @@ Flight::route('POST /drop-food-log', function () {
     }
 });
 
-Flight::route('POST /exercised/rel/@offset', function ($offset) {
+Flight::route('POST /journal-entry/exercised/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }

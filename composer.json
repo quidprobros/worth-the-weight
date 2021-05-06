@@ -12,7 +12,10 @@
         "illuminate/http": "^8.32",
         "spatie/url-signer": "^1.2",
         "delight-im/auth": "^8.2",
-        "illuminate/filesystem": "^8.40"
+        "illuminate/filesystem": "^8.40",
+        "mailgun/mailgun-php": "^3.5",
+        "kriswallsmith/buzz": "^1.2",
+        "nyholm/psr7": "^1.4"
     },
     "authors": [
         {

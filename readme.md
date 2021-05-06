@@ -1,3 +1,6 @@
+JS frame could have methods called with header. Header could include a "doThis" property
+
+
 # What is Worth the Weight?
 
 A web application for tracking food consumption. You can also record whether you exercised on any given day.
@@ -59,7 +62,7 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] bootstrap script
 - [ ] multiuser support
 
-# spring 4 (reach)
+# sprint 4 (reach)
 - [ ] when to use flight mapped or not?
 - [x] querystring for management of certain states
 - [ ] store and track goals
@@ -70,7 +73,7 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] going through query log help me to find redudnant db queries
 - [ ] must have bootstrap
 
-# Security sprint
+# Security and fault tolerance sprint
 - [x] use signed urls (makes it difficult for endpoints to be called arbitrarily)
 - [ ] doorway to manage walks
 - [ ] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model

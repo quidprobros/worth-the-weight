@@ -9,6 +9,8 @@ declare global {
 
 import "./style.scss"
 
+import {App} from "./app"
+export {App}
 // @ts-ignore
 import queryState from "query-state"
 
@@ -174,9 +176,6 @@ export function initCalendar() {
 	  });
 	  // Refresh layout
 	  myCalendar.refresh();
-
-    
-
 }
 
 $(() => {
@@ -210,14 +209,17 @@ $(() => {
         new OffCanvas($("#offCanvas2"))
     }
 
+    $(document).on("action", function (e) {
+        dlv(App, dlv(e, "detail.xpath") as string)
+    })
+
     $(document).on("showMessage", function (e) {
-        console.log(e)
         if (dlv(e, "detail.message")) {
+            // @ts-ignore
             $.notify(e.detail.message, e.detail.level);
         } else {
             $.notify("unknown message", "success");
         }
-
     });
 
 });

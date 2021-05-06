@@ -1,13 +1,7 @@
 <?PHP
-s(FILE_ROOT . '/generated/');
-
-// if (!file_exists(FILE_ROOT . '/generated/')) {
-//     mkdir(FILE_ROOT . '/generated/', 0755, true);
-// }
-
-
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Tracy\Debugger;
 
 function red($text) {
     $str = <<<HTML
@@ -46,10 +40,6 @@ $_dbpathrel = "./generated/db/" . $default['dbname'] . ".db";
 
 $dsn = "sqlite" . ":" . $dbpath;
 
-bdump($dsn);
-$db = new PDO($dsn);
-exit;
-
 if (true !== $shouldContinue) {
     echo <<<TXT
 This script will create a sqlite database with the structures required to run this application.
@@ -75,13 +65,11 @@ try {
     $capsule = new Capsule();
     $capsule->addConnection([
         "driver" => App\DB_DRIVER,
-        "database" => FILE_ROOT . "/db/test2.db",
+        "database" => $dbpath,
     ], "migrate");
 
-    s($dsn);
     $db = new PDO($dsn);
-    !d($db);
-    exit;
+    echo "Opened connection to {$dsn}<br><br>";
 
     // import and execute script for auth users
     $auth_script = FILE_ROOT . '/vendor/delight-im/auth/Database/SQLite.sql';
@@ -93,14 +81,17 @@ try {
     $capsule->getConnection('migrate')
             ->getSchemaBuilder()
             ->dropIfExists('exercise_records');
+    echo "Dropped exercise_records table.<br><br>";
 
     $capsule->getConnection('migrate')
             ->getSchemaBuilder()
             ->dropIfExists('points_records');
+    echo "Dropped points_records table.<br><br>";
 
     $capsule->getConnection('migrate')
             ->getSchemaBuilder()
             ->dropIfExists('food_records');
+    echo "Dropped food_records table.<br><br>";
 
     $capsule->getConnection('migrate')
             ->getSchemaBuilder()
@@ -112,6 +103,7 @@ try {
                 $table->date('date');
                 $table->timestamps();
             });
+    echo "Created exercise_records table.<br><br>";
 
     $capsule->getConnection('migrate')
             ->getSchemaBuilder()
@@ -125,8 +117,9 @@ try {
                 $table->dateTime('date');
                 $table->timestamps();
             });
+    echo "Created points_records table.<br><br>";
 
-    $capsule->getConnection("migrate")
+    $r = $capsule->getConnection("migrate")
             ->getSchemaBuilder()
             ->create("food_records", function ($table) {
                 $table->id();
@@ -134,6 +127,8 @@ try {
                 $table->float('points');
                 $table->timestamps();
             });
+    echo "Created food_records table.<br><br>";
 } catch (Exception $e) {
+    Debugger::log($e->getMessage());
     s($e->getMessage());
 }
