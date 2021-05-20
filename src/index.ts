@@ -10,6 +10,7 @@ declare global {
 import "./style.scss"
 
 import {App} from "./app"
+
 export {App}
 // @ts-ignore
 import queryState from "query-state"

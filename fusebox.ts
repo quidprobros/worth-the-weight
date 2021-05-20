@@ -60,29 +60,29 @@ const {
 } = sparky<Context>(Context)
 
 task("default", async (ctx: Context) => {
-    rm("./public/dist")
+    rm("./wtw.paxperscientiam.com/dist")
 
     await ctx.getConfig().runDev({
         bundles: {
-            distRoot: 'public/dist',
+            distRoot: 'wtw.paxperscientiam.com/dist',
             exported: true,
         },
     })
         .then(function() {
-            src("./public/dist/resources.phtml")
+            src("./wtw.paxperscientiam.com/dist/resources.phtml")
                 .dest("./views/generated", "dist")
                 .exec()
-       //     rm("./public/dist/resources.phtml")
+       //     rm("./wtw.paxperscientiam.com/dist/resources.phtml")
         })
 })
 
 task("build", async (ctx: Context) => {
-    rm("./public/dist")
+    rm("./wtw.paxperscientiam.com/dist")
 
     await ctx.getConfig().runProd({
 
         bundles: {
-            distRoot: 'public/dist',
+            distRoot: 'wtw.paxperscientiam.com/dist',
             exported: true,
             app: 'app.$hash.js',
             vendor: 'vendor.$hash.js',
@@ -90,10 +90,10 @@ task("build", async (ctx: Context) => {
         },
         manifest: false,
     }).then(() => {
-        src("./public/dist/resources.phtml")
+        src("./wtw.paxperscientiam.com/dist/resources.phtml")
             .dest("views/generated", "dist")
             .exec()
-      //  rm("./public/dist/resources.phtml")
+      //  rm("./wtw.paxperscientiam.com/dist/resources.phtml")
     })
 })
 

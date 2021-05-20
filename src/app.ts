@@ -4,4 +4,8 @@ export const App = {
             el.reset()
         }) as HTMLFormElement[]
     },
+    set togglePassword(el: HTMLInputElement) {
+        const viztype = el.type === 'password' ? 'text' : 'password'
+        el.type = viztype
+    }
 }
