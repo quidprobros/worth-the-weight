@@ -24,34 +24,27 @@ use Tracy\Debugger;
                            class="input-group-field"
                            type="email"
                            name="login_email"
+                           autocomplete="username"
                            placeholder="somebody@somewhere.com"
                            autofocus required>
                 </div>
                 <div class="input-group">
                     <span class="input-group-label">Password</span>
-                    <input id="login_password"
+                    <input id="current-password"
                            type="password"
                            class='input-group-field'
                            name="login_password"
                            placeholder="password123"
-                           autocomplete="current-password">
+                           autocomplete="current-password"
+                           required>
                     <div class="input-group-button">
                         <input type="button"
-                               onclick="App.togglePassword = document.getElementById('login_password')"
+                               onclick="App.togglePassword = document.getElementById('current-password')"
                                class="button" value="Show password">
                     </div>
                 </div>
                 <input type="submit" class="button expanded" value="Log in"></input>
             </form>
-
-            <!-- <form hx-post="/forgot" hx-swap='none'>
-                 <h4 class="text-center">Reset password</h4>
-                 <label>Email
-                 <input type="email" name="reset_email" placeholder="somebody@somewhere.com">
-                 </label>
-                 <p><input type="submit" class="button expanded" value="Reset password"></input></p>
-                 </form> -->
-
 
             <form hx-post="/register" class="log-in-form" hx-swap='none'>
                 <h4 class="text-center"><strong>Register</strong> to be a part of Worth the Weight!</h4>
@@ -59,7 +52,6 @@ use Tracy\Debugger;
                     <input type="email"
                            class="register-form-email"
                            id="register-form-email"
-
                            name="register_email"
                            placeholder="somebody@somewhere.com"
                            autocomplete="username"
@@ -76,7 +68,7 @@ use Tracy\Debugger;
                 </label>
 
                 <label for="register-form-password">Password (<?=\App\MIN_PASSWORD_LENGTH?> character minimum)
-                    <input  id="register-form-password"
+                    <input  id="new-password"
                             type="password"
                             minlength="<?=\App\MIN_PASSWORD_LENGTH?>"
                             class="register-form-password"
