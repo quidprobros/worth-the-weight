@@ -7,5 +7,12 @@ export const App = {
     set togglePassword(el: HTMLInputElement) {
         const viztype = el.type === 'password' ? 'text' : 'password'
         el.type = viztype
+    },
+    delayPromise(duration: number): Promise<number> {
+        return new Promise((resolve): void => {
+            setTimeout(() => {
+                resolve(duration)
+            }, duration)
+        })
     }
 }
