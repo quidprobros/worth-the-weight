@@ -47,13 +47,9 @@ declare -a exclusions=(
     "*~"
 )
 
-read -r var1 <<< $(<./package.json jq -er '.config.rsync_exclude_list[] | @sh')
+read -ra var1 <<< $(<./package.json jq -er '.config.rsync_excluded_list | @sh')
 
-echo $?
-exit;
-
-
-for key in "${_exclusions[@]}"
+for key in "${var1[@]}"
 do
     exclusions+=("${key//\'/}")
 done
@@ -64,7 +60,7 @@ declare -a protection_and_perish=(
     "-p .DS_Store"
 )
 
-declare -a _protections=($(<./package.json jq -r '.config.rsync_protect_and_perish_list.protect[] | @sh'))
+declare -a _protections=($(<./package.json jq -er '.config.rsync_protect_and_perish_list.protect[] | @sh'))
 
 for key in "${_protections[@]}"
 do
@@ -73,7 +69,7 @@ done
 
 unset key
 
-declare -a _perishes=($(<./package.json jq -r '.config.rsync_protect_and_perish_list.perish[] | @sh'))
+declare -a _perishes=($(<./package.json jq -er '.config.rsync_protect_and_perish_list.perish[] | @sh'))
 
 for key in "${_perishes[@]}"
 do
@@ -81,11 +77,12 @@ do
 done
 unset key
 
+
 rsync -e '/usr/bin/ssh -T -x' \
       --dry-run \
       --compress \
       --protect-args \
-q      --delete \
+      --delete \
       --exclude-from <(printf '%s\n' "${exclusions[@]}") \
       --filter='merge '<(printf '%s\n' "${protection_and_perish[@]}") \
       --delete-excluded \

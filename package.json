@@ -27,6 +27,7 @@
         "microtip": "^0.2.2",
         "notifyjs-browser": "^0.4.2",
         "query-state": "^4.3.0",
+        "rfs": "^9.0.3",
         "simple-jscalendar": "github:paxperscientiam/jsCalendar",
         "slim-select": "^1.27.0",
         "spark-md5": "^3.0.1"
@@ -35,12 +36,12 @@
         "@types/datatables.net": "^1.10.19",
         "@types/inputmask": "^5.0.0",
         "@types/jquery": "^3.5.5",
-        "@types/node": "^14.14.45",
+        "@types/node": "^14.17.0",
         "@types/notifyjs-browser": "0.0.0",
         "@types/spark-md5": "^3.0.2",
-        "@typescript-eslint/eslint-plugin": "^4.23.0",
-        "@typescript-eslint/parser": "^4.23.0",
-        "eslint": "^7.26.0",
+        "@typescript-eslint/eslint-plugin": "^4.24.0",
+        "@typescript-eslint/parser": "^4.24.0",
+        "eslint": "^7.27.0",
         "eslint-watch": "^7.0.0",
         "fuse-box": "^4.0.0",
         "fuse-box-typechecker": "^3.1.1",
@@ -63,15 +64,29 @@
         "ssh_remote_root": "/home/dh_gy99mh",
         "ssh_local_root": "./",
         "rsync_excluded_list": [
-            "/.ac-php-conf.json",
-            "/.eslintignore",
-            "/.eslintrc.js",
-            "/.projectile",
-            "/node_modules"
+            "/.git",
+            "/.gitignore",
+            "/.log",
+            "/node_modules",
+            "/composer.*",
+            "/*.tgz",
+            "/tracy",
+            "/wtw.paxperscientiam.com/migrations/",
+            "/views/bootstrapper.phtml",
+            "/views/test.phtml",
+            "/db"
         ],
         "rsync_protect_and_perish_list": {
             "protect": [
-                "/.ssh"
+                "/.ssh",
+                "/logs",
+                "/.logs",
+                "/tracy",
+                "/Maildir",
+                "/.php",
+                "/.cache",
+                "/.bash*",
+                "/db"
             ],
             "perish": [
                 "ok"

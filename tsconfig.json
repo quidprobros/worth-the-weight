@@ -19,15 +19,12 @@
             "./src/@types/",
             "./node_modules/foundation-sites/js/typescript",
             "./node_modules/@types"
-        ],
-        "types": [
-            "htmx.org",
-            "foundation"
         ]
     },
     "allowSyntheticDefaultImports": true,
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "./node_modules/foundation-sites/js/typescript/foundation.d.ts"
     ]
 }
 

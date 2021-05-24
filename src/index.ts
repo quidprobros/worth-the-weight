@@ -25,7 +25,7 @@ export {qs}
 import $ from "jquery"
 window.$ = $
 export {$}
-
+console.log($)
 import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
 
@@ -48,6 +48,8 @@ import SlimSelect from 'slim-select'
 // @ts-ignore
 import notify from "notifyjs-browser"
 notify(window, $)
+
+import 'foundation-sites/js/typescript/foundation.d.ts'
 
 import { Foundation } from 'foundation-sites/js/foundation.core'
 Foundation.addToJquery($);
@@ -165,7 +167,7 @@ export function initCalendar() {
         if (true == info.isSelected) {
             element.style.fontWeight = 'bold';
 			      element.style.color = (info.isCurrentMonth) ? '#c32525' : '#ffb4b4';
-            siteData.calendarSelection.forEach((item, index) => {
+            siteData.calendarSelection.forEach((item) => {
                 const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD") as string
                 if (strDate == item.date) {
                     element.dataset.microtipPosition = "top-right"

@@ -1,6 +1,6 @@
 const path = require('path');
 
-import { fusebox, sparky, pluginCSS, pluginSass } from 'fuse-box';
+import { fusebox, sparky, pluginCSS, pluginSass, pluginPostCSS } from 'fuse-box';
 
 import { pluginTypeChecker } from 'fuse-box-typechecker';
 import { IPublicConfig } from 'fuse-box/config/IConfig';
@@ -33,12 +33,6 @@ class Context {
                         publicPath: "/dist"
                       },
             devServer: false,
-            dependencies: {
-                // not needed as using modified version
-                include: [
-                    //'simple-jscalendar/source/jsCalendar.js'
-                ]
-            },
             cache: false,
             hmr: true,
             plugins: [
@@ -47,7 +41,7 @@ class Context {
                     tsConfig: './tsconfig.json',
                 }),
                 pluginSass(),
-//                pluginCSS(),
+                pluginPostCSS()
             ],
         })
     }
@@ -66,13 +60,17 @@ task("default", async (ctx: Context) => {
         bundles: {
             distRoot: 'wtw.paxperscientiam.com/dist',
             exported: true,
+            app: 'app.$hash.js',
+            vendor: 'vendor.$hash.js',
+            styles: 'styles/styles.$hash.css',
         },
     })
         .then(function() {
-            src("./wtw.paxperscientiam.com/dist/resources.phtml")
-                .dest("./views/generated", "dist")
-                .exec()
-       //     rm("./wtw.paxperscientiam.com/dist/resources.phtml")
+            // rm("./wtw.paxperscientiam.com/dist/resources.phtml")
+            // return
+            // src("./wtw.paxperscientiam.com/dist/resources.phtml")
+            //     .dest("./views/generated", "dist")
+            //     .exec()
         })
 })
 
@@ -80,7 +78,6 @@ task("build", async (ctx: Context) => {
     rm("./wtw.paxperscientiam.com/dist")
 
     await ctx.getConfig().runProd({
-
         bundles: {
             distRoot: 'wtw.paxperscientiam.com/dist',
             exported: true,

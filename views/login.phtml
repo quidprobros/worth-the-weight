@@ -11,13 +11,18 @@ use Tracy\Debugger;
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
     <body>
+        <div class="title-bar">
+            <div class="title-bar-left">
+                Worth the Weight
+            </div>
+        </div>
         <div class="grid-container">
             <? if (Flight::auth()->isLoggedIn()) { ?>
                 <h1>You are currently logged in as "<?=Flight::auth()->getUsername()?>"</h1>
                 <a href="/logout">Not <?=Flight::auth()->getUsername()?>?</a>
             <? } ?>
             <form hx-post="/login" class="log-in-form" hx-swap="none">
-                <h4 class="text-center"><strong>Log in</strong></h4>
+                <h2 class="text-center cc-form-title"><strong>Already a member? Login here:</strong></h2>
                 <div class="input-group">
                     <span class="input-group-label">Email</span>
                     <input id="login_email"
@@ -46,8 +51,8 @@ use Tracy\Debugger;
                 <input type="submit" class="button expanded" value="Log in"></input>
             </form>
 
-            <form hx-post="/register" class="log-in-form" hx-swap='none'>
-                <h4 class="text-center"><strong>Register</strong> to be a part of Worth the Weight!</h4>
+            <form hx-post="/register" class="registration-form" hx-swap='none'>
+                <h2 class="text-center cc-form-title"><strong>Register</strong> to be a part of Worth the Weight!</h2>
                 <label for="register-form-email">Email (fake email address is fine)
                     <input type="email"
                            class="register-form-email"

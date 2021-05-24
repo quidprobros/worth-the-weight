@@ -1,20 +1,12 @@
+@import "./htmx.scss";
 
-// <foundation_settings>
-$offcanvas-background: white;
+@import "@/rfs/scss";
 
-$offcanvas-sizes: (
-    small: 100vw,
-    medium: 50vw,
-);
-
-// </foundation_settings>
-
+@import "./foundation_settings";
 
 @import "@/foundation-sites/scss/foundation";
 
 @import "@/slim-select/src/slim-select/slimselect";
-
-@import "./htmx.scss";
 
 @import "@/css.gg/icons/scss/arrow-left-r";
 @import "@/css.gg/icons/scss/arrow-right-r";
@@ -25,22 +17,22 @@ $offcanvas-sizes: (
 @import "@/microtip/microtip";
 
 //@include foundation-everything;
+
 // Global styles
 @include foundation-global-styles;
 @include foundation-forms;
-@include foundation-typography;
+
+// using rfs instead
+//@include foundation-typography;
 
 @include foundation-xy-grid-classes(
-    /* options
-  $base-grid: true,
-  $margin-grid: true,
-  $padding-grid: true,
-  $block-grid: true,
-  $collapse: true,
-  $offset: true,
-  $vertical-grid: true,
-  $frame-grid: true
-   */
+    $base-grid: true,
+    $margin-grid: true,
+    $padding-grid: true,
+    $block-grid: true,
+    $collapse: true,
+    $offset: true,
+    $vertical-grid: true
 );
 
 // Menu-based containers
@@ -50,11 +42,16 @@ $offcanvas-sizes: (
 // Generic components
 @include foundation-button;
 @include foundation-button-group;
+@include foundation-close-button;
 @include foundation-table;
 
 // Basic components
 @include foundation-callout;
 @include foundation-card;
+
+// Containers
+@include foundation-thumbnail;
+
 
 // Layout components
 @include foundation-off-canvas;
@@ -65,9 +62,6 @@ $offcanvas-sizes: (
 // Helpers
 @include foundation-flex-classes;
 
-.button {
-    font-weight: bold;
-}
 
 .custom-shadow {
     box-shadow: 0 1px 2px rgba(0,0,0,0.15);
@@ -99,8 +93,35 @@ tr.htmx-swapping td {
     height: auto;
 }
 
-.log-in-form {
-    border: 1px solid $medium-gray;
-    padding: $form-spacing;
-    border-radius: $global-radius;
+/* .log-in-form, .registration-form { */
+/*     border: 1px solid $medium-gray; */
+/*     padding: $form-spacing; */
+/*     border-radius: $global-radius; */
+/*     // */
+/* } */ 
+
+/* .log-in-form, */
+/* .registration-form { */
+/*     input.button, */
+/*     button.button { */
+/*         @include font-size(2rem); */
+/*     } */
+ 
+/*     .cc-form-title { */
+/*         @include font-size(3rem); */
+/*     } */
+
+/*     label { */
+/*         @include font-size(2.5rem ); */
+/*     } */
+
+/*     .input-group > * { */
+/*         @include font-size(3rem); */
+/*         @include rfs(3rem, 'height'); */
+/*     } */
+/* } */
+
+
+.title-bar {
+    @include font-size(2.5rem);
 }
