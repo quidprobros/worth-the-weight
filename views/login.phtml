@@ -51,6 +51,8 @@ use Tracy\Debugger;
                 <input type="submit" class="button expanded" value="Log in"></input>
             </form>
 
+            <hr/>
+
             <form hx-post="/register" class="registration-form" hx-swap='none'>
                 <h2 class="text-center cc-form-title"><strong>Register</strong> to be a part of Worth the Weight!</h2>
                 <label for="register-form-email">Email (fake email address is fine)
@@ -67,6 +69,7 @@ use Tracy\Debugger;
                     <input type="text"
                            pattern="[a-zA-Z0-9]+"
                            class="register-form-username"
+                           placeholder="zaphod123"
                            id="register-form-username"
                            name="register_username"
                            required>
@@ -77,6 +80,7 @@ use Tracy\Debugger;
                             type="password"
                             minlength="<?=\App\MIN_PASSWORD_LENGTH?>"
                             class="register-form-password"
+                            placeholder="password123"
                             autocomplete="new-password"
                             name="register_password"
                             required>

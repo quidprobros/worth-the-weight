@@ -47,13 +47,13 @@ class HomeController extends BaseController
 
         switch (strtotime($bpo_date)) {
             case (strtotime("yesterday")):
-                $title = "Count for {$bpo_view_date}<br>yesterday";
+                $title = "{$bpo_view_date}<br>yesterday";
                 break;
             case (date("Y-m-d")):
                 $title = "today";
                 break;
             default:
-                $title = "Count for {$bpo_view_date}";
+                $title = "{$bpo_view_date}";
                 break;
         };
 

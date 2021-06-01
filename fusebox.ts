@@ -39,6 +39,9 @@ class Context {
                 pluginTypeChecker({
                     name: 'Superman',
                     tsConfig: './tsconfig.json',
+                    // throwOnGlobal: true,
+                    // throwOnSemantic: true,
+                    // throwOnSyntactic: true,
                 }),
                 pluginSass(),
                 pluginPostCSS()
@@ -51,11 +54,14 @@ const {
     rm,
     src,
     task,
+    exec,
 } = sparky<Context>(Context)
 
-task("default", async (ctx: Context) => {
-    rm("./wtw.paxperscientiam.com/dist")
+task('clean', async () => {
+    await rm("./wtw.paxperscientiam.com/dist/")
+})
 
+task("run-dev", async (ctx: Context) => {
     await ctx.getConfig().runDev({
         bundles: {
             distRoot: 'wtw.paxperscientiam.com/dist',
@@ -65,18 +71,10 @@ task("default", async (ctx: Context) => {
             styles: 'styles/styles.$hash.css',
         },
     })
-        .then(function() {
-            // rm("./wtw.paxperscientiam.com/dist/resources.phtml")
-            // return
-            // src("./wtw.paxperscientiam.com/dist/resources.phtml")
-            //     .dest("./views/generated", "dist")
-            //     .exec()
-        })
+
 })
 
-task("build", async (ctx: Context) => {
-    rm("./wtw.paxperscientiam.com/dist")
-
+task("run-build", async (ctx: Context) => {
     await ctx.getConfig().runProd({
         bundles: {
             distRoot: 'wtw.paxperscientiam.com/dist',
@@ -86,18 +84,22 @@ task("build", async (ctx: Context) => {
             styles: 'styles/styles.$hash.css',
         },
         manifest: false,
-    }).then(() => {
-        src("./wtw.paxperscientiam.com/dist/resources.phtml")
-            .dest("views/generated", "dist")
-            .exec()
-      //  rm("./wtw.paxperscientiam.com/dist/resources.phtml")
     })
+})
+
+task("default", async () => {
+    await exec('clean')
+    await exec('run-dev')
+})
+
+task("build", async () => {
+    await exec('clean')
+    await exec('run-build')
 })
 
 task("watch", () => {
     typeChecker.printSettings();
     typeChecker.inspectAndPrint();
-
     typeChecker.worker_watch('./');
 })
 

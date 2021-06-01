@@ -185,7 +185,10 @@ $(() => {
 
     if (0 < $("#food-selection").length) {
         new SlimSelect({
-            select: '#food-selection'
+            select: '#food-selection',
+            allowDeselect: true,
+            allowDeselectOption: true,
+            placeholder: "Select food ...",
         })
     }
 

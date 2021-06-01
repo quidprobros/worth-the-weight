@@ -11,6 +11,7 @@
 @import "@/css.gg/icons/scss/arrow-left-r";
 @import "@/css.gg/icons/scss/arrow-right-r";
 
+
 @import "@/simple-jscalendar/source/jsCalendar.css";
 @import "@/simple-jscalendar/themes/jsCalendar.darkseries.css";
 
@@ -23,7 +24,7 @@
 @include foundation-forms;
 
 // using rfs instead
-//@include foundation-typography;
+@include foundation-typography;
 
 @include foundation-xy-grid-classes(
     $base-grid: true,
@@ -93,35 +94,45 @@ tr.htmx-swapping td {
     height: auto;
 }
 
-/* .log-in-form, .registration-form { */
-/*     border: 1px solid $medium-gray; */
-/*     padding: $form-spacing; */
-/*     border-radius: $global-radius; */
-/*     // */
-/* } */ 
 
-/* .log-in-form, */
-/* .registration-form { */
-/*     input.button, */
-/*     button.button { */
-/*         @include font-size(2rem); */
-/*     } */
- 
-/*     .cc-form-title { */
-/*         @include font-size(3rem); */
-/*     } */
+form {
+    //@include margin-bottom(4rem);
 
-/*     label { */
-/*         @include font-size(2.5rem ); */
-/*     } */
+    .cc-form-title {
+        //@include font-size(3rem);
+    }
 
-/*     .input-group > * { */
-/*         @include font-size(3rem); */
-/*         @include rfs(3rem, 'height'); */
+    .button {
+        padding: 1rem;
+        //@include font-size(2.5rem);
+    }
+/*     .input-group { */
+/*         .input-group-label { */
+/*             @include font-size(2.5rem); */
+/*         } */
+
+/*         .input-group-button .button { */
+/*             @include font-size(2.5rem); */
+/*         } */
 /*     } */
 /* } */
 
+/* .title-bar { */
+/*     @include font-size(4rem); */
+}
 
-.title-bar {
-    @include font-size(2.5rem);
+
+#big-picture {
+    #big-picture--section-1 {
+        padding: 0 !important;
+
+        a {
+           // @include font-size(3rem);
+        }
+    }
+
+    .gg-arrow-right-r,
+    .gg-arrow-left-r {
+        --ggs: 2;
+    }
 }
