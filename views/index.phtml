@@ -14,92 +14,99 @@ Tracy\Debugger;
         <?=Flight::render("../wtw.paxperscientiam.com/dist/resources", [])?>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
-    <body hx-ext="path-deps">
+    <body hx-ext="path-deps" class="grid-frame grid-y">
         <? foreach ($records as $record) { ?>
             <?=$record->id?>
-        <? } ?>
-        <? if (true === Flight::get("debug_mode")) { ?>
-            <button type="button"
-                    onclick="delayedReload(500)"
-                    class="button alert"
-                    style="position:fixed;left:0;bottom:0"
-                    name='drop-food-records'
-                    hx-swap='none'
-                    hx-post="/drop-food-log">
-                DELETE ENTIRE FOOD LOG</button>
         <? } ?>
         <div class="title-bar">
             <div class="title-bar-left">
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
                 <span class="title-bar-title">Journal</span>
-                <span><button class="small button" hx-swap='none' hx-post="/logout">log out</button></span>
             </div>
             <div class="title-bar-right">
                 <span class="title-bar-title">Calendar</span>
                 <button class="menu-icon" type="button" data-toggle="offCanvas2"></button>
             </div>
         </div>
-        <div class="title-bar-left">
-            <span><?=Flight::welcome()?>, <strong><?=Flight::auth()->getUsername()?></strong></span>
-        </div>
-        <div class="title-bar-right">
-            <span><?=" The date is " . Carbon::now()->format("D M j, Y")?></span>
-        </div>
 
-        <div class="off-canvas-wrapper">
-            <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
-                 hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$big_picture_day_offset}")?>'
-                 hx-trigger="path-deps"
-                 path-deps="/journal-entry">
-                <?=Flight::render("partials/offcanvas-menu", [
-                ])?>
-            </div>
+        <div class="cell medium-auto medium-cell-block-container">
+            <div class="off-canvas-wrapper">
+                <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
+                     hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$big_picture_day_offset}")?>'
+                     hx-trigger="path-deps"
+                     path-deps="/journal-entry">
+                    <?=Flight::render("partials/offcanvas-menu", [
+                    ])?>
+                </div>
 
-            <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
-                <?=Flight::render("partials/offcanvas-graphs", [
-                ])?>
-            </div>
-            <div class="off-canvas-content" data-off-canvas-content>
-                <div class="grid-container">
-                    <div class="grid-x grid-margin-x align-middle">
-                        <div class="cell small-12 large-4 small-order-2 large-order-1">
-                            <form name='food-log-form' class="grid-x">
-                                <fieldset class="cell small-12 fieldset">
-                                    <legend>food info</legend>
-                                    <div class='form-group'>
-                                        <label><strong>Select date</strong></label>
-                                        <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label><strong>Select food:</strong></label>
-                                        <select id="food-selection" name='food-selection' class='form-control' required>
-                                            <option data-placeholder="Select food ..."></option>
-                                            <? foreach ($foods as $food) { ?>
-                                                <option value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
-                                            <? } ?>
-                                        </select>
-                                    </div>
-                                </fieldset>
-                                <fieldset class="cell small-12 fieldset">
-                                    <div class="form-group">
-                                        <label><strong aria-label="Fraction of base unit consumed" data-microtip-position="top" role="tooltip">Multiplier<sup>ⓘ</sup></strong></label>
-                                        <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
-                                    </div>
-                                </fieldset>
-                                <button type="submit" class="button success large"
-                                        hx-post="/journal-entry"
-                                        hx-swap="none">submit</button>
-                            </form>
-                        </div>
+                <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
+                    <?=Flight::render("partials/offcanvas-graphs", [
+                    ])?>
+                </div>
+                <div class="off-canvas-content" data-off-canvas-content>
+                    <div class="grid-container">
+                        <div class="grid-x grid-margin-x grid-padding-y align-stretch">
+                            <div class="cell small-12 large-4 small-order-2 large-order-1">
+                                <form name='food-log-form' class="grid-x callout">
+                                    <fieldset class="cell small-12 fieldset">
+                                        <legend>food info</legend>
+                                        <div class='form-group'>
+                                            <label><strong>Select date</strong></label>
+                                            <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label><strong>Select food:</strong></label>
+                                            <select id="food-selection" name='food-selection' class='form-control' required>
+                                                <option data-placeholder="Select food ..."></option>
+                                                <? foreach ($foods as $food) { ?>
+                                                    <option value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                <? } ?>
+                                            </select>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="cell small-12 fieldset">
+                                        <div class="form-group">
+                                            <label><strong aria-label="Fraction of base unit consumed" data-microtip-position="top" role="tooltip">Multiplier<sup>ⓘ</sup></strong></label>
+                                            <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
+                                        </div>
+                                    </fieldset>
+                                    <fieldset class="cell small-12">
+                                        <button type="submit" class="button success large"
+                                                hx-post="/journal-entry"
+                                                hx-swap="none">submit</button>
+                                    </fieldset>
+                                </form>
+                            </div>
 
-                        <div class="cell small-12 large-8 small-order-1 large-order-2">
-                            <div class="grid-x grid-margin-x align-center-middle">
-                                <?Flight::render("partials/big-picture", [])?>
+                            <div class="cell small-12 large-8 small-order-1 large-order-2">
+                                <div class="grid-x grid-margin-x callout">
+                                    <?Flight::render("partials/big-picture", [])?>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="cell shrink footer">
+            <div class="card">
+                <div class="card-section">
+                    <span>Logged in as <strong><?=Flight::auth()->getUsername()?></strong></span>
+                    <div class="button-group">
+                        <? if (true === Flight::get("debug_mode")) { ?>
+                            <button type="button"
+                                    onclick="delayedReload(500)"
+                                    class="button alert"
+                                    name='drop-food-records'
+                                    hx-swap='none'
+                                    hx-post="/drop-food-log">
+                                DELETE ENTIRE FOOD LOG</button>
+                        <? } ?>
+                        <button class="small button" hx-swap='none' hx-post="/logout">log out</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <script>

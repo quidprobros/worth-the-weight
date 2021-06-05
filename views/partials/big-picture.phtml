@@ -1,4 +1,6 @@
 <?
+use Carbon\Carbon;
+
 $prev = $big_picture_day_offset - 1;
 $next = $big_picture_day_offset + 1;
 ?>
@@ -31,6 +33,7 @@ $next = $big_picture_day_offset + 1;
     </div>
     <div id="big-picture--section-2" class="card-section">
         <div class="callout secondary text-center">
+            <h4 class="text-left"><?=" The date is " . Carbon::now()->format("D M j, Y")?></h4>
             <div id="today-total" class="text-right"><?=number_format($today_points, 2)?> points</div>
         </div>
     </div>
@@ -49,7 +52,7 @@ $next = $big_picture_day_offset + 1;
             </fieldset>
         </form>
     </div>
-    <div id="big-picture--footer" class="card-footer">
+    <div id="big-picture--footer" class="card-section">
         <div class="cell auto">
             <div id="statistics" class="callout">
                 <p>

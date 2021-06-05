@@ -1,8 +1,27 @@
-<?PHP
+<?
+http_response_code(500);
+?>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Document</title>
+        <?=Flight::render("../wtw.paxperscientiam.com/dist/resources", [])?>
+    </head>
+    <body hx-boost="true">
+        hi there
+        <a hx-get="/test">get derp</a>
+        <script type="text/javascript">
+         $(function() {
 
-use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\ActiveUser;
-use Illuminate\Database\Capsule\Manager as DB;
-use App\Payload;
+             htmx.on("htmx:responseError", function () {
+                 console.error("omfg");
+             })
+             htmx.on("htmx:afterOnLoad", function () {
+                     console.log('afta');
+             });
+         })
+        </script>
+    </body>
 
+</html>

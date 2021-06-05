@@ -23,6 +23,17 @@ class Context {
                 macros: {
                     '@': path.resolve(__dirname, './node_modules/'),
                 },
+                postCSS: {
+                    plugins: [
+                        require('autoprefixer')({}),
+                        require('cssnano')({
+                            preset: 'default',
+                        }),
+                        require('postcss-prefixer')({
+                            prefix: 'prefix-',
+                        })
+                    ]
+                }
             },
             logging: {
                 level: 'verbose',
@@ -30,8 +41,11 @@ class Context {
             target: 'browser',
             webIndex: { template: 'src/resources.html',
                         distFileName: 'resources.phtml',
-                        publicPath: "/dist"
+                        publicPath: "/dist",
                       },
+            sourceMap: {
+                sourceRoot: "/dist/sauce",
+            },
             devServer: false,
             cache: false,
             hmr: true,
@@ -44,7 +58,6 @@ class Context {
                     // throwOnSyntactic: true,
                 }),
                 pluginSass(),
-                pluginPostCSS()
             ],
         })
     }
@@ -52,7 +65,6 @@ class Context {
 
 const {
     rm,
-    src,
     task,
     exec,
 } = sparky<Context>(Context)
