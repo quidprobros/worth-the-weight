@@ -1,68 +1,59 @@
 <?
-use Carbon\Carbon;
 
 $prev = $big_picture_day_offset - 1;
 $next = $big_picture_day_offset + 1;
 ?>
-<div id="big-picture" class="card custom-shadow">
-    <div id="big-picture--section-1" class="card-header button-group align-justify">
-        <a class="button" title="see total for previous day"
-           hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
-           hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$prev}")?>'
-           hx-swap="outerHTML swap:200ms"
-           hx-target='#big-picture'><i class="gg-arrow-left-r"></i></a>
-        <? if (0 == $big_picture_day_offset) { ?>
-            <a class="flex-container align-self-middle"
-               title="see total for today"><?=$title?>
-            </a>
-        <? } else { ?>
-            <a class="flex-container align-self-middle"
-               title="see total for this day"
-               hx-trigger="click, path-deps, keyup[shiftKey&&key=='S'] from:body"
-               path-deps="/journal-entry"
-               hx-get="<?=Flight::url()->sign("/home/big-picture/rel/0")?>"
+
+<div id="big-picture" class="cell custom-shadow">
+    <div class="grid-x align-middle">
+        <div class="small-1 cell text-center">
+            <a class="special-button" title="see total for previous day"
+               hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
+               hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$prev}")?>'
                hx-swap="outerHTML swap:200ms"
-               hx-target='#big-picture'><?=$title?>
-            </a>
-        <? } ?>
-        <a class="button" title="see total for next day"
-           hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
-           hx-get="<?=Flight::url()->sign("/home/big-picture/rel/{$next}")?>"
-           hx-swap="outerHTML swap:200ms"
-           hx-target='#big-picture'><i class="gg-arrow-right-r"></i></a>
-    </div>
-    <div id="big-picture--section-2" class="card-section">
-        <div class="callout secondary text-center">
-            <h4 class="text-left"><?=" The date is " . Carbon::now()->format("D M j, Y")?></h4>
-            <div id="today-total" class="text-right"><?=number_format($today_points, 2)?> points</div>
+               hx-target='#big-picture'><i class="gg-arrow-left-r"></i></a>
         </div>
-    </div>
-    <div id="big-picture--section-3" class="card-section">
-        <form action="" name="day-info">
-            <fieldset class="cell small-12 fieldset">
-                <input name="exercised"
-                       type="checkbox"
-                       hx-post='<?=Flight::url()->sign("/journal-entry/exercised/rel/{$big_picture_day_offset}")?>'
-                       hx-target="#exercised-statement"
-                       <?=(1 == $exercised_bpo) ? "checked":""?>
-                />
-                <label for="exercised">Did you exercise today?</label>
-                <br>
-                <?=Flight::render("partials/exercised-statement", [])?>
-            </fieldset>
-        </form>
-    </div>
-    <div id="big-picture--footer" class="card-section">
-        <div class="cell auto">
-            <div id="statistics" class="callout">
-                <p>
-                    You are averaging <strong><?=number_format($stats->avgDaily(), 2)?></strong> points per logged-day.
-                </p>
-                <p>
-                    Trailing 7-day average: <strong><?=number_format($stats->avgDailyTrailing7(), 2)?></strong> points per logged-day
-                </p>
+        <div id="big-picture--section-2" class="small-10 cell">
+            <div class="text-center">
+                <div id="today-total" class="text-center"><p><span><?=number_format($today_points, 2)?></span><sup class="super"><u>PTS</u></sup></p></div>
+                <p class="text-left subheader"><?=$title?></p>
             </div>
         </div>
+        <div class="small-1 cell text-center">
+            <a class="special-button" title="see total for next day"
+               hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
+               hx-get="<?=Flight::url()->sign("/home/big-picture/rel/{$next}")?>"
+               hx-swap="outerHTML swap:200ms"
+               hx-target='#big-picture'><i class="gg-arrow-right-r"></i></a>
+        </div>
+
+
+    </div>
+</div>
+<div id="big-picture--section-3" class="cell auto">
+    <form action="" name="day-info">
+        <fieldset class="cell small-12 fieldset">
+            <legend>exercise info</legend>
+            <input name="exercised"
+                   type="checkbox"
+                   hx-post='<?=Flight::url()->sign("/journal-entry/exercised/rel/{$big_picture_day_offset}")?>'
+                   hx-target="#exercised-statement"
+                   <?=(1 == $exercised_bpo) ? "checked":""?>
+            />
+            <label for="exercised">Did you exercise today?</label>
+            <br>
+            <?=Flight::render("partials/exercised-statement", [])?>
+        </fieldset>
+    </form>
+</div>
+<div id="big-picture--footer" class="cell auto">
+    <div id="statistics" class="callout">
+        <p>
+            You are averaging <strong><?=number_format($stats->avgDaily(), 2)?></strong> points per logged-day.
+        </p>
+        <p>
+            Trailing 7-day average: <strong><?=number_format($stats->avgDailyTrailing7(), 2)?></strong> points per logged-day
+        </p>
     </div>
 </div>
 <script type="text/javascript">

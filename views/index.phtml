@@ -23,6 +23,12 @@ Tracy\Debugger;
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
                 <span class="title-bar-title">Journal</span>
             </div>
+            <div class="title-bar-center show-for-medium">
+                <?=" The date is " . Carbon::now()->format("D M j, Y")?>
+            </div>
+            <div class="title-bar-center hide-for-medium">
+                <?=Carbon::now()->format("F j, Y")?>
+            </div>
             <div class="title-bar-right">
                 <span class="title-bar-title">Calendar</span>
                 <button class="menu-icon" type="button" data-toggle="offCanvas2"></button>
@@ -30,57 +36,59 @@ Tracy\Debugger;
         </div>
 
         <div class="cell medium-auto medium-cell-block-container">
-            <div class="off-canvas-wrapper">
-                <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
-                     hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$big_picture_day_offset}")?>'
-                     hx-trigger="path-deps"
-                     path-deps="/journal-entry">
-                    <?=Flight::render("partials/offcanvas-menu", [
-                    ])?>
-                </div>
+            <div class="cell medium-4 medium-cell-block-y">
+                <div class="off-canvas-wrapper">
+                    <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
+                         hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$big_picture_day_offset}")?>'
+                         hx-trigger="path-deps"
+                         path-deps="/journal-entry">
+                        <?=Flight::render("partials/offcanvas-menu", [
+                        ])?>
+                    </div>
 
-                <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
-                    <?=Flight::render("partials/offcanvas-graphs", [
-                    ])?>
-                </div>
-                <div class="off-canvas-content" data-off-canvas-content>
-                    <div class="grid-container">
-                        <div class="grid-x grid-margin-x grid-padding-y align-stretch">
-                            <div class="cell small-12 large-4 small-order-2 large-order-1">
-                                <form name='food-log-form' class="grid-x callout">
-                                    <fieldset class="cell small-12 fieldset">
-                                        <legend>food info</legend>
-                                        <div class='form-group'>
-                                            <label><strong>Select date</strong></label>
-                                            <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
+                    <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
+                        <?=Flight::render("partials/offcanvas-graphs", [
+                        ])?>
+                    </div>
+                    <div class="off-canvas-content" data-off-canvas-content>
+                        <div class="grid-container fluid">
+                            <div class="grid-x grid-margin-x align-stretch">
+                                <div class="cell small-12 large-4 small-order-2 large-order-1">
+                                    <form name='food-log-form' class="grid-x">
+                                        <fieldset class="cell small-12 fieldset">
+                                            <legend>food info</legend>
+                                            <div class='form-group'>
+                                                <label><strong>Select date</strong></label>
+                                                <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>Select food:</strong></label>
+                                                <select id="food-selection" name='food-selection' class='form-control' required>
+                                                    <option data-placeholder="Select food ..."></option>
+                                                    <? foreach ($foods as $food) { ?>
+                                                        <option value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                    <? } ?>
+                                                </select>
+                                            </div>
+                                        </fieldset>
+                                        <fieldset class="cell small-12 fieldset">
+                                            <div class="form-group">
+                                                <label><strong aria-label="Fraction of base unit consumed" data-microtip-position="top" role="tooltip">Multiplier<sup>ⓘ</sup></strong></label>
+                                                <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
+                                            </div>
+                                        </fieldset>
+                                        <div class="cell small-12">
+                                            <button type="submit" class="expanded rounded button success large"
+                                                    hx-post="/journal-entry"
+                                                    hx-swap="none">submit journal entry</button>
                                         </div>
-                                        <div class="form-group">
-                                            <label><strong>Select food:</strong></label>
-                                            <select id="food-selection" name='food-selection' class='form-control' required>
-                                                <option data-placeholder="Select food ..."></option>
-                                                <? foreach ($foods as $food) { ?>
-                                                    <option value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
-                                                <? } ?>
-                                            </select>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="cell small-12 fieldset">
-                                        <div class="form-group">
-                                            <label><strong aria-label="Fraction of base unit consumed" data-microtip-position="top" role="tooltip">Multiplier<sup>ⓘ</sup></strong></label>
-                                            <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
-                                        </div>
-                                    </fieldset>
-                                    <fieldset class="cell small-12">
-                                        <button type="submit" class="button success large"
-                                                hx-post="/journal-entry"
-                                                hx-swap="none">submit</button>
-                                    </fieldset>
-                                </form>
-                            </div>
+                                    </form>
+                                </div>
 
-                            <div class="cell small-12 large-8 small-order-1 large-order-2">
-                                <div class="grid-x grid-margin-x callout">
-                                    <?Flight::render("partials/big-picture", [])?>
+                                <div class="cell small-12 large-8 small-order-1 large-order-2">
+                                    <div class="grid-y grid-frame">
+                                        <?Flight::render("partials/big-picture", [])?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -89,10 +97,9 @@ Tracy\Debugger;
             </div>
         </div>
         <div class="cell shrink footer">
-            <div class="card">
-                <div class="card-section">
-                    <span>Logged in as <strong><?=Flight::auth()->getUsername()?></strong></span>
-                    <div class="button-group">
+            <div class="grid-x grid-padding-x align-middle">
+                <div class="cell small-6">
+                    <div class="button-group margin-1">
                         <? if (true === Flight::get("debug_mode")) { ?>
                             <button type="button"
                                     onclick="delayedReload(500)"
@@ -105,6 +112,10 @@ Tracy\Debugger;
                         <button class="small button" hx-swap='none' hx-post="/logout">log out</button>
                     </div>
                 </div>
+                <div class="cell small-6 text-right">
+                    <span >Logged in as <strong><?=Flight::auth()->getUsername()?></strong></span>
+                </div>
+
             </div>
 
         </div>

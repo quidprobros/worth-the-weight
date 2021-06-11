@@ -17,8 +17,6 @@
 
 @import "@/microtip/microtip";
 
-//@include foundation-everything;
-
 // Global styles
 @include foundation-global-styles;
 @include foundation-forms;
@@ -62,6 +60,8 @@
 
 // Helpers
 @include foundation-flex-classes;
+@include foundation-prototype-classes;
+@include foundation-visibility-classes;
 
 
 .custom-shadow {
@@ -94,40 +94,14 @@ tr.htmx-swapping td {
     height: auto;
 }
 
-
-form {
-    //@include margin-bottom(4rem);
-
-    .cc-form-title {
-        //@include font-size(3rem);
-    }
-
-    .button {
-        padding: 1rem;
-        //@include font-size(2.5rem);
-    }
-/*     .input-group { */
-/*         .input-group-label { */
-/*             @include font-size(2.5rem); */
-/*         } */
-
-/*         .input-group-button .button { */
-/*             @include font-size(2.5rem); */
-/*         } */
-/*     } */
-/* } */
-
-/* .title-bar { */
-/*     @include font-size(4rem); */
-}
-
-
 #big-picture {
     #big-picture--section-1 {
         padding: 0 !important;
+    }
 
-        a {
-           // @include font-size(3rem);
+    #big-picture--section-2 {
+        p:first-child {
+            @include font-size(8rem);
         }
     }
 
@@ -135,4 +109,24 @@ form {
     .gg-arrow-left-r {
         --ggs: 2;
     }
+}
+
+.footer {
+    background-color: $black;
+    color: $white;
+}
+
+.title-bar-center {
+    @extend .title-bar-right;
+    text-align: center;
+}
+
+.super {
+    font-size: 50% !important;
+}
+
+.special-button {
+    @extend .button;
+    margin: auto;
+    padding: 100% 0;
 }
