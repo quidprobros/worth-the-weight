@@ -28,6 +28,7 @@ export {$}
 console.log($)
 import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
+import 'htmx.org/dist/ext/class-tools.js'
 
 import {jsCalendar} from 'simple-jscalendar/source/jsCalendar'
 export {jsCalendar}

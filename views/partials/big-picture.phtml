@@ -4,7 +4,7 @@ $prev = $big_picture_day_offset - 1;
 $next = $big_picture_day_offset + 1;
 ?>
 
-<div id="big-picture" class="cell custom-shadow">
+<div id="big-picture" class="cell">
     <div class="grid-x align-middle">
         <div class="small-1 cell text-center">
             <a class="special-button" title="see total for previous day"
@@ -13,10 +13,9 @@ $next = $big_picture_day_offset + 1;
                hx-swap="outerHTML swap:200ms"
                hx-target='#big-picture'><i class="gg-arrow-left-r"></i></a>
         </div>
-        <div id="big-picture--section-2" class="small-10 cell">
+        <div id="big-picture--section-2" class="small-10 cell custom-shadow" data-classes="">
             <div class="text-center">
-                <div id="today-total" class="text-center"><p><span><?=number_format($today_points, 2)?></span><sup class="super"><u>PTS</u></sup></p></div>
-                <p class="text-left subheader"><?=$title?></p>
+                <div id="today-total" class="text-center"><p class='margin-0'><span><?=number_format($today_points, 2)?></span><sup class="super"><u>PTS</u></sup></p></div>
             </div>
         </div>
         <div class="small-1 cell text-center">
@@ -25,6 +24,9 @@ $next = $big_picture_day_offset + 1;
                hx-get="<?=Flight::url()->sign("/home/big-picture/rel/{$next}")?>"
                hx-swap="outerHTML swap:200ms"
                hx-target='#big-picture'><i class="gg-arrow-right-r"></i></a>
+        </div>
+        <div class="cell small-offset-1">
+            <p class="text-left subheader"><?=$title?></p>
         </div>
 
 

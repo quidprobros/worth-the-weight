@@ -14,7 +14,7 @@ Tracy\Debugger;
         <?=Flight::render("../wtw.paxperscientiam.com/dist/resources", [])?>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
-    <body hx-ext="path-deps" class="grid-frame grid-y">
+    <body hx-ext="path-deps,class-tools" class="grid-frame grid-y">
         <? foreach ($records as $record) { ?>
             <?=$record->id?>
         <? } ?>
@@ -31,13 +31,13 @@ Tracy\Debugger;
             </div>
             <div class="title-bar-right">
                 <span class="title-bar-title">Calendar</span>
-                <button class="menu-icon" type="button" data-toggle="offCanvas2"></button>
+                <button class="menu-icon" type="button" data-toggle="offCanvas2" data-classes=""></button>
             </div>
         </div>
 
         <div class="cell medium-auto medium-cell-block-container">
             <div class="cell medium-4 medium-cell-block-y">
-                <div class="off-canvas-wrapper">
+                <div class="off-canvas-wrapper" style="height:100%">
                     <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
                          hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$big_picture_day_offset}")?>'
                          hx-trigger="path-deps"

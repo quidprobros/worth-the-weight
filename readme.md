@@ -62,6 +62,7 @@ A web application for tracking food consumption. You can also record whether you
 - [x] reduce redundant queries
 - [x] going through query log help me to find redudnant db queries
 - [ ] bootstrap to build fresh database for local use
+- [ ] some kind of effect is needed to show page changing
 
 
 # Security tests on live

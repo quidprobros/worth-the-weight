@@ -67,16 +67,35 @@
 
 .custom-shadow {
     box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-    transition: box-shadow 0.2s ease-in-out;
+    transition: box-shadow 0.2s ease-in-out,background-color 0.2s ease-in-out;
 
     &.htmx-swapping {
         box-shadow: 0 3px 5px rgba(0,0,0,0.3);
     }
 }
 
+.htmx-swapping #big-picture--section-2 {
+    opacity: 0.2;
+    filter: blur(5px);
+    color: white;
+}
+
 tr.htmx-swapping td {
     opacity: 0;
     transition: opacity 200ms ease-out;
+}
+
+.fade-me-out.htmx-swapping {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.htmx-settling .fade-me-in {
+    opacity: 0;
+}
+.fade-me-in {
+    opacity: 1;
+    transition: opacity 1s ease-out;
 }
 
 .card-divider {
@@ -101,6 +120,9 @@ tr.htmx-swapping td {
     }
 
     #big-picture--section-2 {
+        transition: opacity 0.2s ease-in-out,
+                    filter 0.3s ease-in-out,
+                    color 0.3s ease-in-out;
         p:first-child {
             @include font-size(8rem);
         }
@@ -130,4 +152,101 @@ tr.htmx-swapping td {
     @extend .button;
     margin: auto;
     padding: 100% 0;
+}
+
+
+/*base code*/
+.animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+.animated.infinite {
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+.animated.hinge {
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+}
+/*the animation definition*/
+@-webkit-keyframes slideInLeft {
+    0% {
+        -webkit-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible
+    }
+    100% {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0)
+    }
+}
+@keyframes slideInLeft {
+    0% {
+        -webkit-transform: translate3d(-100%, 0, 0);
+        -ms-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+        
+    }
+    100% {
+        -webkit-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+
+    }
+}
+
+.slideInLeft {
+    -webkit-animation-name: slideInLeft;
+    animation-name: slideInLeft
+}
+
+.slideInLeft2 {
+    @extend .animated;
+    -webkit-animation-name: slideInLeft;
+    animation-name: slideInLeft
+}
+
+/*the animation definition*/
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.05, 1.05, 1.05);
+        transform: scale3d(1.05, 1.05, 1.05)
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+}
+@keyframes pulse {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        -ms-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.05, 1.05, 1.05);
+        -ms-transform: scale3d(1.05, 1.05, 1.05);
+        transform: scale3d(1.05, 1.05, 1.05)
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        -ms-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+}
+.pulse {
+    -webkit-animation-name: pulse;
+    animation-name: pulse
+}
+
+.pulse2 {
+    @extend .animated;
+    -webkit-animation-name: pulse;
+    animation-name: pulse
 }
