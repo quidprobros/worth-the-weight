@@ -47,7 +47,7 @@ class HomeController extends BaseController
 
         switch (strtotime($bpo_date)) {
             case (strtotime("yesterday")):
-                $title = "{$bpo_view_date}<br>yesterday";
+                $title = "{$bpo_view_date} (yesterday)";
                 break;
             case (date("Y-m-d")):
                 $title = "today";
