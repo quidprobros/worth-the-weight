@@ -56,7 +56,6 @@ Foundation.addToJquery($);
 import {OffCanvas} from 'foundation-sites/js/foundation.offcanvas'
 import {Reveal} from 'foundation-sites/js/foundation.reveal'
 
-
 async function delay(duration = 0) {
     await new Promise(r => setTimeout(r, duration));
 }

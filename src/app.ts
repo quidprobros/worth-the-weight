@@ -8,6 +8,10 @@ export const App = {
         const viztype = el.type === 'password' ? 'text' : 'password'
         el.type = viztype
     },
+    set eyeball(el: HTMLElement) {
+        el.classList.toggle('gg-eye');
+        el.classList.toggle('gg-eye-alt');
+    },
     delayPromise(duration: number): Promise<number> {
         return new Promise((resolve): void => {
             setTimeout(() => {
