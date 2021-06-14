@@ -12,12 +12,16 @@ use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\User;
 use App\Models\ActiveUser;
 use Mailgun\Mailgun;
+//
+use function League\Uri\parse;
+use function League\Uri\build;
 
 const WEB_ROOT = __DIR__;
 const FILE_ROOT = __DIR__ . "/..";
 define("DEBUG", "development" === $_SERVER['APPLICATION_ENV']);
 
 require_once FILE_ROOT . "/vendor/autoload.php";
+
 
 // sets headers and stuff
 App\Config::init();
@@ -367,6 +371,45 @@ Flight::route('GET /(home|index)', function () {
         Flight::get('bpo')
     );
     $controller();
+});
+
+Flight::route('GET /home/next', function () {
+    $dump = [];
+    $query = Flight::request()->query;
+
+    $query->bpo = $query->bpo + 13;
+
+    $new_query = http_build_query($query->getData(), "?", "?", PHP_QUERY_RFC3986);
+
+    $dump[] = $new_query;
+
+    $components = parse(Flight::request()->url);
+    $components['path'] = "/home";
+    $components['query'] = $new_query;
+
+    Debugger::log($components);
+
+    $url = build($components);
+    $dump[] = $url;
+
+
+
+    Flight::redirect($url);
+});
+
+Flight::route('GET /home/prev', function () {
+    $query = Flight::request()->query;
+    $query['bpo'] -= 1;
+
+    $new_query = http_build_query($query->getData(), "?", "?", PHP_QUERY_RFC3986);
+
+    $components = parse(Flight::request()->url);
+    $components['path'] = "/home";
+    $components['query'] = $new_query;
+
+    $url = build($components);
+
+    Flight::redirect($url);
 });
 
 Flight::route('GET /goto/@date', function ($date) {

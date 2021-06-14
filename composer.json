@@ -15,7 +15,8 @@
         "illuminate/filesystem": "^8.40",
         "mailgun/mailgun-php": "^3.5",
         "kriswallsmith/buzz": "^1.2",
-        "nyholm/psr7": "^1.4"
+        "nyholm/psr7": "^1.4",
+        "league/uri-parser": "^1.4"
     },
     "authors": [
         {

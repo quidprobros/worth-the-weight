@@ -299,3 +299,9 @@ tr.htmx-swapping td {
 /* .sw-resize       { cursor: sw-resize; } */
 /* .nesw-resize     { cursor: nesw-resize; } */
 /* .nwse-resize     { cursor: nwse-resize; } */
+
+.nojs-banner {
+    text-align: center;
+    font-size: 3em;
+    border: 5px solid black;
+}
