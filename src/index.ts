@@ -26,6 +26,8 @@ import $ from "jquery"
 window.$ = $
 export {$}
 
+$("html").removeClass("no-js");
+
 import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
 import 'htmx.org/dist/ext/class-tools.js'

@@ -4,7 +4,7 @@ Tracy\Debugger;
 ?>
 <!-- mode: web -->
 <!doctype html>
-<html lang="en">
+<html lang="en" class="no-js">
     <?php Debugger::renderLoader() ?>
     <head>
         <meta charset="UTF-8"/>
@@ -16,7 +16,7 @@ Tracy\Debugger;
     </head>
     <body hx-ext="path-deps,class-tools" class="medium-grid-frame grid-y align-justify">
         <noscript>
-            <div class="nojs-banner">Worth the Weight requires JavaScript!</div>
+            <div class="nojs-banner">Worth the Weight is better with JavaScript!</div>
         </noscript>
         <? foreach ($records as $record) { ?>
             <?=$record->id?>
@@ -26,10 +26,11 @@ Tracy\Debugger;
                 <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
                 <span class="title-bar-title">Journal</span>
             </div>
-            <div class="title-bar-center show-for-medium pointer-cursor"
-                 hx-get='<?=Flight::url()->sign("/home/big-picture/rel/0")?>'
-                 hx-target="#big-picture">
-                <?=" The date is " . Carbon::now()->format("D M j, Y")?>
+            <div class="title-bar-center show-for-medium pointer-cursor">
+                <a hx-get='<?=Flight::url()->sign("/home/big-picture/rel/0")?>'
+                   hx-target="#big-picture"
+                   href="/"><?=" The date is " . Carbon::now()->format("D M j, Y")?>
+                </a>
             </div>
             <div class="title-bar-center hide-for-medium pointer-cursor">
                 <?=Carbon::now()->format("F j, Y")?>
@@ -60,7 +61,7 @@ Tracy\Debugger;
                             <div class="grid-container fluid">
                                 <div class="grid-x grid-margin-x align-stretch">
                                     <div class="cell small-12 large-4 small-order-2 large-order-1">
-                                        <form name='food-log-form' class="grid-x" style="height:100%">
+                                        <form name='food-log-form' class="grid-x" style="height:100%" action="/journal-entry" method="POST">
                                             <fieldset class="cell small-12 fieldset">
                                                 <legend>food info</legend>
                                                 <div class='form-group'>
@@ -117,7 +118,9 @@ Tracy\Debugger;
                                     hx-post="/drop-food-log">
                                 DELETE ENTIRE FOOD LOG</button>
                         <? } ?>
-                        <button class="small button" hx-swap='none' hx-post="/logout">log out</button>
+                        <form method="POST" action="/logout">
+                            <button type="submit" class="small button" hx-swap='none' hx-post="/logout">log out</button>
+                        </form>
                     </div>
                 </div>
                 <div class="cell small-6 text-right">

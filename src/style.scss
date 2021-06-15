@@ -139,11 +139,10 @@ tr.htmx-swapping td {
     color: $white;
 }
 
-.title-bar-center {
-    @extend .title-bar-right;
-    text-align: center;
-
-}
+/* .title-bar-center { */
+/*     @extend .title-bar-right; */
+/*     text-align: center; */
+/* } */
 
 .super {
     font-size: 50% !important;
@@ -302,6 +301,20 @@ tr.htmx-swapping td {
 
 .nojs-banner {
     text-align: center;
-    font-size: 3em;
+    font-size: 1.5em;
     border: 5px solid black;
+}
+
+
+.no-js {
+    .title-bar-left,
+    .title-bar-right
+    {
+        visibility: hidden;
+    }
+
+    #big-picture--section-3
+    {
+        display: none;
+    }
 }

@@ -53,6 +53,7 @@ A web application for tracking food consumption. You can also record whether you
 - [x] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model (can happen through form manipulation)
 
 # sprint 4 (reach)
+- [ ] basic functionality without javascript
 - [ ] is query js needed?
 - [ ] fix cant scroll button on small screens
 - [ ] use HX-Trigger to handle other actions stored in global App object

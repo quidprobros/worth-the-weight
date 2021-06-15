@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\User;
 use App\Models\ActiveUser;
-use Mailgun\Mailgun;
 //
 use function League\Uri\parse;
 use function League\Uri\build;
@@ -21,7 +20,6 @@ const FILE_ROOT = __DIR__ . "/..";
 define("DEBUG", "development" === $_SERVER['APPLICATION_ENV']);
 
 require_once FILE_ROOT . "/vendor/autoload.php";
-
 
 // sets headers and stuff
 App\Config::init();
@@ -126,7 +124,6 @@ Flight::map("verifySignature", function () {
     return true;
 });
 
-
 Flight::map("hxheader", function ($message, $status = "success", $exception = null) {
     $x = json_encode([
         "showMessage" => [
@@ -148,53 +145,23 @@ Flight::map("hxheader", function ($message, $status = "success", $exception = nu
     }
 });
 
-
 Flight::map("hxtrigger", function ($actions) {
     $z = json_encode($actions);
     header('HX-Trigger: ' . $z);
 });
 
-// Flight::route("POST /forgot", function () {
-//     $data = Flight::request()->data;
-//     $email = $data['reset_email'];
-
-//     try {
-//         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
-
-//         Flight::hxheader('Request has been generated');
-//     }
-//     catch (\Delight\Auth\InvalidEmailException $e) {
-//         Flight::hxheader('Invalid email address');
-//     }
-//     catch (\Delight\Auth\EmailNotVerifiedException $e) {
-//         Flight::hxheader('Email not verified');
-//     }
-//     catch (\Delight\Auth\ResetDisabledException $e) {
-//         Flight::hxheader('Password reset is disabled');
-//     }
-//     catch (\Delight\Auth\TooManyRequestsException $e) {
-//         Flight::hxheader('Too many requests');
-//     } catch (\App\Exceptions\FormException $e) {
-//         Flight::hxheader($e->getMessage(), 'error');
-//     } catch (Exception $e) {
-//         Flight::hxheader("There was an error", "error", $e);
-//     }
-// });
-
 Flight::route("GET /login", function () {
     /* This route MUST come FIRST */
-    
     Flight::render("login", []);
+    return false;
 });
 
 Flight::route("POST /login", function () {
-    /* This route MUST come SECOND */
-
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
         $controller->loginUser();
         Flight::hxheader('Logging in ...');
-        header("HX-Redirect: /home");
+        Flight::redirect("/home");
         //
     } catch (\Delight\Auth\InvalidEmailException $e) {
         Debugger::log($e->getMessage());
@@ -233,6 +200,9 @@ Flight::route("POST /register", function () {
                 "level" => "success"
             ]
         ]);
+        Flight::redirect("/home");
+        return false;
+        Debugger::log('successful register');
     } catch (\App\Exceptions\FormException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader($e->getMessage(), 'error');
@@ -242,12 +212,14 @@ Flight::route("POST /register", function () {
     } catch (\Delight\Auth\DuplicateUsernameException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader("That username is already taken", "error");
+        echo "That username is already taken";
     } catch (\Delight\Auth\InvalidPasswordException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader("Invalid password", "error");
     } catch (\Delight\Auth\UserAlreadyExistsException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader("User already registered", "error");
+        echo "User already registered";
     } catch (\Delight\Auth\TooManyRequestsException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader("You have done that too many times. Try again later", "error");
@@ -260,57 +232,12 @@ Flight::route("POST /register", function () {
     }
 });
 
-Flight::route("POST /logout", function () {
-    try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
-        $controller->logoutUser();
-        Flight::hxheader("Logging out ...");
-        header("HX-Redirect: /login");
-    } catch (\Delight\Auth\NotLoggedInException $e) {
-        Flight::hxheader("Not logged in", "info");
-    } catch (Exception $e) {
-        Flight::hxheader("There was an error logging out. Oops!", "error");
-    }
-});
-
-Flight::route(' GET /verify-email', function () {
-    $data = Flight::request()->query;
-    $selector = $data['selector'];
-    $token = $data['token'];
-    Debugger::log(['let us verify', $selector, $token]);
-
-    try {
-        Flight::auth()->confirmEmail($selector, $token);
-        echo 'Email address has been verified';
-        $message = "success";
-    } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
-        Flight::hxheader('Invalid token');
-        $message = "invalid";
-    } catch (\Delight\Auth\TokenExpiredException $e) {
-        Flight::hxheader('Token expired');
-        $message = "invalid";
-    } catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        Flight::hxheader('Email address already exists');
-        $message = "Email address already exists";
-    } catch (\Delight\Auth\TooManyRequestsException $e) {
-        Flight::hxheader('Too many requests');
-        $message = "Try again later";
-    } catch (Exception $e) {
-        $message = "Something went wrong.";
-        Debugger::log($e->getMessage());
-    }
-
-    Flight::redirect(Flight::url()->sign("/login?message={$message}"));
-});
-
-Flight::route('*', function ($route) {
-    /* This route MUST come SECOND */
-
+Flight::route("*", function () {
     if (false == Flight::auth()->isLoggedIn()) {
         Flight::redirect("/login", 302);
-        return false;
+        return false; // this is necessary!
     }
-    bdump('passed login test');
+
     try {
         Flight::set("ActiveUser", \App\Models\ActiveUser::init());
         bdump(Flight::get("ActiveUser")->id);
@@ -320,11 +247,12 @@ Flight::route('*', function ($route) {
         Debugger::log($e->getMessage());
         Flight::stop();
     }
-
     return true;
-}, true);
+});
+
 
 Flight::route('GET *', function ($route) {
+
     $data = Flight::request()->query;
 
     // big picture offset
@@ -364,6 +292,19 @@ Flight::route('GET *', function ($route) {
     return true;
 }, true);
 
+Flight::route("POST /logout", function () {
+    try {
+        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+        $controller->logoutUser();
+        Flight::hxheader("Logging out ...");
+        Flight::redirect("/login");
+    } catch (\Delight\Auth\NotLoggedInException $e) {
+        Flight::hxheader("Not logged in", "info");
+    } catch (Exception $e) {
+        Flight::hxheader("There was an error logging out. Oops!", "error");
+    }
+});
+
 Flight::route('GET /(home|index)', function () {
     $controller = new App\Controllers\HomeController(
         Flight::request(),
@@ -373,35 +314,11 @@ Flight::route('GET /(home|index)', function () {
     $controller();
 });
 
-Flight::route('GET /home/next', function () {
-    $dump = [];
+Flight::route('GET /home/rel/@index', function ($index) {
     $query = Flight::request()->query;
+    $query->bpo = $index;
 
-    $query->bpo = $query->bpo + 13;
-
-    $new_query = http_build_query($query->getData(), "?", "?", PHP_QUERY_RFC3986);
-
-    $dump[] = $new_query;
-
-    $components = parse(Flight::request()->url);
-    $components['path'] = "/home";
-    $components['query'] = $new_query;
-
-    Debugger::log($components);
-
-    $url = build($components);
-    $dump[] = $url;
-
-
-
-    Flight::redirect($url);
-});
-
-Flight::route('GET /home/prev', function () {
-    $query = Flight::request()->query;
-    $query['bpo'] -= 1;
-
-    $new_query = http_build_query($query->getData(), "?", "?", PHP_QUERY_RFC3986);
+    $new_query = http_build_query($query->getData(), "?", "&", PHP_QUERY_RFC3986);
 
     $components = parse(Flight::request()->url);
     $components['path'] = "/home";
@@ -410,7 +327,9 @@ Flight::route('GET /home/prev', function () {
     $url = build($components);
 
     Flight::redirect($url);
+    return false;
 });
+
 
 Flight::route('GET /goto/@date', function ($date) {
     (new App\Controllers\RedirectDateController($date))();
