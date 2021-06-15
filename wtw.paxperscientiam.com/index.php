@@ -315,6 +315,10 @@ Flight::route('GET /(home|index)', function () {
 });
 
 Flight::route('GET /home/rel/@index', function ($index) {
+    if (!Flight::verifySignature()) {
+        Flight::notFound();
+    }
+
     $query = Flight::request()->query;
     $query->bpo = $index;
 
@@ -499,6 +503,7 @@ Flight::route('POST /journal-entry', function () {
 
     try {
         $controller->saveEntry();
+        //        Flight::redirect("/home");
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader("Sorry, your progress was not recorded. Ask chris for help.", "error");

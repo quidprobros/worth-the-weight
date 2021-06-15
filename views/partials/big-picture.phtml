@@ -8,7 +8,7 @@ $next = $big_picture_day_offset + 1;
     <div class="grid-x align-middle">
         <div class="small-1 cell text-left align-self-stretch">
             <a class="special-button-left" title="see total for previous day"
-               href='<?="/home/rel/{$prev}"?>'
+               href='<?=Flight::url()->sign("/home/rel/{$prev}")?>'
                hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
                hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$prev}")?>'
                hx-swap="innerHTML swap:200ms"
@@ -23,7 +23,7 @@ $next = $big_picture_day_offset + 1;
         </div>
         <div class="small-1 cell text-right align-self-stretch">
             <a class="special-button-right" title="see total for next day"
-               href='<?="/home/rel/{$next}"?>'
+               href='<?=Flight::url()->sign("/home/rel/{$next}")?>'
                hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
                hx-get="<?=Flight::url()->sign("/home/big-picture/rel/{$next}")?>"
                hx-swap="innerHTML swap:200ms"
