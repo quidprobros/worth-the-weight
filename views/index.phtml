@@ -33,7 +33,10 @@ Tracy\Debugger;
                 </a>
             </div>
             <div class="title-bar-center hide-for-medium pointer-cursor">
-                <?=Carbon::now()->format("F j, Y")?>
+                <a hx-get='<?=Flight::url()->sign("/home/big-picture/rel/0")?>'
+                   hx-target="#big-picture"
+                   href="/"><?=Carbon::now()->format("F j, Y")?>
+                </a>
             </div>
             <div class="title-bar-right">
                 <span class="title-bar-title">Calendar</span>

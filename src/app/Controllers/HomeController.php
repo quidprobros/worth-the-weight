@@ -49,7 +49,10 @@ class HomeController extends BaseController
             case (strtotime("yesterday")):
                 $title = "{$bpo_view_date} (yesterday)";
                 break;
-            case (date("Y-m-d")):
+            case (strtotime('tomorrow')):
+                $title = "{$bpo_view_date} (tomorrow)";
+                break;
+            case (strtotime('today')):
                 $title = "today";
                 break;
             default:
