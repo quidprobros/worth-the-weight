@@ -15,10 +15,6 @@ Tracy\Debugger;
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
     <body hx-ext="path-deps,class-tools" class="medium-grid-frame grid-y align-justify">
-        <noscript>
-            <div class="nojs-banner">Worth the Weight is better with JavaScript!
-                <p class="h4 subheader">Some features may not be available</p></div>
-        </noscript>
         <? foreach ($records as $record) { ?>
             <?=$record->id?>
         <? } ?>
@@ -64,8 +60,15 @@ Tracy\Debugger;
                         <div class="off-canvas-content" data-off-canvas-content>
                             <div class="grid-container fluid">
                                 <div class="grid-x grid-margin-x align-stretch">
+                                    <noscript>
+                                        <div class="nojs-banner cell">
+                                            <iframe name="some-iframe" frameborder="0" src="">
+                                                <div>ok</div>
+                                            </iframe>
+                                        </div>
+                                    </noscript>
                                     <div class="cell small-12 large-4 small-order-2 large-order-1">
-                                        <form name='food-log-form' class="grid-x" style="height:100%" action="/journal-entry" method="POST">
+                                        <form name='food-log-form' class="grid-x" style="height:100%" action="/journal-entry" method="POST" target="some-iframe">
                                             <fieldset class="cell small-12 fieldset">
                                                 <legend>food info</legend>
                                                 <div class='form-group'>
@@ -95,8 +98,8 @@ Tracy\Debugger;
                                                         hx-swap="none">submit journal entry</button>
                                             </div>
                                         </form>
-                                    </div>
 
+                                    </div>
                                     <div class="cell small-12 large-8 small-order-1 large-order-2">
                                         <div id="big-picture" class="grid-y grid-frame">
                                             <?Flight::render("partials/big-picture", [])?>

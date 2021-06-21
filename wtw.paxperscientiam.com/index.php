@@ -1,7 +1,9 @@
 <?PHP
-
+error_reporting(E_ALL | E_WARNING | E_NOTICE);
+ini_set('display_errors', TRUE);
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
+use Tracy\ILogger;
 use Carbon\Carbon;
 use Aura\Payload\PayloadFactory;
 use App\Payload;
@@ -29,9 +31,11 @@ if (!file_exists(FILE_ROOT . '/tracy')) {
 }
 
 session_start();
+
 Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
+Debugger::$showLocation = true;
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
 Flight::set("debug_mode", true === DEBUG && "true" === Flight::request()->query['debug']);
@@ -150,19 +154,49 @@ Flight::map("hxtrigger", function ($actions) {
     header('HX-Trigger: ' . $z);
 });
 
+// end routing after redirect
+Flight::after("redirect", function () {
+    exit;
+});
+
+
+// Flight::route("GET /home", function () {
+//     echo 'omfg';
+// });
+// Flight::route('GET|POST /derp', function () {
+//     echo <<<HTML
+// <script>window.location.href = '/home'</script>
+// HTML;
+// });
+// Flight::route('GET /test', function () {
+//     Flight::render("test");
+// });
+
+Flight::route("/*[^login]", function ($route) {
+    if (false == Flight::auth()->isLoggedIn()) {
+        Flight::redirect("/login", 302);
+    }
+    // carry on
+    return true;
+}, true);
+
+
 Flight::route("GET /login", function () {
-    /* This route MUST come FIRST */
+    if (true == Flight::auth()->isLoggedIn()) {
+        Flight::redirect("/home", 302);
+    }
     Flight::render("login", []);
-    return false;
 });
 
 Flight::route("POST /login", function () {
+    if (true == Flight::auth()->isLoggedIn()) {
+        Flight::redirect("/home", 302);
+    }
+    Debugger::log("OMFG");
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
         $controller->loginUser();
-        Flight::hxheader('Logging in ...');
-        Flight::redirect("/home");
-        //
+        header("HX-Redirect: /home");
     } catch (\Delight\Auth\InvalidEmailException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader('Unrecognized email address. Have you registered yet?', 'error');
@@ -185,52 +219,60 @@ Flight::route("POST /login", function () {
         Debugger::log($er->getMessage());
         Flight::hxheader("Unable to login at this time. PLease contact Chris.", "error");
     }
+
+    // for iframe
+    echo 'success';
 });
 
-Flight::route("POST /register", function () {
-    try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
-        $x = $controller->registerUser();
-        Flight::hxtrigger([
-            "action" => [
-                "xpath" => "resetForms",
-            ],
-            "showMessage" => [
-                "message" => "Success! You may now login",
-                "level" => "success"
-            ]
-        ]);
-        Flight::redirect("/home");
-        return false;
-        Debugger::log('successful register');
-    } catch (\App\Exceptions\FormException $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader($e->getMessage(), 'error');
-    } catch (\Delight\Auth\InvalidEmailException $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("Invalid email address", "error");
-    } catch (\Delight\Auth\DuplicateUsernameException $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("That username is already taken", "error");
-        echo "That username is already taken";
-    } catch (\Delight\Auth\InvalidPasswordException $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("Invalid password", "error");
-    } catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("User already registered", "error");
-        echo "User already registered";
-    } catch (\Delight\Auth\TooManyRequestsException $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("You have done that too many times. Try again later", "error");
-    } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("Unknown error. Contact Chris.", "error");
-    } catch (\Error $er) {
-        Debugger::log($er->getMessage());
-        Flight::hxheader($er->getMessage(), "error");
-    }
-});
+// Flight::route("POST /register", function () {
+//     if (true == Flight::auth()->isLoggedIn()) {
+//         Flight::redirect("/home", 302);
+//         return false; // this is necessary!
+//     }
+
+//     try {
+//         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+//         $x = $controller->registerUser();
+//         Flight::hxtrigger([
+//             "action" => [
+//                 "xpath" => "resetForms",
+//             ],
+//             "showMessage" => [
+//                 "message" => "Success! You may now login",
+//                 "level" => "success"
+//             ]
+//         ]);
+//         Flight::redirect("/home");
+//         return false;
+//         Debugger::log('successful register');
+//     } catch (\App\Exceptions\FormException $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader($e->getMessage(), 'error');
+//     } catch (\Delight\Auth\InvalidEmailException $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("Invalid email address", "error");
+//     } catch (\Delight\Auth\DuplicateUsernameException $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("That username is already taken", "error");
+//         echo "That username is already taken";
+//     } catch (\Delight\Auth\InvalidPasswordException $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("Invalid password", "error");
+//     } catch (\Delight\Auth\UserAlreadyExistsException $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("User already registered", "error");
+//         echo "User already registered";
+//     } catch (\Delight\Auth\TooManyRequestsException $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("You have done that too many times. Try again later", "error");
+//     } catch (\Exception $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("Unknown error. Contact Chris.", "error");
+//     } catch (\Error $er) {
+//         Debugger::log($er->getMessage());
+//         Flight::hxheader($er->getMessage(), "error");
+//     }
+// });
 
 Flight::route("*", function () {
     if (false == Flight::auth()->isLoggedIn()) {
@@ -250,54 +292,58 @@ Flight::route("*", function () {
     return true;
 });
 
+// Flight::route('GET *', function ($route) {
 
-Flight::route('GET *', function ($route) {
+//     $data = Flight::request()->query;
 
-    $data = Flight::request()->query;
+//     // big picture offset
+//     if (
+//         true != isset($data['bpo']) ||
+//         true != is_numeric($data['bpo'])
+//     ) {
+//         $data['bpo'] = 0;
+//     }
 
-    // big picture offset
-    if (
-        true != isset($data['bpo']) ||
-        true != is_numeric($data['bpo'])
-    ) {
-        $data['bpo'] = 0;
-    }
+//     // offcanvas menu offset
+//     if (
+//         true != isset($data['omo']) ||
+//         true != is_numeric($data['omo'])
+//     ) {
+//         $data['omo'] = 0;
+//     }
 
-    // offcanvas menu offset
-    if (
-        true != isset($data['omo']) ||
-        true != is_numeric($data['omo'])
-    ) {
-        $data['omo'] = 0;
-    }
+//     // offcanvas graph offset
+//     if (
+//         true != isset($data['ogo']) ||
+//         true != is_numeric($data['ogo'])
+//     ) {
+//         $data['ogo'] = 0;
+//     }
 
-    // offcanvas graph offset
-    if (
-        true != isset($data['ogo']) ||
-        true != is_numeric($data['ogo'])
-    ) {
-        $data['ogo'] = 0;
-    }
+//     // debug
+//     if (true == isset($data['debug'])) {
+//         $data['debug'] = true;
+//     }
 
-    // debug
-    if (true == isset($data['debug'])) {
-        $data['debug'] = true;
-    }
+//     Flight::set("bpo", $data['bpo']); // big-picture
+//     Flight::set("omo", $data['omo']); // journal
+//     Flight::set("ogo", $data['ogo']);
+//     Flight::set("debug_mode", $data['debug']);
 
-    Flight::set("bpo", $data['bpo']); // big-picture
-    Flight::set("omo", $data['omo']); // journal
-    Flight::set("ogo", $data['ogo']);
-    Flight::set("debug_mode", $data['debug']);
+//     return true;
+// }, true);
 
-    return true;
-}, true);
-
-Flight::route("POST /logout", function () {
+Flight::route("GET|POST /logout", function () {
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
         $controller->logoutUser();
-        Flight::hxheader("Logging out ...");
-        Flight::redirect("/login");
+
+        header("HX-Redirect: /login");
+        // when to use JS redirect or server?
+        //header('Location: /login');
+        exit;
+        //Flight::redirect("/login", 302); // works without htmx/js
+
     } catch (\Delight\Auth\NotLoggedInException $e) {
         Flight::hxheader("Not logged in", "info");
     } catch (Exception $e) {
@@ -314,228 +360,232 @@ Flight::route('GET /(home|index)', function () {
     $controller();
 });
 
-Flight::route('GET /home/rel/@index', function ($index) {
-    if (!Flight::verifySignature()) {
-        Flight::notFound();
-    }
+// Flight::route('GET /home/rel/@index', function ($index) {
+//     if (!Flight::verifySignature()) {
+//         Flight::notFound();
+//     }
 
-    $query = Flight::request()->query;
-    $query->bpo = $index;
+//     $query = Flight::request()->query;
+//     $query->bpo = $index;
 
-    $new_query = http_build_query($query->getData(), "?", "&", PHP_QUERY_RFC3986);
+//     $new_query = http_build_query($query->getData(), "?", "&", PHP_QUERY_RFC3986);
 
-    $components = parse(Flight::request()->url);
-    $components['path'] = "/home";
-    $components['query'] = $new_query;
+//     $components = parse(Flight::request()->url);
+//     $components['path'] = "/home";
+//     $components['query'] = $new_query;
 
-    $url = build($components);
+//     $url = build($components);
 
-    Flight::redirect($url);
-    return false;
-});
+//     Flight::redirect($url);
+//     return false;
+// });
 
 
-Flight::route('GET /goto/@date', function ($date) {
-    (new App\Controllers\RedirectDateController($date))();
-});
+// Flight::route('GET /goto/@date', function ($date) {
+//     (new App\Controllers\RedirectDateController($date))();
+// });
 
-Flight::route('GET /beef/@min/@max', function ($min, $max) {
-    try {
-        $controller = new App\Controllers\BeefController(
-            Flight::request(),
-            $min,
-            $max
-        );
-        return Flight::json($controller->getPayload());
-    } catch (Exception $e) {
-        Debugger::log($e->getMessage());
-        return Flight::json([]);
-    }
-});
+// Flight::route('GET /beef/@min/@max', function ($min, $max) {
+//     try {
+//         $controller = new App\Controllers\BeefController(
+//             Flight::request(),
+//             $min,
+//             $max
+//         );
+//         return Flight::json($controller->getPayload());
+//     } catch (Exception $e) {
+//         Debugger::log($e->getMessage());
+//         return Flight::json([]);
+//     }
+// });
 
-Flight::route('GET /modals/go-to-date-modal/@date', function ($date) {
-    try {
-        $controller = new App\Controllers\GotoDateModalController(Flight::request(), $date);
-        $controller();
-    } catch (Exception $e) {
-        Debugger::log($e->getMessage());
-        Flight::halt(404);
-    }
-});
+// Flight::route('GET /modals/go-to-date-modal/@date', function ($date) {
+//     try {
+//         $controller = new App\Controllers\GotoDateModalController(Flight::request(), $date);
+//         $controller();
+//     } catch (Exception $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::halt(404);
+//     }
+// });
 
-Flight::route('GET /journal/rel/@offset', function ($offset) {
-    if (!Flight::verifySignature()) {
-        Flight::notFound();
-    }
-    try {
-        $controller = new App\Controllers\HomeController(
-            Flight::request(),
-            $offset,
-            Flight::get("bpo")
-        );
-        $controller->useOtherRoute("partials/journal");
-        $controller();
-    } catch (Exception $e) {
-        Debugger::log($e->getMessage());
-    }
-});
+// Flight::route('GET /journal/rel/@offset', function ($offset) {
+//     if (!Flight::verifySignature()) {
+//         Flight::notFound();
+//     }
+//     try {
+//         $controller = new App\Controllers\HomeController(
+//             Flight::request(),
+//             $offset,
+//             Flight::get("bpo")
+//         );
+//         $controller->useOtherRoute("partials/journal");
+//         $controller();
+//     } catch (Exception $e) {
+//         Debugger::log($e->getMessage());
+//     }
+// });
 
-Flight::route('GET /home/right-canvas', function () {
-    if (!Flight::verifySignature()) {
-        Flight::notFound();
-    }
-    Flight::render("partials/offcanvas-graphs", [
-    ]);
-});
+// Flight::route('GET /home/right-canvas', function () {
+//     if (!Flight::verifySignature()) {
+//         Flight::notFound();
+//     }
+//     Flight::render("partials/offcanvas-graphs", [
+//     ]);
+// });
 
-Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
-    try {
-        $controller = new App\Controllers\HomeController(
-            Flight::request(),
-            $offset,
-            Flight::get('bpo')
-        );
-        $controller->useOtherRoute("partials/offcanvas-menu");
-        $controller();
-    } catch (Exception $e) {
-        Debugger::log($e->getMessage());
-    }
-});
+// Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
+//     try {
+//         $controller = new App\Controllers\HomeController(
+//             Flight::request(),
+//             $offset,
+//             Flight::get('bpo')
+//         );
+//         $controller->useOtherRoute("partials/offcanvas-menu");
+//         $controller();
+//     } catch (Exception $e) {
+//         Debugger::log($e->getMessage());
+//     }
+// });
 
-Flight::route('GET /home/big-picture/rel/@offset', function ($offset) {
-    if (!Flight::verifySignature()) {
-        Flight::notFound();
-    }
+// Flight::route('GET /home/big-picture/rel/@offset', function ($offset) {
+//     if (!Flight::verifySignature()) {
+//         Flight::notFound();
+//     }
 
-    try {
-        $controller = new App\Controllers\HomeController(
-            Flight::request(),
-            Flight::get('omo'),
-            $offset
-        );
-        $controller->useOtherRoute("partials/big-picture");
-        $controller();
-    } catch (Exception $e) {
-        Debugger::log($e->getMessage());
-    }
-});
+//     try {
+//         $controller = new App\Controllers\HomeController(
+//             Flight::request(),
+//             Flight::get('omo'),
+//             $offset
+//         );
+//         $controller->useOtherRoute("partials/big-picture");
+//         $controller();
+//     } catch (Exception $e) {
+//         Debugger::log($e->getMessage());
+//     }
+// });
 
-Flight::route('DELETE /journal-entry/@id', function ($id) {
-    if (!Flight::verifySignature()) {
-        Flight::notFound();
-    }
+// Flight::route('DELETE /journal-entry/@id', function ($id) {
+//     if (!Flight::verifySignature()) {
+//         Flight::notFound();
+//     }
 
-    try {
-        $controller = new App\Controllers\JournalEntryRemoveController($id);
-        $controller->deleteEntry($id);
-        Flight::hxheader("Deleted.");
-    } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("Something went wrong. Contact Chris!!", "error");
-        Flight::halt(204);
-    }
-});
+//     try {
+//         $controller = new App\Controllers\JournalEntryRemoveController($id);
+//         $controller->deleteEntry($id);
+//         Flight::hxheader("Deleted.");
+//     } catch (\Exception $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("Something went wrong. Contact Chris!!", "error");
+//         Flight::halt(204);
+//     }
+// });
 
-Flight::route('POST /drop-food-log', function () {
-    if (false === DEBUG) {
-        return;
-    }
-    try {
-        Flight::journalItem()::truncate();
-        Flight::hxheader("Food log emptied");
-        Flight::stop();
-    } catch (\Exection $e) {
-        Tracy\Debugger::log($e->getMessage());
-        Flight::hxheader("Unable to dump food log table. Contact Chris!");
-        Flight::stop();
-    }
-});
+// Flight::route('POST /drop-food-log', function () {
+//     if (false === DEBUG) {
+//         return;
+//     }
+//     try {
+//         Flight::journalItem()::truncate();
+//         Flight::hxheader("Food log emptied");
+//         Flight::stop();
+//     } catch (\Exection $e) {
+//         Debugger::log($e->getMessage());
+//         Flight::hxheader("Unable to dump food log table. Contact Chris!");
+//         Flight::stop();
+//     }
+// });
 
-Flight::route('POST /journal-entry/exercised/rel/@offset', function ($offset) {
-    if (!Flight::verifySignature()) {
-        Flight::notFound();
-    }
+// Flight::route('POST /journal-entry/exercised/rel/@offset', function ($offset) {
+//     if (!Flight::verifySignature()) {
+//         Flight::notFound();
+//     }
 
-    try {
-        $controller = new App\Controllers\ExerciseController(
-            Flight::request(),
-            $offset
-        );
-        $controller->setRoute("partials/exercised-statement");
-        $controller->saveUpdate();
+//     try {
+//         $controller = new App\Controllers\ExerciseController(
+//             Flight::request(),
+//             $offset
+//         );
+//         $controller->setRoute("partials/exercised-statement");
+//         $controller->saveUpdate();
 
-        $controller();
-    } catch (Exception $e) {
-        Debugger::log($e->getMessage());
-    }
-});
+//         $controller();
+//     } catch (Exception $e) {
+//         Debugger::log($e->getMessage());
+//     }
+// });
 
-Flight::map("welcome", function () {
-    if (6 <= date("H") && 12 > date("H")) {
-        return "good morning";
-    } elseif (12 <= date("H") && 18 > date("H")) {
-        return "good afternoon";
-    } else {
-        return "good evening";
-    }
-});
+// Flight::map("welcome", function () {
+//     if (6 <= date("H") && 12 > date("H")) {
+//         return "good morning";
+//     } elseif (12 <= date("H") && 18 > date("H")) {
+//         return "good afternoon";
+//     } else {
+//         return "good evening";
+//     }
+// });
 
-Flight::route('GET /food-support-message', function () {
-    $greetings = [
-        'Yum!',
-        "Eh, I've had better!",
-        'Nice!',
-        'Way to go!',
-        'Woot woot!',
-    ];
-    shuffle($greetings);
-    echo $greetings[0];
-});
+// Flight::route('GET /food-support-message', function () {
+//     $greetings = [
+//         'Yum!',
+//         "Eh, I've had better!",
+//         'Nice!',
+//         'Way to go!',
+//         'Woot woot!',
+//     ];
+//     shuffle($greetings);
+//     echo $greetings[0];
+// });
 
-Flight::route('POST /journal-entry', function () {
+// Flight::route('POST /journal-entry', function () {
 
-    try {
-        $controller = new App\Controllers\JournalEntryCreateController(Flight::request());
-    } catch (\App\Exceptions\FormException $e) {
-        Flight::hxheader($e->getMessage(), "error");
-        return;
-    }
+//     try {
+//         $controller = new App\Controllers\JournalEntryCreateController(Flight::request());
+//     } catch (\App\Exceptions\FormException $e) {
+//         echo '<div>Something went wrong!:(</div>';
+//         Flight::hxheader($e->getMessage(), "error");
+//         return;
+//     }
 
-    try {
-        $controller->saveEntry();
-        //        Flight::redirect("/home");
-    } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("Sorry, your progress was not recorded. Ask chris for help.", "error");
-        return;
-    }
+//     try {
+//         $controller->saveEntry();
+//         echo '<div>Success!</div>';
+//         //        Flight::redirect("/home");
+//     } catch (\Exception $e) {
+//         Debugger::log($e->getMessage());
+//         echo '<div>Something went wrong!:(</div>';
+//         Flight::hxheader("Sorry, your progress was not recorded. Ask chris for help.", "error");
+//         return;
+//     }
 
-    Flight::hxheader("Success!");
-});
+//     Flight::hxheader("Success!");
+// });
 
-if (true == Flight::get("debug_mode")) {
-    Flight::route('GET /test', function () {
-        $controller = new App\Controllers\TestController('test');
-        $controller();
-    });
-    Flight::route('GET /bootstrapper', function () {
-        Flight::render("bootstrapper", []);
-    });
-}
+// if (true == Flight::get("debug_mode")) {
+//     Flight::route('GET /test', function () {
+//         $controller = new App\Controllers\TestController('test');
+//         $controller();
+//     });
+//     Flight::route('GET /bootstrapper', function () {
+//         Flight::render("bootstrapper", []);
+//     });
+// }
 
-Flight::map('notFound', function () {
-    $message = "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
-    Flight::halt('404', $message);
-});
+// Flight::map('notFound', function () {
+//     $message = "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
+//     Flight::halt('404', $message);
+// });
 
-Flight::map('error', function ($ex) {
-    Debugger::log($ex->getMessage());
-    if (true == Flight::get("debug_mode")) {
-        $bs = new Tracy\BlueScreen();
-        $bs->render($ex);
-    } else {
-        throw $ex;
-    }
-});
+// Flight::map('error', function ($ex) {
+//     Debugger::log($ex->getMessage());
+//     if (true == Flight::get("debug_mode")) {
+//         $bs = new Tracy\BlueScreen();
+//         $bs->render($ex);
+//     } else {
+//         throw $ex;
+//     }
+// });
 
 Flight::start();
+

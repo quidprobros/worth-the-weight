@@ -1,9 +1,6 @@
-<?
-use Tracy\Debugger;
-?>
 <!doctype html>
-<html lang="en">
-    <?php Debugger::renderLoader() ?>
+<html lang="en" class="no-js">
+    <?php Tracy\Debugger::renderLoader() ?>
     <head>
         <meta charset="UTF-8"/>
         <title>Worth the Weight!</title>
@@ -13,12 +10,6 @@ use Tracy\Debugger;
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
     <body>
-        <noscript>
-            <div class="nojs-banner">
-                Worth the Weight requires JavaScript!
-                <p class="h4 subheader">Some features may not be available</p>
-            </div>
-        </noscript>
         <div class="title-bar">
             <div class="title-bar-left">
                 <h1>Worth the Weight!</h1>
@@ -29,7 +20,13 @@ use Tracy\Debugger;
                 <h1>You are currently logged in as "<?=Flight::auth()->getUsername()?>"</h1>
                 <a href="/logout">Not <?=Flight::auth()->getUsername()?>?</a>
             <? } ?>
-            <form hx-post="/login" class="log-in-form" hx-swap="none" method="POST" action="/login">
+            <iframe frameborder="0" src="" name="derp"></iframe>
+            <form hx-post="/login"
+                  class="log-in-form"
+                  hx-swap="none"
+                  target="derp"
+                  method="POST"
+                  action="/login">
                 <h2 class="text-center cc-form-title"><strong>Already a member? Login here:</strong></h2>
                 <div class="input-group">
                     <span class="input-group-label">Email</span>
@@ -60,6 +57,7 @@ use Tracy\Debugger;
                     </div>
                 </div>
                 <input type="submit" class="large button expanded" value="Log in"></input>
+                <a type="button" href="/home" class='button nojs-show'>click after successful login</a>
             </form>
 
             <hr/>

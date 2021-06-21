@@ -53,6 +53,9 @@ A web application for tracking food consumption. You can also record whether you
 - [x] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model (can happen through form manipulation)
 
 # sprint 4 (reach)
+- [ ] dont send form data to views
+- [ ] have forms target iframes when JS not allowed
+- [ ] control redirects when using javascript
 - [ ] basic functionality without javascript
 - [ ] is query js needed?
 - [x] fix cant scroll button on small screens

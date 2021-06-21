@@ -11,7 +11,8 @@
         "share": "ngrok http -host-header=rewrite http://worth-the-weight.paxperscientiam.lan/",
         "eslint": "npx eslint . --ext .ts",
         "eslint_watch": "npx esw -w --ext .ts ./src",
-        "upload": "./index.bash"
+        "upload": "./index.bash",
+        "mux": "tmuxinator start wtw.paxperscientiam.com"
     },
     "author": "Christopher David Ramos",
     "license": "ISC",

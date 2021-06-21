@@ -1,3 +1,5 @@
+console.debug("test1", 123)
+
 declare global {
     interface Window {
         Inputmask: any
@@ -184,7 +186,7 @@ export function initCalendar() {
 }
 
 $(() => {
-
+    console.debug("test1", 'page is ready')
     if (0 < $("#food-selection").length) {
         new SlimSelect({
             select: '#food-selection',
