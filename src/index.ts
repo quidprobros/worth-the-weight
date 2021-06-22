@@ -15,14 +15,14 @@ import {App} from "./app"
 
 export {App}
 // @ts-ignore
-import queryState from "query-state"
+// import queryState from "query-state"
 
-// initialize
-const qs = queryState({
-}, {
-    useSearch: true
-});
-export {qs}
+// // initialize
+// const qs = queryState({
+// }, {
+//     useSearch: true
+// });
+// export {qs}
 
 import $ from "jquery"
 window.$ = $

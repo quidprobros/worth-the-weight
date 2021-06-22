@@ -69,7 +69,7 @@ A web application for tracking food consumption. You can also record whether you
 - [x] going through query log help me to find redudnant db queries
 - [ ] bootstrap to build fresh database for local use
 - [ ] some kind of effect is needed to show page changing
-
+- [x] fixed big hole in fuzzing block (redirects to urls with querystring were not signed and were not required to be signed)
 
 # Security tests on live
 - [ ] https://observatory.mozilla.org/
