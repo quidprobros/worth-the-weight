@@ -54,10 +54,9 @@ A web application for tracking food consumption. You can also record whether you
 
 # sprint 4 (reach)
 - [ ] dont send form data to views
-- [ ] have forms target iframes when JS not allowed
+- [x] have forms target iframes when JS not allowed
 - [ ] control redirects when using javascript
-- [ ] basic functionality without javascript
-- [ ] is query js needed?
+- [x] basic functionality without javascript
 - [x] fix cant scroll button on small screens
 - [ ] use HX-Trigger to handle other actions stored in global App object
 - [x] querystring for management of certain states

@@ -305,11 +305,11 @@ Flight::route("GET|POST /logout", function () {
     }
 });
 
-Flight::route('GET /', function () {
+Flight::route('GET /(home|index)', function () {
     Flight::redirect(Flight::url()->sign("/home/0/0"));
 });
 
-Flight::route('GET /(home|index)(/@omo(/@bpo))', function ($omo, $bpo) {
+Flight::route('GET /home(/@omo(/@bpo))', function ($omo, $bpo) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
