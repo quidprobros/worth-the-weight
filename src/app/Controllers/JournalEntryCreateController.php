@@ -42,6 +42,7 @@ class JournalEntryCreateController
         }
 
         $this->food_id = $formData['food-selection'];
+        $this->points = $this->amount * $this->food_model->points;
 
         $this->formData = $formData;
     }
@@ -61,7 +62,7 @@ class JournalEntryCreateController
             "date" => $this->date,
             "food_id" => $this->food_id,
             "quantity" => $this->amount,
-            "points" => $this->amount * $this->food_model->points,
+            "points" => $this->points,
         ]);
 
         return $this->active_user->journal()->save($entry);

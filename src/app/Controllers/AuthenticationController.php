@@ -75,9 +75,6 @@ class AuthenticationController
             $email,
             $password,
             $username,
-            // function ($selector, $token) use ($email) {
-            //     $this->sendVerificationEmail($selector, $token, $email, "Worth the Weight: Thanks for signing up!");
-            // }
         );
     }
 

@@ -1,17 +1,10 @@
 <?PHP
-error_reporting(E_ALL | E_WARNING | E_NOTICE);
-ini_set('display_errors', TRUE);
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
-use Tracy\ILogger;
 use Carbon\Carbon;
-use Aura\Payload\PayloadFactory;
-use App\Payload;
-use Aura\Payload_Interface\PayloadStatus;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\UrlSigner\MD5UrlSigner;
-use App\Models\User;
 use App\Models\ActiveUser;
 //
 use function League\Uri\parse;
@@ -113,9 +106,6 @@ Flight::map("offset2date", function ($offset) {
     return Carbon::now()->addDays($offset);
 });
 
-Flight::map("date2offset", function (DateTime $date) {
-    //
-});
 
 Flight::map("verifySignature", function () {
     if (
@@ -159,7 +149,7 @@ Flight::after("redirect", function () {
     exit;
 });
 
-Flight::route("/*[^login]", function ($route) {
+Flight::route("/*[^login]", function () {
     if (false == Flight::auth()->isLoggedIn()) {
         Flight::redirect("/login", 302);
     }
@@ -214,12 +204,11 @@ Flight::route("POST /login", function () {
 Flight::route("POST /register", function () {
     if (true == Flight::auth()->isLoggedIn()) {
         Flight::redirect("/home", 302);
-        return false; // this is necessary!
     }
 
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
-        $x = $controller->registerUser();
+        $controller->registerUser();
         Flight::hxtrigger([
             "action" => [
                 "xpath" => "resetForms",
@@ -230,8 +219,6 @@ Flight::route("POST /register", function () {
             ]
         ]);
         Flight::redirect("/home");
-        return false;
-        Debugger::log('successful register');
     } catch (\App\Exceptions\FormException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader($e->getMessage(), 'error');
@@ -264,11 +251,10 @@ Flight::route("POST /register", function () {
 Flight::route("*", function () {
     if (false == Flight::auth()->isLoggedIn()) {
         Flight::redirect("/login", 302);
-        return false; // this is necessary!
     }
 
     try {
-        Flight::set("ActiveUser", \App\Models\ActiveUser::init());
+        Flight::set("ActiveUser", ActiveUser::init());
         bdump(Flight::get("ActiveUser")->id);
     } catch (ModelNotFoundException $e) {
         Flight::set("ActiveUser", null);
@@ -279,7 +265,7 @@ Flight::route("*", function () {
     return true;
 });
 
-Flight::route('GET *', function ($route) {
+Flight::route('GET *', function () {
 
     $data = Flight::request()->query;
 
@@ -299,6 +285,7 @@ Flight::route("GET|POST /logout", function () {
         $controller->logoutUser();
         header("HX-Redirect: /login");
     } catch (\Delight\Auth\NotLoggedInException $e) {
+        Debugger::log($e->getMessage());
         Flight::hxheader("Not logged in", "info");
     } catch (Exception $e) {
         Flight::hxheader("There was an error logging out. Oops!", "error");
@@ -328,8 +315,8 @@ Flight::route('GET /home(/@omo(/@bpo))', function ($omo, $bpo) {
         $omo = 0;
     }
 
-    Flight::set("bpo", $bpo); // big-picture
     Flight::set("omo", $omo); // journal
+    Flight::set("bpo", $bpo); // big-picture
 
     $controller = new App\Controllers\HomeController(
         Flight::request(),
@@ -414,6 +401,7 @@ Flight::route('GET /home/right-canvas', function () {
 });
 
 Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
+    Debugger::log("/home/left-canvas/rel/@offset routed with {$offset}");
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
@@ -428,6 +416,7 @@ Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
 });
 
 Flight::route('GET /home/big-picture/rel/@offset', function ($offset) {
+    Debugger::log("/home/big-picture/rel/@offset routed with {$offset}");
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -529,8 +518,7 @@ Flight::route('POST /journal-entry', function () {
 
     try {
         $controller->saveEntry();
-        echo '<div>Success!</div>';
-        //        Flight::redirect("/home");
+        echo "<div>Successly journaled {$controller->amount} units of this food (+{$controller->points} points)!</div>";
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
         echo '<div>Something went wrong!:(</div>';

@@ -46,7 +46,7 @@ Tracy\Debugger;
                 <div class="cell medium-cell-block-y">
                     <div class="off-canvas-wrapper" style="height:100%">
                         <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
-                             hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$big_picture_day_offset}")?>'
+                             hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$journal_day_offset}")?>'
                              hx-trigger="path-deps"
                              path-deps="/journal-entry">
                             <?=Flight::render("partials/offcanvas-menu", [

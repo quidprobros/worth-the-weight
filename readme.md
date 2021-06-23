@@ -12,7 +12,7 @@ A web application for tracking food consumption. You can also record whether you
 - [x] Display food name, not id when appending via js
 - [x] Append action cell via JS too
 - [ ] Enable search
-- [x] content enter not just tab
+- [x] content enter not just tabq
 - [x] Make sure all db queries are prepared before executed
 - [x] Finish integrating notices https://notifyjs.jpillora.com/
 
@@ -69,6 +69,7 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] bootstrap to build fresh database for local use
 - [ ] some kind of effect is needed to show page changing
 - [x] fixed big hole in fuzzing block (redirects to urls with querystring were not signed and were not required to be signed)
+- [ ] iframe could be more helpful. present more information (https://blog.logrocket.com/the-ultimate-guide-to-iframes/)
 
 # Security tests on live
 - [ ] https://observatory.mozilla.org/

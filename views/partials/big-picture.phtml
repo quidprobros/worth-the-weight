@@ -1,4 +1,7 @@
 <?
+
+
+
 $prev = $big_picture_day_offset - 1;
 $next = $big_picture_day_offset + 1;
 
@@ -11,7 +14,7 @@ $next = $big_picture_day_offset + 1;
                href='<?=Flight::url()->sign("/home/rel/{$prev}")?>'
                hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
                hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$prev}")?>'
-               hx-push-url='<?=Flight::url()->sign("/home/0/{$prev}")?>'
+               hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
                hx-swap="innerHTML swap:200ms"
                hx-target='#big-picture'>
                 <!-- <i class="gg-arrow-left-r"></i> -->
@@ -28,7 +31,7 @@ $next = $big_picture_day_offset + 1;
                hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
                hx-get="<?=Flight::url()->sign("/home/big-picture/rel/{$next}")?>"
                hx-swap="innerHTML swap:200ms"
-               hx-push-url='<?=Flight::url()->sign("/home/0/{$next}")?>'
+               hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$next}")?>'
                hx-target='#big-picture'>
                 <!-- <i class="gg-arrow-right-r"></i> -->
             </a>
