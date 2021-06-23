@@ -24,8 +24,9 @@ Tracy\Debugger;
                 <span class="title-bar-title">Journal</span>
             </div>
             <div class="title-bar-center show-for-medium pointer-cursor">
-                <a hx-get='<?=Flight::url()->sign("/home/big-picture/rel/0")?>'
+                <a hx-get='<?=Flight::url()->sign("/home/big-picture/rel/0/0")?>'
                    hx-target="#big-picture"
+                   hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/0")?>'
                    href="/"><?=" Today is " . Carbon::now()->format("D M j, Y")?>
                 </a>
             </div>
@@ -46,7 +47,7 @@ Tracy\Debugger;
                 <div class="cell medium-cell-block-y">
                     <div class="off-canvas-wrapper" style="height:100%">
                         <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas
-                             hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$journal_day_offset}")?>'
+                             hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
                              hx-trigger="path-deps"
                              path-deps="/journal-entry">
                             <?=Flight::render("partials/offcanvas-menu", [

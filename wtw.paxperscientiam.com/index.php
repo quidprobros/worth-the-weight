@@ -124,10 +124,6 @@ Flight::map("hxheader", function ($message, $status = "success", $exception = nu
             "level" => $status,
             "message" => $message,
         ],
-        "action" => [
-            "xpath" => "resetForms",
-            "zpath" => "ok"
-        ]
     ]);
 
     header('HX-Trigger: ' . $x);
@@ -296,7 +292,7 @@ Flight::route('GET /(home|index)', function () {
     Flight::redirect(Flight::url()->sign("/home/0/0"));
 });
 
-Flight::route('GET /home(/@omo(/@bpo))', function ($omo, $bpo) {
+Flight::route('GET /home/(@omo(/@bpo))', function ($omo, $bpo) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -326,25 +322,26 @@ Flight::route('GET /home(/@omo(/@bpo))', function ($omo, $bpo) {
     $controller();
 });
 
-Flight::route('GET /home/rel/@index', function ($index) {
-    if (!Flight::verifySignature()) {
-        Flight::notFound();
-    }
+// Flight::route('GET /home/rel/@index', function ($index) {
+//  Debugger::log('rel me');
+//     if (!Flight::verifySignature()) {
+//         Flight::notFound();
+//     }
 
-    $query = Flight::request()->query;
-    $query->bpo = $index;
+//     $query = Flight::request()->query;
+//     $query->bpo = $index;
 
-    $new_query = http_build_query($query->getData(), "?", "&", PHP_QUERY_RFC3986);
+//     $new_query = http_build_query($query->getData(), "?", "&", PHP_QUERY_RFC3986);
 
-    $components = parse(Flight::request()->url);
-    $components['path'] = "/home";
-    $components['query'] = $new_query;
+//     $components = parse(Flight::request()->url);
+//     $components['path'] = "/home";
+//     $components['query'] = $new_query;
 
-    $url = build($components);
+//     $url = build($components);
 
-    Flight::redirect($url);
-    return false;
-});
+//     Flight::redirect($url);
+//     return false;
+// });
 
 
 Flight::route('GET /goto/@date', function ($date) {
@@ -400,13 +397,13 @@ Flight::route('GET /home/right-canvas', function () {
     ]);
 });
 
-Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
-    Debugger::log("/home/left-canvas/rel/@offset routed with {$offset}");
+Flight::route('GET /home/left-canvas/rel/@omo/@bpo', function ($omo, $bpo) {
+    Debugger::log("/home/left-canvas/rel/@offset routed with {$omo}");
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
-            $offset,
-            Flight::get('bpo')
+            $omo,
+            $bpo
         );
         $controller->useOtherRoute("partials/offcanvas-menu");
         $controller();
@@ -415,8 +412,8 @@ Flight::route('GET /home/left-canvas/rel/@offset', function ($offset) {
     }
 });
 
-Flight::route('GET /home/big-picture/rel/@offset', function ($offset) {
-    Debugger::log("/home/big-picture/rel/@offset routed with {$offset}");
+Flight::route('GET /home/big-picture/rel/@omo/@bpo', function ($omo, $bpo)  {
+    Debugger::log("/home/big-picture/rel/@offset routed with {$bpo}");
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -424,8 +421,8 @@ Flight::route('GET /home/big-picture/rel/@offset', function ($offset) {
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
-            Flight::get('omo'),
-            $offset
+            $omo,
+            $bpo
         );
         $controller->useOtherRoute("partials/big-picture");
         $controller();
