@@ -272,6 +272,11 @@ Flight::route('GET *', function () {
 
     Flight::set("debug_mode", $data['debug']);
 
+    Flight::request()->query->__unset("debug");
+    Debugger::log(__LINE__.Flight::request()->url);
+    !d(Flight::request());
+    exit;
+
     return true;
 }, true);
 
