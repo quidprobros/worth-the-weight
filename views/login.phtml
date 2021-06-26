@@ -20,7 +20,7 @@
                 <h1>You are currently logged in as "<?=Flight::auth()->getUsername()?>"</h1>
                 <a href="/logout">Not <?=Flight::auth()->getUsername()?>?</a>
             <? } ?>
-            <iframe frameborder="0" src="" name="derp"></iframe>
+            <iframe frameborder="0" name="derp"></iframe>
             <form hx-post="/login"
                   class="log-in-form"
                   hx-swap="none"

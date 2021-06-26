@@ -53,6 +53,7 @@ A web application for tracking food consumption. You can also record whether you
 - [x] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model (can happen through form manipulation)
 
 # sprint 4 (reach)
+- [ ] why is path deps triggering same elements multiple times??
 - [ ] dont send form data to views
 - [x] have forms target iframes when JS not allowed
 - [ ] control redirects when using javascript

@@ -18,29 +18,8 @@ Tracy\Debugger;
         <? foreach ($records as $record) { ?>
             <?=$record->id?>
         <? } ?>
-        <div class="title-bar">
-            <div class="title-bar-left">
-                <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
-                <span class="title-bar-title">Journal</span>
-            </div>
-            <div class="title-bar-center show-for-medium pointer-cursor">
-                <a hx-get='<?=Flight::url()->sign("/home/big-picture/rel/0/0")?>'
-                   hx-target="#big-picture"
-                   hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/0")?>'
-                   href="/"><?=" Today is " . Carbon::now()->format("D M j, Y")?>
-                </a>
-            </div>
-            <div class="title-bar-center hide-for-medium pointer-cursor">
-                <a hx-get='<?=Flight::url()->sign("/home/big-picture/rel/0")?>'
-                   hx-target="#big-picture"
-                   href="/"><?=Carbon::now()->format("F j, Y")?>
-                </a>
-            </div>
-            <div class="title-bar-right">
-                <span class="title-bar-title">Calendar</span>
-                <button class="menu-icon" type="button" data-toggle="offCanvas2" data-classes=""></button>
-            </div>
-        </div>
+
+        <?=Flight::render("partials/title-bar")?>
 
         <div class="cell medium-cell-block-container">
             <div class="grid-x grid-padding-x">
@@ -63,7 +42,7 @@ Tracy\Debugger;
                                 <div class="grid-x grid-margin-x align-stretch">
                                     <noscript>
                                         <div class="nojs-banner cell">
-                                            <iframe name="some-iframe" frameborder="0" src="">
+                                            <iframe name="some-iframe">
                                                 <div>ok</div>
                                             </iframe>
                                         </div>

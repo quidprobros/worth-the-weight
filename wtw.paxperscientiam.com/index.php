@@ -390,6 +390,7 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
 });
 
 Flight::route('GET /home/right-canvas', function () {
+    Debugger::log('right canvase');
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -397,8 +398,21 @@ Flight::route('GET /home/right-canvas', function () {
     ]);
 });
 
+Flight::route("GET /home/title-bar/rel/@omo/@bpo", function ($omo, $bpo) {
+    try {
+        $controller = new App\Controllers\HomeController(
+            Flight::request(),
+            $omo,
+            $bpo
+        );
+        $controller->useOtherRoute("partials/title-bar");
+        $controller();
+    } catch (Exception $e) {
+        Debugger::log($e->getMessage());
+    }
+});
+
 Flight::route('GET /home/left-canvas/rel/@omo/@bpo', function ($omo, $bpo) {
-    Debugger::log("/home/left-canvas/rel/@offset routed with {$omo}");
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
