@@ -21,7 +21,7 @@ Tracy\Debugger;
 
         <?=Flight::render("partials/title-bar")?>
 
-        <div class="cell medium-cell-block-container">
+        <div id="maint-container" class="cell medium-cell-block-container">
             <div class="grid-x grid-padding-x">
                 <div class="cell medium-cell-block-y">
                     <div class="off-canvas-wrapper" style="height:100%">
@@ -34,7 +34,7 @@ Tracy\Debugger;
                             <?=Flight::render("partials/offcanvas-graphs", [
                             ])?>
                         </div>
-                        <div class="off-canvas-content" data-off-canvas-content>
+                        <div id="main-offcanvas-content" class="off-canvas-content" data-off-canvas-content>
                             <div class="grid-container fluid">
                                 <div class="grid-x grid-margin-x align-stretch">
                                     <noscript>
@@ -89,7 +89,7 @@ Tracy\Debugger;
                 </div>
             </div>
         </div>
-        <div class="cell shrink footer">
+        <div id="main-footer" class="cell shrink footer">
             <div class="grid-x grid-padding-x align-middle">
                 <div class="cell small-6">
                     <div class="button-group margin-1">

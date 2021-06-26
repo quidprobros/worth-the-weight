@@ -292,7 +292,7 @@ Flight::route('GET /(home|index)', function () {
     Flight::redirect(Flight::url()->sign("/home/0/0"));
 });
 
-Flight::route('GET /home/(@omo(/@bpo))', function ($omo, $bpo) {
+Flight::route('GET /home/(@omo:[0-9]+(/@bpo:[0-9]+))', function ($omo, $bpo) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -389,7 +389,7 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
     }
 });
 
-Flight::route('GET /home/right-canvas', function () {
+Flight::route('GET /home/right-canvas/rel', function () {
     Debugger::log('right canvase');
     if (!Flight::verifySignature()) {
         Flight::notFound();
@@ -398,7 +398,7 @@ Flight::route('GET /home/right-canvas', function () {
     ]);
 });
 
-Flight::route("GET /home/title-bar/rel/@omo/@bpo", function ($omo, $bpo) {
+Flight::route("GET /home/title-bar/rel/@omo:[0-9]+/@bpo:[0-9]+", function ($omo, $bpo) {
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
@@ -412,7 +412,7 @@ Flight::route("GET /home/title-bar/rel/@omo/@bpo", function ($omo, $bpo) {
     }
 });
 
-Flight::route('GET /home/left-canvas/rel/@omo/@bpo', function ($omo, $bpo) {
+Flight::route('GET /home/left-canvas/rel/@omo:[0-9]+/@bpo:[0-9]+', function ($omo, $bpo) {
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
@@ -426,7 +426,7 @@ Flight::route('GET /home/left-canvas/rel/@omo/@bpo', function ($omo, $bpo) {
     }
 });
 
-Flight::route('GET /home/big-picture/rel/@omo/@bpo', function ($omo, $bpo)  {
+Flight::route('GET /home/big-picture/rel/@omo:[0-9]+/@bpo:[0-9]+', function ($omo, $bpo)  {
     Debugger::log("/home/big-picture/rel/@offset routed with {$bpo}");
     if (!Flight::verifySignature()) {
         Flight::notFound();
@@ -518,7 +518,6 @@ Flight::route('GET /food-support-message', function () {
 });
 
 Flight::route('POST /journal-entry', function () {
-
     try {
         $controller = new App\Controllers\JournalEntryCreateController(Flight::request());
     } catch (\App\Exceptions\FormException $e) {

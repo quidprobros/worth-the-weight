@@ -1,9 +1,8 @@
 <div id='this-container2'
      class="grid-x"
-     hx-get='<?=Flight::url()->sign("/home/right-canvas")?>'
+     hx-get='<?=Flight::url()->sign("/home/right-canvas/rel")?>'
      hx-trigger="path-deps"
-     hx-swap="outerHTML"
-     hx-target='#this-container2'
+     hx-target='#offCanvas2'
      path-deps='/journal-entry'>
     <div id="my-jsCalendar" class='grey-theme'
          data-navigator-position="right"></div>
