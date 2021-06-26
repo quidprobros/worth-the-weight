@@ -390,10 +390,10 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
 });
 
 Flight::route('GET /home/right-canvas/rel', function () {
-    Debugger::log('right canvase');
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
+    Debugger::log('right canvase signed');
     Flight::render("partials/offcanvas-graphs", [
     ]);
 });

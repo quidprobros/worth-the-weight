@@ -7,7 +7,10 @@ $next = $big_picture_day_offset + 1;
 
 ?>
 
-<div class="cell">
+<div class="cell"
+     hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
+     hx-trigger="path-deps"
+     path-deps="/journal-entry">
     <div class="grid-x align-middle">
         <div class="small-1 cell text-left align-self-stretch">
             <a class="special-button-left" title="see total for previous day"
