@@ -24,6 +24,6 @@ class RedirectDateController
 
     public function __invoke()
     {
-        return Flight::redirect("/?omo={$this->diff}&bpo={$this->diff}");
+        Flight::redirect(Flight::url()->sign("/home/{$this->diff}/{$this->diff}"));
     }
 }
