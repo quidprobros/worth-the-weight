@@ -273,9 +273,11 @@ Flight::route('GET *', function () {
     Flight::set("debug_mode", $data['debug']);
 
     Flight::request()->query->__unset("debug");
-    Debugger::log(__LINE__.Flight::request()->url);
-    !d(Flight::request());
-    exit;
+
+    $components = parse(Flight::request()->url);
+    $components['query'] = http_build_query(Flight::request()->query->getData());
+
+    Flight::request()->url = build($components);
 
     return true;
 }, true);
@@ -327,28 +329,6 @@ Flight::route('GET /home/(@omo:[0-9]+(/@bpo:[0-9]+))', function ($omo, $bpo) {
     $controller();
 });
 
-// Flight::route('GET /home/rel/@index', function ($index) {
-//  Debugger::log('rel me');
-//     if (!Flight::verifySignature()) {
-//         Flight::notFound();
-//     }
-
-//     $query = Flight::request()->query;
-//     $query->bpo = $index;
-
-//     $new_query = http_build_query($query->getData(), "?", "&", PHP_QUERY_RFC3986);
-
-//     $components = parse(Flight::request()->url);
-//     $components['path'] = "/home";
-//     $components['query'] = $new_query;
-
-//     $url = build($components);
-
-//     Flight::redirect($url);
-//     return false;
-// });
-
-
 Flight::route('GET /goto/@date', function ($date) {
     (new App\Controllers\RedirectDateController($date))();
 });
@@ -398,7 +378,7 @@ Flight::route('GET /home/right-canvas/rel', function () {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
-    Debugger::log('right canvase signed');
+
     Flight::render("partials/offcanvas-graphs", [
     ]);
 });
@@ -432,7 +412,6 @@ Flight::route('GET /home/left-canvas/rel/@omo:[0-9]+/@bpo:[0-9]+', function ($om
 });
 
 Flight::route('GET /home/big-picture/rel/@omo:[0-9]+/@bpo:[0-9]+', function ($omo, $bpo)  {
-    Debugger::log("/home/big-picture/rel/@offset routed with {$bpo}");
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
