@@ -277,7 +277,7 @@ Flight::route('GET *', function () {
     $components = parse(Flight::request()->url);
     $components['query'] = http_build_query(Flight::request()->query->getData());
 
-    Flight::request()->url = build($components);
+    // Flight::request()->url = build($components);
 
     return true;
 }, true);
@@ -299,7 +299,7 @@ Flight::route('GET /(home|index)', function () {
     Flight::redirect(Flight::url()->sign("/home/0/0"));
 });
 
-Flight::route('GET /home/(@omo:[0-9]+(/@bpo:[0-9]+))', function ($omo, $bpo) {
+Flight::route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -383,7 +383,7 @@ Flight::route('GET /home/right-canvas/rel', function () {
     ]);
 });
 
-Flight::route("GET /home/title-bar/rel/@omo:[0-9]+/@bpo:[0-9]+", function ($omo, $bpo) {
+Flight::route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($omo, $bpo) {
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
@@ -396,8 +396,9 @@ Flight::route("GET /home/title-bar/rel/@omo:[0-9]+/@bpo:[0-9]+", function ($omo,
         Debugger::log($e->getMessage());
     }
 });
+Debugger::log(Flight::request()->url);
+Flight::route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo) {
 
-Flight::route('GET /home/left-canvas/rel/@omo:[0-9]+/@bpo:[0-9]+', function ($omo, $bpo) {
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
@@ -411,7 +412,7 @@ Flight::route('GET /home/left-canvas/rel/@omo:[0-9]+/@bpo:[0-9]+', function ($om
     }
 });
 
-Flight::route('GET /home/big-picture/rel/@omo:[0-9]+/@bpo:[0-9]+', function ($omo, $bpo)  {
+Flight::route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo)  {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }

@@ -10,6 +10,7 @@ $next = $big_picture_day_offset + 1;
 <div class="cell"
      hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
      hx-trigger="path-deps"
+     hx-target="#big-picture"
      path-deps="/journal-entry">
     <div class="grid-x align-middle">
         <div class="small-1 cell text-left align-self-stretch">
@@ -20,7 +21,6 @@ $next = $big_picture_day_offset + 1;
                hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
                hx-swap="innerHTML swap:200ms"
                hx-target='#big-picture'>
-                <!-- <i class="gg-arrow-left-r"></i> -->
             </a>
         </div>
         <div id="big-picture--section-2" class="small-10 cell custom-shadow" data-classes="">
@@ -36,7 +36,6 @@ $next = $big_picture_day_offset + 1;
                hx-swap="innerHTML swap:200ms"
                hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$next}")?>'
                hx-target='#big-picture'>
-                <!-- <i class="gg-arrow-right-r"></i> -->
             </a>
         </div>
         <div class="cell small-offset-1">

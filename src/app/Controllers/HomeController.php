@@ -32,8 +32,6 @@ class HomeController extends BaseController
         $this->journal_day_offset = (int) $journal_day_offset;
         $this->big_picture_day_offset = (int) $big_picture_day_offset;
 
-        \Tracy\Debugger::log("bpo: {$this->big_picture_day_offset}, omo: {$this->journal_day_offset}");
-
         $this->query = $req->query;
 
         $this->date_omo = date_create()
