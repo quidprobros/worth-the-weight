@@ -10,7 +10,7 @@ $next = $journal_day_offset + 1;
      hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
      hx-trigger="path-deps"
      path-deps="/journal-entry">
-    <div class="cell">
+    <div class="cell padding-right-1">
         <div class="button-group align-spaced align-middle">
             <a class="button" title="see entry for yesterday"
                hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$prev}/{$big_picture_day_offset}")?>'
@@ -19,17 +19,19 @@ $next = $journal_day_offset + 1;
             <a hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/0/{$big_picture_day_offset}")?>'
                hx-trigger="click"
                hx-push-url='<?=Flight::url()->sign("/home/0/{$big_picture_day_offset}")?>'
-               hx-target='#offCanvas'><h1 style='margin:0'><?=$date_omo->format("D M j, Y")?></h1></a>
+               hx-target='#offCanvas' class="text-center">
+                <h1 style='margin:0'><?=$date_omo->format("D M j, Y")?></h1> <? if (0 == $journal_day_offset) { ?>
+                    <p class="text-center margin-0"><small>today</small></p>
+                <? } else { ?>
+                    <p class="text-center margin-0"><small>&nbsp;</small></p>
+                <? } ?>
+            </a>
             <a class='button' title="see entry for tomorrow"
                hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$next}/{$big_picture_day_offset}")?>'
                hx-push-url='<?=Flight::url()->sign("/home/{$next}/{$big_picture_day_offset}")?>'
                hx-target='#offCanvas'><i class="gg-arrow-right-r"></i></a>
         </div>
-        <? if (0 == $journal_day_offset) { ?>
-            <p class="text-center"><small>today</small></p>
-        <? } else { ?>
-            <p class="text-center"><small>&nbsp;</small></p>
-        <? } ?>
+       
     </div>
     <div class="cell">
         <div class="callout">

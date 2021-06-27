@@ -21,7 +21,7 @@ Tracy\Debugger;
 
         <?=Flight::render("partials/title-bar")?>
 
-        <div id="maint-container" class="cell medium-auto medium-cell-block-container">
+        <div id="main-container" class=" cell medium-auto medium-cell-block-container">
             <div class="grid-x grid-padding-x">
                 <div class="cell medium-cell-block-y">
                     <div class="off-canvas-wrapper" style="height:100%">
@@ -91,7 +91,7 @@ Tracy\Debugger;
         </div>
         <div id="main-footer" class="cell shrink footer">
             <div class="grid-x grid-padding-x align-middle">
-                <div class="cell small-6">
+                <div class="cell small-3">
                     <div class="button-group margin-1">
                         <? if (true === Flight::get("debug_mode")) { ?>
                             <button type="button"
@@ -107,7 +107,10 @@ Tracy\Debugger;
                         </form>
                     </div>
                 </div>
-                <div class="cell small-6 text-right">
+                <div class="cell auto text-center show-for-landscape">
+                    Portrait mode works best!
+                </div>
+                <div class="cell auto text-right">
                     <span >Logged in as <strong><?=Flight::auth()->getUsername()?></strong></span>
                 </div>
 
