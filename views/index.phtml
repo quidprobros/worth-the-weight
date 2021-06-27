@@ -45,7 +45,13 @@ Tracy\Debugger;
                                         </div>
                                     </noscript>
                                     <div class="cell small-12 large-4 small-order-2 large-order-1">
-                                        <form name='food-log-form' class="grid-x" style="height:100%" action="/journal-entry" method="POST" target="some-iframe">
+                                        <form name='food-log-form'
+                                              class="grid-x"
+                                              style="height:100%"
+                                              action="/journal-entry"
+                                              method="POST"
+                                              target="some-iframe">
+                                            <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
                                             <fieldset class="cell small-12 fieldset">
                                                 <legend>food info</legend>
                                                 <div class='form-group'>
@@ -65,7 +71,7 @@ Tracy\Debugger;
                                             <fieldset class="cell small-12 fieldset">
                                                 <div class="form-group">
                                                     <label>
-                                                        <strong class="help-cursor" aria-label="Fraction of base unit consumed" data-microtip-position="top" role="tooltip">Multiplier<sup>ⓘ</sup></strong></label>
+                                                        <strong class="help-cursor" aria-label="Fraction of base unit consumed" data-microtip-position="right" role="tooltip">Multiplier<sup>ⓘ</sup></strong></label>
                                                     <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
                                                 </div>
                                             </fieldset>
@@ -103,6 +109,7 @@ Tracy\Debugger;
                                 DELETE ENTIRE FOOD LOG</button>
                         <? } ?>
                         <form method="POST" action="/logout">
+                            <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
                             <button type="submit" class="small button" hx-swap='none' hx-post="/logout">log out</button>
                         </form>
                     </div>

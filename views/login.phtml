@@ -27,6 +27,7 @@
                   target="derp"
                   method="POST"
                   action="/login">
+                <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
                 <h2 class="text-center cc-form-title"><strong>Already a member? Login here:</strong></h2>
                 <div class="input-group">
                     <span class="input-group-label">Email</span>
@@ -63,6 +64,7 @@
             <hr/>
 
             <form hx-post="/register" class="registration-form" hx-swap='none' method="POST" action="/register">
+                <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
                 <h2 class="text-center cc-form-title"><strong>Register</strong> to be a part of Worth the Weight!</h2>
                 <label for="register-form-email">Email (fake email address is fine)
                     <input type="email"
