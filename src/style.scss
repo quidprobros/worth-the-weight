@@ -357,3 +357,11 @@ iframe {
 .no-js .nojs-show {
     display: inherit !important;
 }
+
+.show-for-landscape-and-small-only {
+    display: none;
+    @media screen and #{breakpoint(medium down)} and #{breakpoint(landscape)} {
+        display: flex;
+    }
+}
+

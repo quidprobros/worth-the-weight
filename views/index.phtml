@@ -24,7 +24,7 @@ Tracy\Debugger;
         <div id="main-container" class=" cell medium-auto medium-cell-block-container">
             <div class="grid-x grid-padding-x">
                 <div class="cell medium-cell-block-y">
-                    <div class="off-canvas-wrapper" style="height:100%">
+                    <div class="off-canvas-wrapper">
                         <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas>
                             <?=Flight::render("partials/offcanvas-menu", [
                             ])?>
@@ -107,7 +107,7 @@ Tracy\Debugger;
                         </form>
                     </div>
                 </div>
-                <div class="cell auto text-center show-for-landscape">
+                <div class="cell auto text-center show-for-landscape-and-small-only">
                     Portrait mode works best!
                 </div>
                 <div class="cell auto text-right">

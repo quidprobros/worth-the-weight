@@ -20,7 +20,7 @@ $next = $journal_day_offset + 1;
                hx-trigger="click"
                hx-push-url='<?=Flight::url()->sign("/home/0/{$big_picture_day_offset}")?>'
                hx-target='#offCanvas' class="text-center">
-                <h1 style='margin:0'><?=$date_omo->format("D M j, Y")?></h1> <? if (0 == $journal_day_offset) { ?>
+                <div class="h4" style='margin:0'><?=$date_omo->format("D M j, Y")?></div> <? if (0 == $journal_day_offset) { ?>
                     <p class="text-center margin-0"><small>today</small></p>
                 <? } else { ?>
                     <p class="text-center margin-0"><small>&nbsp;</small></p>
