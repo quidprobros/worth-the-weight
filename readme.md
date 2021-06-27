@@ -7,18 +7,17 @@ A web application for tracking food consumption. You can also record whether you
 - [x] Add sqlite database support to store form data.
 - [x] Add front end button to delete record.
 - [x] Import food data
-- [x] Allow individual cell editing
 - [x] Invisibly add time
 - [x] Display food name, not id when appending via js
 - [x] Append action cell via JS too
 - [ ] Enable search
-- [x] content enter not just tabq
+- [x] content enter not just tab
 - [x] Make sure all db queries are prepared before executed
 - [x] Finish integrating notices https://notifyjs.jpillora.com/
 
 # sprint 2
 - [x] integrate htmx for handling requests on client and updatin UI
-- [x] add pagination to journal view
+- [ ] ~~add pagination to journal view~~
 - [x] show point count for selected date in journal view
 - [x] Show basic daily summary
 - [x] click date to load view for today
@@ -52,7 +51,7 @@ A web application for tracking food consumption. You can also record whether you
 - [x] doorway to manage walks (handled by HATEOS approach)
 - [x] ensure that one user's records cannot be deleted by another user by only accessing *through* a user model (can happen through form manipulation)
 
-# sprint 4 (reach)
+# sprint 4
 - [ ] why is path deps triggering same elements multiple times??
 - [ ] dont send form data to views
 - [x] have forms target iframes when JS not allowed
@@ -71,6 +70,11 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] some kind of effect is needed to show page changing
 - [x] fixed big hole in fuzzing block (redirects to urls with querystring were not signed and were not required to be signed)
 - [ ] iframe could be more helpful. present more information (https://blog.logrocket.com/the-ultimate-guide-to-iframes/)
+- [ ] datatable gets messed up after adding new data. needs to be reinited
+
+# reach
+- [ ] Allow individual cell editing
+
 
 # Security tests on live
 - [ ] https://observatory.mozilla.org/
