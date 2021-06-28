@@ -11,7 +11,7 @@ $next = $journal_day_offset + 1;
      hx-trigger="path-deps"
      path-deps="/journal-entry">
     <div class="cell padding-right-1">
-        <div class="button-group align-spaced align-middle">
+        <div class="button-group align-justify align-middle">
             <a class="button" title="see entry for yesterday"
                hx-get='<?=Flight::url()->sign("/home/left-canvas/rel/{$prev}/{$big_picture_day_offset}")?>'
                hx-push-url='<?=Flight::url()->sign("/home/{$prev}/{$big_picture_day_offset}")?>'

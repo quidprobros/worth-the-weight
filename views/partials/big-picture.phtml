@@ -1,7 +1,5 @@
 <?
 
-
-
 $prev = $big_picture_day_offset - 1;
 $next = $big_picture_day_offset + 1;
 
@@ -47,7 +45,6 @@ $next = $big_picture_day_offset + 1;
 </div>
 <div id="big-picture--section-3" class="cell">
     <form name="day-info">
-        <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
         <fieldset class="cell small-12 fieldset">
             <legend>exercise info</legend>
             <input name="exercised"

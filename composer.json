@@ -16,8 +16,7 @@
         "mailgun/mailgun-php": "^3.5",
         "kriswallsmith/buzz": "^1.2",
         "nyholm/psr7": "^1.4",
-        "league/uri-parser": "^1.4",
-        "gilbitron/easycsrf": "^1.4"
+        "league/uri-parser": "^1.4"
     },
     "authors": [
         {

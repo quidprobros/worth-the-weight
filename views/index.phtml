@@ -51,7 +51,9 @@ Tracy\Debugger;
                                               action="/journal-entry"
                                               method="POST"
                                               target="some-iframe">
-                                            <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
+                                            <input type="hidden"
+                                                   name="token"
+                                                   value="<?=Flight::get('csrf_token'); ?>">
                                             <fieldset class="cell small-12 fieldset">
                                                 <legend>food info</legend>
                                                 <div class='form-group'>
@@ -109,7 +111,9 @@ Tracy\Debugger;
                                 DELETE ENTIRE FOOD LOG</button>
                         <? } ?>
                         <form method="POST" action="/logout">
-                            <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
+                            <input type="hidden"
+                                   name="token"
+                                   value="<?=Flight::get('csrf_token'); ?>">
                             <button type="submit" class="small button" hx-swap='none' hx-post="/logout">log out</button>
                         </form>
                     </div>

@@ -6,8 +6,6 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\ActiveUser;
-use EasyCSRF\Exceptions\InvalidCsrfTokenException;
-
 //
 use function League\Uri\parse;
 use function League\Uri\build;
@@ -25,10 +23,6 @@ if (!file_exists(FILE_ROOT . '/tracy')) {
     mkdir(FILE_ROOT . '/tracy', 0755, true);
 }
 
-$sessionProvider = new EasyCSRF\NativeSessionProvider();
-$easyCSRF = new EasyCSRF\EasyCSRF($sessionProvider);
-$csrf_token = $easyCSRF->generate('my_token');
-Flight::set("csrf_token", $csrf_token);
 session_start();
 
 Debugger::$dumpTheme = 'dark';
@@ -165,15 +159,6 @@ Flight::route("GET /login", function () {
         Flight::redirect("/home", 302);
     }
     Flight::render("login", []);
-});
-
-Flight::route("POST *", function () use ($easyCSRF) {
-    try {
-        $easyCSRF->check('my_token', $_POST['token']);
-    } catch (InvalidCsrfTokenException $e) {
-        Debugger::log($e->getMessage());
-        Flight::halt();
-    }
 });
 
 Flight::route("POST /login", function () {
@@ -411,7 +396,7 @@ Flight::route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($
         Debugger::log($e->getMessage());
     }
 });
-Debugger::log(Flight::request()->url);
+
 Flight::route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo) {
 
     try {

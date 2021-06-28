@@ -75,10 +75,11 @@ A web application for tracking food consumption. You can also record whether you
 
 # Reach goals
 - [ ] Allow individual cell editing
-- [ ] Allow for storing and tracking goals
+- [ ] Allow for storing and tracking goals 
 - [ ] Allow for submitting new foods
 - [ ] show popup when user's been a way for a while
 - [ ] Write script to bootstrap fresh database
+- [ ] cross site request forgery protection (security)
 
 
 
