@@ -1,9 +1,9 @@
 ## -*- mode: sh -*
-declare -rx sshuser="paxperscientiam"
-declare -rx domain="paxperscientiam.com"
+declare -rx sshuser="dh_gy99mh"
+declare -rx domain="wtw.paxperscientiam.com"
 
 declare -rx localroot="./"
-declare -rx remoteroot="/home/${sshuser}/projects/worth-the-weight"
+declare -rx remoteroot="/home/${sshuser}"
 
 declare -arx BLACKLIST=(
     ".DS_Store"
@@ -36,5 +36,13 @@ declare -arx BLACKLIST=(
     "tslint.json"
     "yarn.lock"
     "src/app/env/dev"
-    "tracy"
+    "/tracy"
+)
+
+declare -arx PROTECTLIST=(
+    "-p .DS_Store"
+    "P ${user}/.ssh"
+    "P ${user}/.bash_history"
+    "P ${user}/logs"
+    "P ${user}/tracy"
 )

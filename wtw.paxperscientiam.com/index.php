@@ -145,14 +145,9 @@ Flight::after("redirect", function () {
     exit;
 });
 
-Flight::route("/*[^login]", function () {
-    if (false == Flight::auth()->isLoggedIn()) {
-        Flight::redirect("/login", 302);
-    }
-    // carry on
-    return true;
-}, true);
-
+/*
+ * routes begin!
+ */
 
 Flight::route("GET /login", function () {
     if (true == Flight::auth()->isLoggedIn()) {
@@ -198,10 +193,6 @@ Flight::route("POST /login", function () {
 });
 
 Flight::route("POST /register", function () {
-    if (true == Flight::auth()->isLoggedIn()) {
-        Flight::redirect("/home", 302);
-    }
-
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
         $controller->registerUser();
@@ -214,7 +205,7 @@ Flight::route("POST /register", function () {
                 "level" => "success"
             ]
         ]);
-        Flight::redirect("/home");
+
     } catch (\App\Exceptions\FormException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader($e->getMessage(), 'error');
