@@ -42,6 +42,7 @@ declare -arx BLACKLIST=(
 declare -arx PROTECTLIST=(
     "-p .DS_Store"
     "P ${user}/.ssh"
+    "P ${user}/.cache"
     "P ${user}/.bash_history"
     "P ${user}/logs"
     "P ${user}/tracy"

@@ -80,6 +80,9 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] show popup when user's been a way for a while
 - [ ] Write script to bootstrap fresh database
 - [ ] cross site request forgery protection (security)
+- [ ] Add help page
+- [ ] Add a new-user link to help page.
+
 
 
 
