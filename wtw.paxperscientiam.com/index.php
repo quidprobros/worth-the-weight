@@ -242,9 +242,11 @@ Flight::route("*", function () {
 
     try {
         Flight::set("ActiveUser", ActiveUser::init());
-        bdump(Flight::get("ActiveUser")->id);
     } catch (ModelNotFoundException $e) {
-        Flight::set("ActiveUser", null);
+        Debugger::log($e->getMessage());
+        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+        $controller->logoutUser();
+        Flight::redirect("/login");
     } catch (Exception $e) {
         Debugger::log($e->getMessage());
         Flight::stop();

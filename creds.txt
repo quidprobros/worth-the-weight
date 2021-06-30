@@ -45,4 +45,6 @@ declare -arx PROTECTLIST=(
     "P ${user}/.bash_history"
     "P ${user}/logs"
     "P ${user}/tracy"
+    "P ${user}/.emacs.d"
+    "P ${user}/.spacemacs"
 )
