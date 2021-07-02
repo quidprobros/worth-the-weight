@@ -24,9 +24,9 @@ try {
     $tables = $capsule::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
     foreach ($tables as $table) {
         Capsule::table($table->name)->truncate();
-        s("$table->name truncated");
+        ~d("$table->name truncated");
     }
 } catch (Exception $e) {
-    s($e->getMessage());
+    ~d($e->getMessage());
 }
-s('successfully truncated all tables!');
+!d('successfully truncated all tables!');
