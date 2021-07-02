@@ -29,4 +29,4 @@ try {
 } catch (Exception $e) {
     ~d($e->getMessage());
 }
-!d('successfully truncated all tables!');
+~d('successfully truncated all tables!');
