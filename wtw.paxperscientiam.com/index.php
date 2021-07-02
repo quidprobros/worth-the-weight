@@ -4,6 +4,7 @@ use Tracy\Debugger;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Schema;
 use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\ActiveUser;
 //
@@ -78,6 +79,25 @@ $capsule->addConnection([
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
+// $tables = Capsule::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
+// foreach ($tables as $table) {
+//     try {
+//         Capsule::table($table->name)->truncate();
+//         echo "$table->name truncated";
+//     } catch (Exception $e) {
+//         s($e->getMessage());
+//     }
+// }
+//Schema::disableForeignKeyConstraints();
+//Illuminate\Support\Facades\Schema
+//s((new Illuminate\Database\Schema\Builder())->getAllTables());
+//$statement = Capsule::statement('SET FOREIGN_KEY_CHECKS = 0');
+//s($statement);
+//s(Illuminate\Database\Schema\Builder::disableForeignKeyConstraints());
+//s(Illuminate\Database\Schema\Builder::schema()->getAllTables());
+//s((new Illuminate\Support\Collection)->collect(Capsule::query('.TABLES')));
+//Capsule::collect(Capsule::select('SHOW TABLES'))->map(fn ($table) => reset($table))->each(fn
+//exit;
 if (true == Flight::get("debug_mode")) {
     Capsule::enableQueryLog();
 }

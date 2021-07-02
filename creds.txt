@@ -37,10 +37,12 @@ declare -arx BLACKLIST=(
     "yarn.lock"
     "src/app/env/dev"
     "/tracy"
+    "/db"
 )
 
 declare -arx PROTECTLIST=(
     "-p .DS_Store"
+    "P ${user}/db"
     "P ${user}/.ssh"
     "P ${user}/.cache"
     "P ${user}/.bash_history"
