@@ -50,4 +50,5 @@ declare -arx PROTECTLIST=(
     "P ${user}/tracy"
     "P ${user}/.emacs.d"
     "P ${user}/.spacemacs"
+    "P ${user}/.php"
 )

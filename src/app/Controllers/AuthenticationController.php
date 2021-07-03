@@ -53,7 +53,7 @@ class AuthenticationController
         });
     }
 
-    public function registerUser()
+    public function registerUser($immediateLogin = false)
     {
         $email = $this->data['register_email'];
         $username = $this->data['register_username'];
@@ -71,11 +71,15 @@ class AuthenticationController
             throw new InvalidPasswordException();
         }
 
-        return Flight::auth()->registerWithUniqueUsername(
+        Flight::auth()->registerWithUniqueUsername(
             $email,
             $password,
             $username,
         );
+
+        if (true == $immediateLogin) {
+            Flight::auth()->login($email, $password, $this->rememberDuration);
+        }
     }
 
     private function sendVerificationEmail($selector, $token, $email, $subject)

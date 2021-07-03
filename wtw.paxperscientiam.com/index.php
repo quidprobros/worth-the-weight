@@ -215,17 +215,17 @@ Flight::route("POST /login", function () {
 Flight::route("POST /register", function () {
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
-        $controller->registerUser();
+        $controller->registerUser(true); // argument: true means login immediately after successful registration
         Flight::hxtrigger([
             "action" => [
                 "xpath" => "resetForms",
             ],
             "showMessage" => [
-                "message" => "Success! You may now login",
+                "message" => "Success! Logging you in ...",
                 "level" => "success"
             ]
         ]);
-
+        header("HX-Redirect: /home");
     } catch (\App\Exceptions\FormException $e) {
         Debugger::log($e->getMessage());
         Flight::hxheader($e->getMessage(), 'error');
