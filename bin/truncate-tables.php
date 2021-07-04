@@ -23,6 +23,9 @@ $capsule->bootEloquent();
 try {
     $tables = $capsule::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
     foreach ($tables as $table) {
+        if ("food_records" == $table->name) {
+            continue;
+        }
         Capsule::table($table->name)->truncate();
         ~d("$table->name truncated");
     }
