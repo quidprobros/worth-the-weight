@@ -1,5 +1,3 @@
-console.debug("test1", 123)
-
 declare global {
     interface Window {
         Inputmask: any
@@ -14,15 +12,6 @@ import "./style.scss"
 import {App} from "./app"
 
 export {App}
-// @ts-ignore
-// import queryState from "query-state"
-
-// // initialize
-// const qs = queryState({
-// }, {
-//     useSearch: true
-// });
-// export {qs}
 
 import $ from "jquery"
 window.$ = $
@@ -41,7 +30,6 @@ import dt from "datatables.net"
 dt($)
 
 import dlv from "@paxperscientiam/dlv.ts"
-window.dlv = dlv
 export {dlv}
 
 
