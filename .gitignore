@@ -127,6 +127,7 @@ dist
 tracy/
 \.#*
 
-/db
+/db/wtw*
 
 /generated
+/data/phinx*
