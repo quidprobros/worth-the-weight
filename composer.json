@@ -16,7 +16,8 @@
         "mailgun/mailgun-php": "^3.5",
         "kriswallsmith/buzz": "^1.2",
         "nyholm/psr7": "^1.4",
-        "league/uri-parser": "^1.4"
+        "league/uri-parser": "^1.4",
+        "robmorgan/phinx": "^0.12.7"
     },
     "authors": [
         {
@@ -28,6 +29,8 @@
         "kint-php/kint": "^3.3",
         "tracy/tracy": "^2.8",
         "jdorn/sql-formatter": "dev-master",
-        "illuminate/events": "^8.40"
+        "illuminate/events": "^8.40",
+        "kitloong/laravel-migrations-generator": "^4.5",
+        "adhocore/cli": "^0.9.0"
     }
 }
