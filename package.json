@@ -68,8 +68,37 @@
         "ssh_remote_root": "/home/dh_gy99mh",
         "ssh_local_root": "./",
         "rsync_excluded_list": [
-            "/.git",
-            "/.gitignore",
+            ".DS_Store",
+            "*#*",
+            "*~",
+            ".cache",
+            ".cache-require-paths.json",
+            ".editorconfig",
+            ".eslintrc.json",
+            ".fusebox",
+            ".git",
+            ".gitignore",
+            ".projectile",
+            ".sass-cache",
+            ".yarnrc",
+            "yarn-error.log",
+            "_build",
+            "fuse*",
+            "/creds.txt",
+            "done.txt",
+            "fust.ts",
+            "node_modules",
+            "package.json",
+            "report.txt",
+            "todo.txt",
+            "todo.txt.bak",
+            "todo.txt.gz",
+            "tsconfig.json",
+            "tslint.json",
+            "yarn.lock",
+            "/src/app/env/dev",
+            "/tracy",
+            "/db",
             "/.log",
             "/node_modules",
             "/composer.*",
@@ -82,18 +111,21 @@
         ],
         "rsync_protect_and_perish_list": {
             "protect": [
+                "/db",
                 "/.ssh",
-                "/logs",
-                "/.logs",
+                "/.cache",
+                "/.bash_history",
+                "/log*",
+                "/.log*",
                 "/tracy",
+                "/.emacs.d",
+                "/.spacemacs",
                 "/Maildir",
                 "/.php",
-                "/.cache",
-                "/.bash*",
-                "/db"
+                "/.bash*"
             ],
             "perish": [
-                "ok"
+                ".DS_Store"
             ]
         }
     }

@@ -4,7 +4,7 @@ then
     printf 'Please run this script with npm\n'
 fi
 
-if ! command -v jq 2>&1 >/dev/null
+if ! command -v jq >/dev/null 2>&1
 then
     printf '`jq` is required\n https://stedolan.github.io/jq/\n'
     exit
@@ -27,7 +27,7 @@ declare -A config=(
 for key in "${!config[@]}"
 do
     val="${config[$key]}"
-    if ! [[ -n "$val" ]];
+    if [[ -z "$val" ]];
     then
         printf 'config.%s cannot be zero-length\n\n' "${key}"
         exit
