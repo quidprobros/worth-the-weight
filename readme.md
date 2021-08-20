@@ -2,6 +2,8 @@
 
 A web application for tracking food consumption. You can also record whether you exercised on any given day.
 
+## Note: this will not work out of the box as db bootstrapping still needs to be setup.
+
 # sprint 1
 - [x] Add form to submit quantity of food, fractional measurement unit, food item, and date.
 - [x] Add sqlite database support to store form data.
@@ -60,7 +62,7 @@ A web application for tracking food consumption. You can also record whether you
 - [x] some kind of effect is needed to show page changing
 - [x] fixed big hole in fuzzing block (redirects to urls with querystring were not signed and were not required to be signed)
 - [x] iframe could be more helpful. present more information 
-- [ ] datatable gets messed up after adding new data. needs to be reinited
+- [x] datatable gets messed up after adding new data. needs to be reinited
 
 # Security and fault tolerance sprint
 - [x] use signed urls (makes it difficult for endpoints to be abused)
