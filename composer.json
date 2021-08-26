@@ -1,5 +1,5 @@
 {
-    "name": "paxperscientiam/worth-the-weight.com",
+    "name": "quidprobros/worth-the-weight.com",
     "autoload": {
         "psr-4": {
             "App\\": "src/app/"
