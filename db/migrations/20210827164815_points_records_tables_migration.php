@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class FriendsTableMigration extends AbstractMigration
+final class PointsRecordsTablesMigration extends AbstractMigration
 {
     /**
      * Change Method.
@@ -18,15 +18,27 @@ final class FriendsTableMigration extends AbstractMigration
      */
     public function change(): void
     {
+
         $table = $this->table('friends');
         // autoincrementing key autocreated by phinx
         $table
             // this is a foreign key!
-            ->addColumn('friend_id', 'integer', [
+            ->addColumn('user_id', 'integer', [
                 'null' => false
             ])
-            ->addColumn('created_at', 'date_time')
-            ->addColumn('updated_at', 'date_time')
+            ->addColumn('food_id', 'integer', [
+                'null' => false
+            ])
+            ->addColumn('quantity', 'float', [
+                'null' => false,
+                'default' => 0.0
+            ])
+            ->addColumn('points', 'float', [
+                'null' => false,
+                'default' => 0.0
+            ])
+            ->addColumn('created_at', 'datetime')
+            ->addColumn('updated_at', 'datetime')
             ->create();
     }
 }
