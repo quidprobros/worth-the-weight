@@ -5,6 +5,11 @@
             "App\\": "src/app/"
         }
     },
+    "scripts": {
+        "bootstrap": [
+            "@php vendor/bin/phinx migrate -e development"
+        ]
+    },
     "require": {
         "mikecao/flight": "^1.3",
         "aura/payload": "^3.0",
