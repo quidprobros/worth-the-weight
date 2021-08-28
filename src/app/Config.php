@@ -13,6 +13,8 @@ const MAX_DATA_REQUEST_RANGE = 366; // days
 
 const DB_DSN = DB_DRIVER . ':' . DB_DATABASE;
 
+Secrets::init();
+
 class Config
 {
     public static function init()
