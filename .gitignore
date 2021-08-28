@@ -131,3 +131,5 @@ tracy/
 
 /generated
 /data/phinx*
+
+src/app/Secrets.php
