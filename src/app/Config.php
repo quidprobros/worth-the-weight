@@ -6,7 +6,7 @@ use Illuminate\Filesystem\Filesystem;
 use Exception;
 
 const DB_DRIVER = "sqlite";
-const DB_DATABASE = FILE_ROOT . "/db/wtw.db";
+const DB_DATABASE = FILE_ROOT . "/data/phinx-dev.db"; //"/db/wtw.db";
 
 const MIN_PASSWORD_LENGTH = 8;
 const MAX_DATA_REQUEST_RANGE = 366; // days

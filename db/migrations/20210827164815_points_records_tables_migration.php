@@ -19,7 +19,7 @@ final class PointsRecordsTablesMigration extends AbstractMigration
     public function change(): void
     {
 
-        $table = $this->table('friends');
+        $table = $this->table('points_records');
         // autoincrementing key autocreated by phinx
         $table
             // this is a foreign key!
@@ -37,6 +37,8 @@ final class PointsRecordsTablesMigration extends AbstractMigration
                 'null' => false,
                 'default' => 0.0
             ])
+            ->addColumn('date', 'date')
+            ->addColumn('time', 'time')
             ->addColumn('created_at', 'datetime')
             ->addColumn('updated_at', 'datetime')
             ->addForeignKey('user_id', 'users', 'id', [

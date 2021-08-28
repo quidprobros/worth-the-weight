@@ -19,7 +19,7 @@ final class MyNewMigration extends AbstractMigration
     public function change(): void
     {
         // create the table
-        $table = $this->table('exercise_records');
+        $table = $this->table('test_table');
         // autoincrementing key autocreated by phinx
         $table
             // this is a foreign key!

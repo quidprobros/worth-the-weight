@@ -77,6 +77,7 @@ A web application for tracking food consumption. You can also record whether you
 
 # Reach goals
 - [ ] test phinx for bootstrapping database
+- [ ] when it comes to dockerizing, make sure the database has correct permissions
 - [ ] dockerize (option)
 - [ ] Allow individual cell editing
 - [ ] Allow for storing and tracking goals 
