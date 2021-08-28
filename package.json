@@ -65,11 +65,22 @@
         "ssh_alias": "wtw",
         "ssh_remote_root": "/home/dh_gy99mh",
         "ssh_local_root": "/usr/local/docs/wtw.paxperscientiam.com/",
+        "rsync_include_list": [
+            ".gitkeep",
+            "/src/app/"
+        ],
         "rsync_exclude_list": [
+            "/src/*",
+            "/bin",
+            "/data",
+            "pnpm-lock.yaml",
+            "phinx.php",
+            "readme.md",
             ".DS_Store",
             "*#*",
             "*~",
             ".cache",
+            "logs",
             ".cache-require-paths.json",
             ".editorconfig",
             ".eslintrc.json",
@@ -78,11 +89,7 @@
             ".gitignore",
             ".projectile",
             ".sass-cache",
-            ".yarnrc",
-            "yarn-error.log",
-            "_build",
             "fuse*",
-            "/creds.txt",
             "done.txt",
             "fust.ts",
             "package.json",
@@ -95,16 +102,14 @@
             "yarn.lock",
             "/src/app/env/dev",
             "/tracy",
-            "/db",
             "/.log",
             "/node_modules",
             "/composer.*",
             "/*.tgz",
             "/tracy",
-            "/wtw.paxperscientiam.com/migrations/",
             "/views/bootstrapper.phtml",
             "/views/test.phtml",
-            "/db"
+            "/db/*"
         ],
         "rsync_protect_and_perish_list": {
             "protect": [
