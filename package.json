@@ -63,11 +63,9 @@
     ],
     "config": {
         "ssh_alias": "wtw",
-        "ssh_user": "dh_gy99mh",
-        "ssh_domain": "wtw.paxperscientiam.com",
         "ssh_remote_root": "/home/dh_gy99mh",
-        "ssh_local_root": "./",
-        "rsync_excluded_list": [
+        "ssh_local_root": "/usr/local/docs/wtw.paxperscientiam.com/",
+        "rsync_exclude_list": [
             ".DS_Store",
             "*#*",
             "*~",
@@ -87,7 +85,6 @@
             "/creds.txt",
             "done.txt",
             "fust.ts",
-            "node_modules",
             "package.json",
             "report.txt",
             "todo.txt",

@@ -128,6 +128,7 @@ tracy/
 \.#*
 
 /db/wtw*
+!/db/.gitkeep
 
 /generated
 /data/phinx*

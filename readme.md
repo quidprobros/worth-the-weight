@@ -84,7 +84,7 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] cross site request forgery protection (security)
 - [ ] Add help page
 - [ ] Add a new-user link to help page.
-
+- [ ] indicate how to add Secrets file
 
 
 
