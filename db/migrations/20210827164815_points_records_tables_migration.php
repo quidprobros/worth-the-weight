@@ -39,6 +39,10 @@ final class PointsRecordsTablesMigration extends AbstractMigration
             ])
             ->addColumn('created_at', 'datetime')
             ->addColumn('updated_at', 'datetime')
+            ->addForeignKey('user_id', 'users', 'id', [
+            ])
+            ->addForeignKey('food_id', 'food_records', 'id', [
+            ])
             ->create();
     }
 }

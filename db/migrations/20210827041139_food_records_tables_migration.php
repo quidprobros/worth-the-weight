@@ -18,7 +18,7 @@ final class FoodRecordsTablesMigration extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('users');
+        $table = $this->table('food_records');
         // autoincrementing key autocreated by phinx
         $table
             ->addColumn('food_name', 'text')
