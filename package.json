@@ -71,7 +71,6 @@
         ],
         "rsync_exclude_list": [
             "/src/*",
-            "/bin",
             "/data",
             "pnpm-lock.yaml",
             "phinx.php",
