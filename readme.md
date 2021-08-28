@@ -76,6 +76,8 @@ A web application for tracking food consumption. You can also record whether you
 
 
 # Reach goals
+- [ ] test phinx for bootstrapping database
+- [ ] dockerize (option)
 - [ ] Allow individual cell editing
 - [ ] Allow for storing and tracking goals 
 - [ ] Allow for submitting new foods
