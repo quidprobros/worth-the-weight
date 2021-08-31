@@ -3,7 +3,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/app/"
-        }
+        },
+        "files": [
+            "src/Boot.php"
+        ]
     },
     "scripts": {
         "bootstrap": [
@@ -22,7 +25,10 @@
         "kriswallsmith/buzz": "^1.2",
         "nyholm/psr7": "^1.4",
         "league/uri-parser": "^1.4",
-        "robmorgan/phinx": "^0.12.7"
+        "robmorgan/phinx": "^0.12.7",
+        "vlucas/phpdotenv": "^5.3",
+        "illuminate/container": "^8.57",
+        "illuminate/config": "^8.57"
     },
     "authors": [
         {

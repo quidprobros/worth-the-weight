@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  php-apache-environment:
+    container_name: php-apache
+    image: php:7.2-apache
+    volumes:
+      - ./:/var/www/
+    ports:
+      - 8000:80
+    environment:
+      APACHE_DOCUMENT_ROOT: /var/www/wtw.paxperscientiam.com

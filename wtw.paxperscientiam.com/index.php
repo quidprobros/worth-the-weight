@@ -1,28 +1,21 @@
 <?PHP
+
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Schema;
 use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\ActiveUser;
-//
+use Illuminate\Support\Facades\Config;
+
 use function League\Uri\parse;
 use function League\Uri\build;
 
 const WEB_ROOT = __DIR__;
 const FILE_ROOT = __DIR__ . "/..";
-define("DEBUG", "development" === $_SERVER['APPLICATION_ENV']);
 
 require_once FILE_ROOT . "/vendor/autoload.php";
-
-// sets headers and stuff
-App\Config::init();
-
-if (!file_exists(FILE_ROOT . '/tracy')) {
-    mkdir(FILE_ROOT . '/tracy', 0755, true);
-}
 
 session_start();
 
@@ -32,7 +25,7 @@ Debugger::$strictMode = true;
 Debugger::$showLocation = true;
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
-Flight::set("debug_mode", true === DEBUG && "true" === Flight::request()->query['debug']);
+Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
 
 if (true == Flight::get("debug_mode")) {
     Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
@@ -44,18 +37,12 @@ Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', '../views');
 Flight::set('flight.views.extension', ".phtml");
 
-$connection = \Delight\Db\PdoDatabase::fromDsn(new \Delight\Db\PdoDsn(\App\DB_DSN));
+$connection = \Delight\Db\PdoDatabase::fromDsn(new \Delight\Db\PdoDsn(Config::get('app.cnx.dsn')));
 
 Flight::register(
     'auth',
     'Delight\Auth\Auth',
     [$connection, null, null, false]
-);
-
-Flight::register(
-    'mail',
-    'Mailgun\Mailgun::create',
-    [App\MAILGUN_API_KEY]
 );
 
 Flight::register(
@@ -66,38 +53,25 @@ Flight::register(
 Flight::register(
     'url',
     'App\SignUrl',
-    [(new MD5UrlSigner(App\URL_SIG_KEY))],
+    [(new MD5UrlSigner(Config::get("app.url_sign_key")))],
 );
+
+Flight::before('route', function () {
+    header("X-Frame-Options: SAMEORIGIN");
+    header("X-Powered-By: Me");
+    header("X-Content-Type-Options: NOSNIFF");
+});
 
 $capsule = new Capsule();
 
 $capsule->addConnection([
-    "driver" => App\DB_DRIVER,
-    "database" => App\DB_DATABASE,
+    "driver" => Config::get('app.cnx.driver'),
+    "database" => Config::get('app.cnx.database'),
 ]);
 
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
-// $tables = Capsule::select("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;");
-// foreach ($tables as $table) {
-//     try {
-//         Capsule::table($table->name)->truncate();
-//         echo "$table->name truncated";
-//     } catch (Exception $e) {
-//         s($e->getMessage());
-//     }
-// }
-//Schema::disableForeignKeyConstraints();
-//Illuminate\Support\Facades\Schema
-//s((new Illuminate\Database\Schema\Builder())->getAllTables());
-//$statement = Capsule::statement('SET FOREIGN_KEY_CHECKS = 0');
-//s($statement);
-//s(Illuminate\Database\Schema\Builder::disableForeignKeyConstraints());
-//s(Illuminate\Database\Schema\Builder::schema()->getAllTables());
-//s((new Illuminate\Support\Collection)->collect(Capsule::query('.TABLES')));
-//Capsule::collect(Capsule::select('SHOW TABLES'))->map(fn ($table) => reset($table))->each(fn
-//exit;
 if (true == Flight::get("debug_mode")) {
     Capsule::enableQueryLog();
 }
@@ -125,7 +99,6 @@ Flight::register(
 Flight::map("offset2date", function ($offset) {
     return Carbon::now()->addDays($offset);
 });
-
 
 Flight::map("verifySignature", function () {
     if (
@@ -173,7 +146,7 @@ Flight::route("GET /login", function () {
     if (true == Flight::auth()->isLoggedIn()) {
         Flight::redirect("/home", 302);
     }
-    Flight::render("login", []);
+    Flight::render("login");
 });
 
 Flight::route("POST /login", function () {
@@ -541,9 +514,6 @@ if (true == Flight::get("debug_mode")) {
     Flight::route('GET /test', function () {
         $controller = new App\Controllers\TestController('test');
         $controller();
-    });
-    Flight::route('GET /bootstrapper', function () {
-        Flight::render("bootstrapper", []);
     });
 }
 

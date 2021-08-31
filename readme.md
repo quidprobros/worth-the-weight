@@ -4,6 +4,8 @@ A web application for tracking food consumption. You can also record whether you
 
 ## Note: this will not work out of the box as db bootstrapping still needs to be setup.
 
+# PHASE 1
+
 # sprint 1
 - [x] Add form to submit quantity of food, fractional measurement unit, food item, and date.
 - [x] Add sqlite database support to store form data.
@@ -75,8 +77,15 @@ A web application for tracking food consumption. You can also record whether you
   - [x] X-Content-Type-Options Header Missing
 
 
+# PHASE 2
+
+# sprint 1
+- [x] use environment file
+- [ ] handle case without .env file
+
+
 # Reach goals
-- [ ] test phinx for bootstrapping database
+- [x] test phinx for bootstrapping database
 - [ ] when it comes to dockerizing, make sure the database has correct permissions
 - [ ] dockerize (option)
 - [ ] Allow individual cell editing
@@ -87,7 +96,7 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] cross site request forgery protection (security)
 - [ ] Add help page
 - [ ] Add a new-user link to help page.
-- [ ] indicate how to add Secrets file
+- [ ] make sure tracy folder exists
 
 
 

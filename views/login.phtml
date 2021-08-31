@@ -1,3 +1,6 @@
+<?PHP
+use Illuminate\Support\Facades\Config;
+?>
 <!doctype html>
 <html lang="en" class="no-js">
     <?php Tracy\Debugger::renderLoader() ?>
@@ -86,10 +89,10 @@
                            required>
                 </label>
 
-                <label for="register-form-password">Password (<?=\App\MIN_PASSWORD_LENGTH?> character minimum)
+                <label for="register-form-password">Password (<?=Config::get('min_password_length')?> character minimum)
                     <input  id="new-password"
                             type="password"
-                            minlength="<?=\App\MIN_PASSWORD_LENGTH?>"
+                            minlength="<?=Config::get('min_password_length')?>"
                             class="register-form-password"
                             placeholder="password123"
                             autocomplete="new-password"
