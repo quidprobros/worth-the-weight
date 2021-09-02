@@ -12,7 +12,8 @@
         "eslint": "npx eslint . --ext .ts",
         "eslint_watch": "npx esw -w --ext .ts ./src",
         "upload": "./index.bash",
-        "mux": "tmuxinator start wtw.paxperscientiam.com"
+        "mux": "tmuxinator start wtw.paxperscientiam.com",
+        "docker-cli": "docker exec -it php-apache /bin/bash"
     },
     "author": "Christopher David Ramos",
     "license": "ISC",

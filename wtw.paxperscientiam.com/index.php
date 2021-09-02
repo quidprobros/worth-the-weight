@@ -53,7 +53,7 @@ Flight::register(
 Flight::register(
     'url',
     'App\SignUrl',
-    [(new MD5UrlSigner(Config::get("app.url_sign_key")))],
+    [(new MD5UrlSigner(Config::get("app.url_sign_key")))]
 );
 
 Flight::before('route', function () {
