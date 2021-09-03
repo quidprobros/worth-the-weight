@@ -68,11 +68,15 @@
         "ssh_local_root": "/usr/local/docs/wtw.paxperscientiam.com/",
         "rsync_include_list": [
             ".gitkeep",
-            "/src/app/"
+            "/src/app/",
+            "/bin/truncate-tables.php"
         ],
         "rsync_exclude_list": [
             "/src/*",
             "/data",
+            "/docker",
+            "/.env",
+            "/bin/*",
             "pnpm-lock.yaml",
             "phinx.php",
             "readme.md",

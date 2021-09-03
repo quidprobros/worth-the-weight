@@ -6,6 +6,7 @@ use App\Payload;
 use Carbon\Carbon;
 use Aura\Payload_Interface\PayloadStatus;
 use flight\net\Request;
+use Illuminate\Support\Facades\Config;
 use Flight;
 use Exception;
 
@@ -30,7 +31,7 @@ class BeefController
 
         $absoluteDiff = abs((new Carbon($min))->diffInDays(new Carbon($max)));
 
-        if (\App\MAX_DATA_REQUEST_RANGE < $absoluteDiff) {
+        if (Config::get('app.max_data_request_range') < $absoluteDiff) {
             throw new Exception("Too much data requested");
         }
 

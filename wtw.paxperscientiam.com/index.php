@@ -23,14 +23,15 @@ Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
 Debugger::$showLocation = true;
+Debugger::setLogger(new App\TracyStreamLogger());
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
 Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
 
 if (true == Flight::get("debug_mode")) {
-    Debugger::enable(Debugger::DETECT, FILE_ROOT . '/tracy');
+    Debugger::enable(Debugger::DETECT);
 } else {
-    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/tracy');
+    Debugger::enable(Debugger::PRODUCTION);
 }
 
 Flight::set('flight.log_errors', true);
@@ -142,6 +143,14 @@ Flight::after("redirect", function () {
  * routes begin!
  */
 
+Flight::route("GET /info", function () {
+    if (true == Flight::get("debug_mode")) {
+        phpinfo();
+    } else {
+        Flight::redirect("/home", 302);
+    }
+});
+
 Flight::route("GET /login", function () {
     if (true == Flight::auth()->isLoggedIn()) {
         Flight::redirect("/home", 302);
@@ -155,7 +164,7 @@ Flight::route("POST /login", function () {
     }
 
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+        $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->loginUser();
         header("HX-Redirect: /home");
     } catch (\Delight\Auth\InvalidEmailException $e) {
@@ -187,7 +196,7 @@ Flight::route("POST /login", function () {
 
 Flight::route("POST /register", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+        $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->registerUser(true); // argument: true means login immediately after successful registration
         Flight::hxtrigger([
             "action" => [
@@ -237,7 +246,7 @@ Flight::route("*", function () {
         Flight::set("ActiveUser", ActiveUser::init());
     } catch (ModelNotFoundException $e) {
         Debugger::log($e->getMessage());
-        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+        $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->logoutUser();
         Flight::redirect("/login");
     } catch (Exception $e) {
@@ -270,7 +279,7 @@ Flight::route('GET *', function () {
 
 Flight::route("GET|POST /logout", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request(), Flight::mail());
+        $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->logoutUser();
         header("HX-Redirect: /login");
     } catch (\Delight\Auth\NotLoggedInException $e) {

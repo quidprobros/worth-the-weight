@@ -14,14 +14,14 @@ A web application for tracking food consumption. You can also record whether you
 - [x] Invisibly add time
 - [x] Display food name, not id when appending via js
 - [x] Append action cell via JS too
-- [ ] ~~Enable search~~
+- [x] ~~Enable search~~
 - [x] content enter not just tab
 - [x] Make sure all db queries are prepared before executed
 - [x] Finish integrating pop-up notices https://notifyjs.jpillora.com/
 
 # sprint 2
 - [x] integrate htmx for handling requests on client and updatin UI
-- [ ] ~~add pagination to journal view~~
+- [x] ~~add pagination to journal view~~
 - [x] show point count for selected date in journal view
 - [x] Show basic daily summary
 - [x] click date to load view for today
@@ -79,9 +79,14 @@ A web application for tracking food consumption. You can also record whether you
 
 # PHASE 2
 
-# sprint 1
+# docker
 - [x] use environment file
 - [ ] handle case without .env file
+- [ ] figure out how to setup php logging separately from apache logging
+- [ ] php ini instructions from docker image page
+- [ ] can i integrate my local development more tightly?
+- [ ] why aren't file changes syncing??
+
 
 
 # Reach goals

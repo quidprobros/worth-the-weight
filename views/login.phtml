@@ -89,10 +89,10 @@ use Illuminate\Support\Facades\Config;
                            required>
                 </label>
 
-                <label for="register-form-password">Password (<?=Config::get('min_password_length')?> character minimum)
+                <label for="register-form-password">Password (<?=Config::get('app.min_password_length')?> character minimum)
                     <input  id="new-password"
                             type="password"
-                            minlength="<?=Config::get('min_password_length')?>"
+                            minlength="<?=Config::get('app.min_password_length')?>"
                             class="register-form-password"
                             placeholder="password123"
                             autocomplete="new-password"

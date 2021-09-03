@@ -18,7 +18,7 @@ class AuthenticationController
     // one year
     private $rememberDuration = 31557600;
 
-    public function __construct(Request $req, Mailgun $client)
+    public function __construct(Request $req, Mailgun $client = null)
     {
         $this->data = $req->data;
         $this->mailgun = $client;
@@ -84,7 +84,6 @@ class AuthenticationController
 
     private function sendVerificationEmail($selector, $token, $email, $subject)
     {
-        Debugger::log($email);
         $url = 'http://wtw.paxperscientiam.com.lan/verify-email?selector='
              . \urlencode($selector)
              . '&token='
@@ -95,7 +94,6 @@ class AuthenticationController
             'subject' => $subject,
             'text'    => 'You are truly awesome! Here is your verification link: ' . $url
             ]);
-        Debugger::log("registration link: {$url}");
     }
 
     public function logoutUser()
