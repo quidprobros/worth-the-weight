@@ -16,7 +16,7 @@ return
         ],
         'development' => [
             'adapter' => 'sqlite',
-            'name' => './data/phinx-dev',
+            'name' => '/etc/db/phinx-dev',
             'suffix' => '.db',
         ],
         'testing' => [

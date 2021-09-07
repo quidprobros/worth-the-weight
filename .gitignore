@@ -123,14 +123,18 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node,composer
 
+
+
+
 # tracy logs
 tracy/
 \.#*
 
-/db/wtw*
+/backend/db/wtw*
 !/db/.gitkeep
 
-/generated
-/data/phinx*
+/backend/generated
+/backend/data/phinx*
 
 src/app/Secrets.php
+/backend/vendor/

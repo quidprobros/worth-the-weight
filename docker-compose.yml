@@ -3,16 +3,18 @@ services:
   php-apache-environment:
     container_name: php-apache
     build:
-      context: ./docker/php
+      context: ./docker/backend
       args:
         PHP_IMAGE: ${PHP_IMAGE}
     env_file:
-      - ./docker/php/.env
+      - ./docker/backend/.env
     volumes:
-      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/app.ini
+      - wtw-db:/etc/db
+      - ./docker/backend/php.ini:/usr/local/etc/php/conf.d/app.ini
+      - ./docker/backend/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./docker/backend/my-vhosts.conf:/etc/apache2/conf-available/my-vhosts.conf
       - ./:/var/www/files/
-      - ./docker/php/000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ./docker/php/my-vhosts.conf:/etc/apache2/conf-available/my-vhosts.conf
-
     ports:
       - 9000:80
+volumes:
+  wtw-db:

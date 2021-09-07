@@ -7,15 +7,14 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\ActiveUser;
+use Delight\Base64\Throwable\Exception;
 use Illuminate\Support\Facades\Config;
 
 use function League\Uri\parse;
-use function League\Uri\build;
+// use function League\Uri\build;
 
-const WEB_ROOT = __DIR__;
-const FILE_ROOT = __DIR__ . "/..";
-
-require_once FILE_ROOT . "/vendor/autoload.php";
+const FILE_ROOT = __DIR__ . "/../";
+require_once FILE_ROOT . "./backend/vendor/autoload.php";
 
 session_start();
 
@@ -26,6 +25,8 @@ Debugger::$showLocation = true;
 Debugger::setLogger(new App\TracyStreamLogger());
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
+Debugger::log(Config::all());
+
 Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
 
 if (true == Flight::get("debug_mode")) {
@@ -35,7 +36,7 @@ if (true == Flight::get("debug_mode")) {
 }
 
 Flight::set('flight.log_errors', true);
-Flight::set('flight.views.path', '../views');
+Flight::set('flight.views.path', Config::get("app.view_root"));
 Flight::set('flight.views.extension', ".phtml");
 
 $connection = \Delight\Db\PdoDatabase::fromDsn(new \Delight\Db\PdoDsn(Config::get('app.cnx.dsn')));
@@ -441,20 +442,19 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     }
 });
 
-Flight::route('POST /drop-food-log', function () {
-    if (false === DEBUG) {
-        return;
-    }
-    try {
-        Flight::journalItem()::truncate();
-        Flight::hxheader("Food log emptied");
-        Flight::stop();
-    } catch (\Exection $e) {
-        Debugger::log($e->getMessage());
-        Flight::hxheader("Unable to dump food log table. Contact Chris!");
-        Flight::stop();
-    }
-});
+if (true === Flight::get("debug_mode")) {
+    Flight::route('POST /drop-food-log', function () {
+        try {
+            Flight::journalItem()::truncate();
+            Flight::hxheader("Food log emptied");
+            Flight::stop();
+        } catch (Exception $e) {
+            Debugger::log($e->getMessage());
+            Flight::hxheader("Unable to dump food log table. Contact Chris!");
+            Flight::stop();
+        }
+    });
+}
 
 Flight::route('POST /journal-entry/exercised/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {

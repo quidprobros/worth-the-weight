@@ -80,13 +80,21 @@ A web application for tracking food consumption. You can also record whether you
 # PHASE 2
 
 # docker
+- [ ] Sort this database confusion out
+  - [ ] run database boostrap after build and store db in named volume
+  - [ ] 
 - [x] use environment file
+- [ ] build should not include database
+- [ ] move db to beside backend/
+- [ ] should the docker envs and laravel envs be distinct?
+- [ ] where does laravel's config caching fit in?
 - [ ] handle case without .env file
 - [ ] figure out how to setup php logging separately from apache logging
 - [ ] php ini instructions from docker image page
 - [ ] can i integrate my local development more tightly?
 - [ ] why aren't file changes syncing??
-
+- [ ] reorganize files
+  - [ ] make sure works in local dev
 
 
 # Reach goals
@@ -96,12 +104,11 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] Allow individual cell editing
 - [ ] Allow for storing and tracking goals 
 - [ ] Allow for submitting new foods
-- [ ] show popup when user's been a way for a while
-- [ ] Write script to bootstrap fresh database
+- [ ] show popup after login when user's been a way for a while
+- [x] Write script to bootstrap fresh database
 - [ ] cross site request forgery protection (security)
 - [ ] Add help page
 - [ ] Add a new-user link to help page.
-- [ ] make sure tracy folder exists
 
 
 
