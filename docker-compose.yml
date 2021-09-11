@@ -27,3 +27,5 @@ services:
       - ./backend/:/app
 volumes:
   wtw-db:
+  vendor-files:
+  node_modules-files:

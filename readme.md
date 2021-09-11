@@ -81,6 +81,7 @@ A web application for tracking food consumption. You can also record whether you
 
 # docker
 - [ ] use multi-stage builds to for creating images for dev and prod
+ - [ ] create separate vendor and node_modules dirs? https://www.sentinelstand.com/article/docker-with-node-in-development-and-production
 - [ ] where is tracy bar??
 - [ ] make sure read/write permissions in place for backend/appcache
 - [ ] "php artisan config:cache figure out"
