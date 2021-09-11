@@ -1,6 +1,7 @@
 <?PHP
 
 date_default_timezone_set('US/Eastern');
+
 use Tracy\Debugger;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -22,18 +23,18 @@ Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
 Debugger::$showLocation = true;
-Debugger::setLogger(new App\TracyStreamLogger());
+//Debugger::setLogger(new App\TracyStreamLogger());
 Debugger::getBar()->addPanel(new App\TracyExtension());
-
-Debugger::log(Config::all());
 
 Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
 
 if (true == Flight::get("debug_mode")) {
-    Debugger::enable(Debugger::DETECT);
+    Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/backend/tracy');
 } else {
-    Debugger::enable(Debugger::PRODUCTION);
+    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/backend/tracy');
 }
+
+Debugger::$showBar = true;
 
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', Config::get("app.view_root"));
@@ -375,8 +376,7 @@ Flight::route('GET /home/right-canvas/rel', function () {
         Flight::notFound();
     }
 
-    Flight::render("partials/offcanvas-graphs", [
-    ]);
+    Flight::render("partials/offcanvas-graphs", []);
 });
 
 Flight::route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($omo, $bpo) {
@@ -408,7 +408,7 @@ Flight::route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function 
     }
 });
 
-Flight::route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo)  {
+Flight::route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
@@ -534,9 +534,11 @@ Flight::map('notFound', function () {
 Flight::map('error', function ($ex) {
     Debugger::log($ex->getMessage());
     if (true == Flight::get("debug_mode")) {
+        Debugger::log('bluescreen in debug mode');
         $bs = new Tracy\BlueScreen();
         $bs->render($ex);
     } else {
+        Debugger::log('bluescreen in production mode');
         throw $ex;
     }
 });

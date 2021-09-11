@@ -80,6 +80,11 @@ A web application for tracking food consumption. You can also record whether you
 # PHASE 2
 
 # docker
+- [ ] use multi-stage builds to for creating images for dev and prod
+- [ ] where is tracy bar??
+- [ ] make sure read/write permissions in place for backend/appcache
+- [ ] "php artisan config:cache figure out"
+- [ ] should node_modules be included or excluded?
 - [ ] Sort this database confusion out
   - [ ] run database boostrap after build and store db in named volume
   - [ ] 
@@ -92,8 +97,8 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] figure out how to setup php logging separately from apache logging
 - [ ] php ini instructions from docker image page
 - [ ] can i integrate my local development more tightly?
-- [ ] why aren't file changes syncing??
-- [ ] reorganize files
+- [x] why aren't file changes syncing?? (was caused by some permissions issue on macos)
+- [ ] how do you update docker deployment without nuking database???
   - [ ] make sure works in local dev
 
 

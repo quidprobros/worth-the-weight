@@ -20,15 +20,15 @@
         "illuminate/http": "^8.32",
         "spatie/url-signer": "^1.2",
         "delight-im/auth": "^8.2",
-        "illuminate/filesystem": "^8.40",
-        "mailgun/mailgun-php": "^3.5",
+        "illuminate/filesystem": "^8.60",
         "kriswallsmith/buzz": "^1.2",
         "nyholm/psr7": "^1.4",
         "league/uri-parser": "^1.4",
         "robmorgan/phinx": "^0.12.7",
         "vlucas/phpdotenv": "^5.3",
         "illuminate/container": "^8.57",
-        "illuminate/config": "^8.57"
+        "illuminate/config": "^8.57",
+        "illuminate/cache": "^8.60"
     },
     "authors": [
         {

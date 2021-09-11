@@ -16,5 +16,14 @@ services:
       - ./:/var/www/files/
     ports:
       - 9000:80
+    depends_on:
+      - composer_installation
+
+  composer_installation:
+    container_name: composer_installation
+    image: composer:2.1.6
+    command: ["composer", "install"]
+    volumes:
+      - ./backend/:/app
 volumes:
   wtw-db:
