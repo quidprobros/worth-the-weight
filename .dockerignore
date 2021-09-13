@@ -1,2 +1,6 @@
 wtw.paxperscientiam.com/test.php
-backend/vendor
+vendor
+node_modules
+old
+
+

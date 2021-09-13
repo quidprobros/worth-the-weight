@@ -9,23 +9,34 @@ services:
     env_file:
       - ./docker/backend/.env
     volumes:
-      - wtw-db:/etc/db
-      - ./docker/backend/php.ini:/usr/local/etc/php/conf.d/app.ini
-      - ./docker/backend/000-default.conf:/etc/apache2/sites-available/000-default.conf
-      - ./docker/backend/my-vhosts.conf:/etc/apache2/conf-available/my-vhosts.conf
-      - ./:/var/www/files/
+      ./backend:/var/www/files/backend
+      #- wtw:/etc/db
+      # - ./docker/backend/php.ini:/usr/local/etc/php/conf.d/app.ini
+      # - ./docker/backend/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      # - ./docker/backend/my-vhosts.conf:/etc/apache2/conf-available/my-vhosts.conf
+      # - ./backend:/var/www/files/backend
     ports:
       - 9000:80
-    depends_on:
-      - composer_installation
 
   composer_installation:
     container_name: composer_installation
     image: composer:2.1.6
     command: ["composer", "install"]
     volumes:
-      - ./backend/:/app
+      - wtw:/var/www/files/
+    depends_on:
+      - php-apache-environment
+
+
+  npm:
+    image: node:latest
+    container_name: npm
+    working_dir: wtw:/var/www/files
+    depends_on:
+      - php-apache-environment
+    command: ['npm', 'install']
+
 volumes:
-  wtw-db:
+  wtw:
   vendor-files:
   node_modules-files:

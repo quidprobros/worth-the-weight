@@ -34,8 +34,6 @@ if (true == Flight::get("debug_mode")) {
     Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/backend/tracy');
 }
 
-Debugger::$showBar = true;
-
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', Config::get("app.view_root"));
 Flight::set('flight.views.extension', ".phtml");

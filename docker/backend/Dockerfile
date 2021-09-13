@@ -1,13 +1,10 @@
 ARG PHP_IMAGE
 FROM ${PHP_IMAGE}
 
-ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-
-#RUN chmod +x /usr/local/bin/install-php-extensions && sync && install-php-extensions @composer
-
 RUN a2enmod rewrite
 RUN a2enmod info
 RUN a2enmod status
+RUN a2enmod headers
 
 RUN echo 'ServerName ${APACHE_SERVER_NAME}' >> /etc/apache2/apache2.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf

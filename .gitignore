@@ -138,3 +138,10 @@ tracy/
 
 src/app/Secrets.php
 /backend/vendor/
+
+/storage/
+!/storage/.gitkeep
+!/storage/appacache/.gitkeep
+
+
+/data/

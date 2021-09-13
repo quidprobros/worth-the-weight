@@ -80,9 +80,10 @@ A web application for tracking food consumption. You can also record whether you
 # PHASE 2
 
 # docker
+- [ ] find that docker multistage document that explained how to keep local vendor and docker vendor separated
 - [ ] use multi-stage builds to for creating images for dev and prod
  - [ ] create separate vendor and node_modules dirs? https://www.sentinelstand.com/article/docker-with-node-in-development-and-production
-- [ ] where is tracy bar??
+- [x] where is tracy bar??
 - [ ] make sure read/write permissions in place for backend/appcache
 - [ ] "php artisan config:cache figure out"
 - [ ] should node_modules be included or excluded?
