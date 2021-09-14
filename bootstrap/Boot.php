@@ -23,7 +23,7 @@ $app = new Container();
 
 // configure cache access
 $cacheC = new Container();
-$cache_config = new Repository(require(FILE_ROOT . "/backend/config/cache.php"));
+$cache_config = new Repository(require(FILE_ROOT . "/config/cache.php"));
 $cacheC['config'] = $cache_config->get('cache');
 $cacheC["files"] = new Filesystem();
 $cacheManager = new CacheManager($cacheC);
@@ -44,7 +44,7 @@ try {
             'URL_SIGNATURE_KEY'
         ])
         ->notEmpty();
-    $app_config->set(require(FILE_ROOT . "/backend/config/app.php"));
+    $app_config->set(require(FILE_ROOT . "/config/app.php"));
     $cache->forever('app', $app_config->get('app'));
     error_log("used .env with config file");
 } catch (Exception $e) {

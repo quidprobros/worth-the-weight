@@ -2,9 +2,9 @@
 
 return [
     "app" => [
-        'file_root' => realpath(FILE_ROOT),
-        'view_root' => realpath(FILE_ROOT) . "/backend/views",
-        'web_root' => realpath(FILE_ROOT) . "/wtw.paxperscientiam.com",
+        'file_root' => realpath(".."),
+        'view_root' => realpath("../views"),
+        'web_root' => realpath("../wtw.paxperscientiam.com"),
         'site_name' => "Worth the Weight",
         'url_sign_key' => env("URL_SIGNATURE_KEY"),
         'cnx' => [

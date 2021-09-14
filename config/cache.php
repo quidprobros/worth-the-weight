@@ -5,7 +5,7 @@ return [
         'cache.default' => 'file',
         'cache.stores.file' => [
             'driver' => 'file',
-            'path' => realpath(FILE_ROOT) . "/backend/appcache"
+            'path' => realpath(FILE_ROOT . "/storage/appcache")
         ]
     ]
 ];
