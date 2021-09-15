@@ -1,8 +1,11 @@
 ARG PHP_IMAGE
-ARG NODE_IMAGE
-FROM ${PHP_IMAGE}
+FROM ${PHP_IMAGE} as base
 
-RUN apt-get update && apt-get install -y wget gnupg g++ locales unzip dialog apt-utils git && apt-get clean && apt-get install -y nodejs
+RUN apt-get update && apt-get install -y wget gnupg g++ build-essential locales unzip dialog apt-utils git && apt-get clean
+
+# Install NodeJS
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get update && apt-get install -y nodejs && apt-get clean
 
 RUN a2enmod rewrite
 RUN a2enmod info
@@ -22,23 +25,27 @@ WORKDIR /var/www/files/
 COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 COPY composer.json ./
 COPY composer.lock ./
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction --no-progress --no-dev
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction --no-progress 
+# # use  --no-dev option for production
 
 
-# DB
-WORKDIR /etc/db
-RUN touch ./phinx-dev.db; chmod ug+w ./; chmod ug+w ./phinx-dev.db
+# # DB
+# WORKDIR /etc/db
+# RUN touch ./phinx-dev.db; chmod ug+w ./; chmod ug+w ./phinx-dev.db
 
 
 
-WORKDIR /var/www/files/
+# WORKDIR /var/www/files/
 
 
 #RUN COMPOSER_ALLOW_SUPERUSER=1 composer run bootstrap
 
 
 # next stage
-#FROM ${NODE_IMAGE}
-#WORKDIR /var/www/files/
-#COPY package.json .
+WORKDIR /var/www/files/
+COPY package*.json .
+#RUN npm install
 
+# helpful reference:
+# https://www.sentinelstand.com/article/docker-with-node-in-development-and-production
+# https://github.com/shopsys/project-base/blob/master/docker/php-fpm/Dockerfile

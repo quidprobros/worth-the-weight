@@ -10,9 +10,14 @@ services:
     env_file:
       - ./docker/.env
     volumes:
-       - wtw:/etc/db
+       - wtw:/etc/db # persisted volume data
+       - node_modules:/var/www/files/node_modules
+       - vendor:/var/www/files/vendor
        - ./wtw.paxperscientiam.com:/var/www/files/wtw.paxperscientiam.com
-       - ./app::/var/www/files/app
+       # - ./app:/var/www/files/app
+       # - ./bootstrap:/var/www/files/bootstrap
+       # - ./config:/var/www/files/config
+       # - ./views:/var/www/files/views
     ports:
       - 9000:80
   # composer_installation:
@@ -24,5 +29,5 @@ services:
 
 volumes:
   wtw:
-  vendor-files:
-  node_modules-files:
+  vendor:
+  node_modules:
