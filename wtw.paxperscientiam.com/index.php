@@ -15,7 +15,8 @@ use function League\Uri\parse;
 // use function League\Uri\build;
 
 const FILE_ROOT = __DIR__ . "/../";
-require_once FILE_ROOT . "./vendor/autoload.php";
+
+require_once FILE_ROOT . "/vendor/autoload.php";
 
 
 session_start();
@@ -28,14 +29,12 @@ Debugger::$showLocation = true;
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
 
-dd(Config::all());
-
 Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
 
 if (true == Flight::get("debug_mode")) {
-    Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/backend/tracy');
+    Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/logs/tracy');
 } else {
-    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/backend/tracy');
+    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/logs/tracy');
 }
 
 Flight::set('flight.log_errors', true);

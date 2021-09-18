@@ -35,7 +35,6 @@ $app_config = new Repository();
 // would want to refactor to make sure cache is used in production
 try {
     // check if file exists. if not, presume production enviroment
-    dd(FILE_ROOT);
     $dotenv = Dotenv::createImmutable(FILE_ROOT);
     $dotenv->load();
     $dotenv
@@ -47,7 +46,7 @@ try {
         ])
         ->notEmpty();
     $app_config->set(require(FILE_ROOT . "/config/app.php"));
-    dd(FILE_ROOT . "/config/app.php");
+
     $cache->forever('app', $app_config->get('app'));
     error_log("used .env with config file");
 } catch (Exception $e) {

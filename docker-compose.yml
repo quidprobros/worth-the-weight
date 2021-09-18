@@ -10,10 +10,11 @@ services:
     env_file:
       - ./docker/.env
     volumes:
-       - wtw:/etc/db # persisted volume data
-       - node_modules:/var/www/files/node_modules
-       - vendor:/var/www/files/vendor
-       - ./wtw.paxperscientiam.com:/var/www/files/wtw.paxperscientiam.com
+       - ./:/var/www/files
+       - wtw:/etc/db # persisted db data
+       - logs:/var/www/logs # persis logs
+       - node_modules:/var/www/files/node_modules # persisted node
+       - vendor:/var/www/files/vendor # persisted vendor
        # - ./app:/var/www/files/app
        # - ./bootstrap:/var/www/files/bootstrap
        # - ./config:/var/www/files/config
@@ -31,3 +32,4 @@ volumes:
   wtw:
   vendor:
   node_modules:
+  logs:

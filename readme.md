@@ -122,3 +122,4 @@ A web application for tracking food consumption. You can also record whether you
 # Resources
 - https://observatory.mozilla.org/ (security)
 - https://blog.logrocket.com/the-ultimate-guide-to-iframes/ (iframes)
+- https://github.com/shopsys/project-base/blob/master/docker/php-fpm/Dockerfile
