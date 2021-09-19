@@ -31,6 +31,9 @@ Debugger::getBar()->addPanel(new App\TracyExtension());
 
 Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
 
+
+dd(Config::all());
+
 if (true == Flight::get("debug_mode")) {
     Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/logs/tracy');
 } else {

@@ -11,7 +11,8 @@ services:
       - ./docker/.env
     volumes:
        - ./:/var/www/files
-       - wtw:/etc/db # persisted db data
+       - wtw:/var/www/files/storage/appcache # persist cache
+       - wtw:/var/www/files/storage/db # persist db
        - logs:/var/www/logs # persis logs
        - node_modules:/var/www/files/node_modules # persisted node
        - vendor:/var/www/files/vendor # persisted vendor

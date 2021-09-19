@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Env;
 
-defined("FILE_ROOT") ? true : define("FILE_ROOT", realpath(".."));
+defined("FILE_ROOT") ? true : define("FILE_ROOT", realpath("./"));
 
 // create dummy app
 $app = new Container();
@@ -26,6 +26,7 @@ $cacheC = new Container();
 $cache_config = new Repository(require(FILE_ROOT . "/config/cache.php"));
 
 $cacheC['config'] = $cache_config->get('cache');
+
 $cacheC["files"] = new Filesystem();
 $cacheManager = new CacheManager($cacheC);
 $cache = $cacheManager->store();
@@ -46,8 +47,11 @@ try {
         ])
         ->notEmpty();
     $app_config->set(require(FILE_ROOT . "/config/app.php"));
+    //    !d($app_config->get('app'));exit;
+    $cache->put('test', 'This is loaded from cache.', 500);
+    //dd($cache->has('app'));
+    $cache->put('app', $app_config->get('app'));
 
-    $cache->forever('app', $app_config->get('app'));
     error_log("used .env with config file");
 } catch (Exception $e) {
     error_log(print_r($e->getMessage(), true));

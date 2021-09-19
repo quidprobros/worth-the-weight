@@ -3,25 +3,25 @@
 return
 [
     'paths' => [
-        'migrations' => '%%PHINX_CONFIG_DIR%%/db/migrations',
-        'seeds' => '%%PHINX_CONFIG_DIR%%/db/seeds'
+        'migrations' => '%%PHINX_CONFIG_DIR%%/database/migrations',
+        'seeds' => '%%PHINX_CONFIG_DIR%%/database/seeds'
     ],
     'environments' => [
         'default_migration_table' => 'phinxlog',
         'default_environment' => 'development',
         'production' => [
             'adapter' => 'sqlite',
-            'name' => './data/phinx-pro',
+            'name' => './storage/db/phinx-pro',
             'suffix' => '.db',
         ],
         'development' => [
             'adapter' => 'sqlite',
-            'name' => '/etc/db/phinx-dev',
+            'name' => './storage/db/phinx-dev',
             'suffix' => '.db',
         ],
         'testing' => [
             'adapter' => 'sqlite',
-            'name' => './data/phinx-test',
+            'name' => './storage/db/phinx-test',
             'suffix' => '.db',
         ]
     ],
