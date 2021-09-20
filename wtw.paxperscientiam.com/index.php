@@ -25,14 +25,11 @@ Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
 Debugger::$showLocation = true;
-//Debugger::setLogger(new App\TracyStreamLogger());
+Debugger::setLogger(new App\TracyStreamLogger());
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
 
 Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
-
-
-dd(Config::all());
 
 if (true == Flight::get("debug_mode")) {
     Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/logs/tracy');
@@ -43,7 +40,7 @@ if (true == Flight::get("debug_mode")) {
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', Config::get("app.view_root"));
 Flight::set('flight.views.extension', ".phtml");
-
+//dd(Config::all());
 $connection = \Delight\Db\PdoDatabase::fromDsn(new \Delight\Db\PdoDsn(Config::get('app.cnx.dsn')));
 
 Flight::register(

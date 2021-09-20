@@ -16,18 +16,12 @@ services:
        - logs:/var/www/logs # persis logs
        - node_modules:/var/www/files/node_modules # persisted node
        - vendor:/var/www/files/vendor # persisted vendor
-       # - ./app:/var/www/files/app
        # - ./bootstrap:/var/www/files/bootstrap
        # - ./config:/var/www/files/config
        # - ./views:/var/www/files/views
     ports:
       - 9000:80
-  # composer_installation:
-  #   container_name: composer_installation
-  #   image: composer:2.1.6
-  #   command: ["composer", "install"]
-  #   volumes:
-  #     - wtw:/var/www/files/
+    user: www-data:www-data
 
 volumes:
   wtw:

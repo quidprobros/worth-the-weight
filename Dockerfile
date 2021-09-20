@@ -11,7 +11,7 @@ FROM ${PHP_IMAGE} as base
 # dialog for apt-get to be
 # git for computing diffs and for npm to download packages
 RUN apt-get update && \
-    apt-get install -y wget gnupg g++ sudo build-essential locales unzip dialog apt-utils git python && \
+    apt-get install -y wget gnupg g++ sudo build-essential locales unzip dialog apt-utils git python sqlite3 && \
     apt-get clean
 
 # Install NodeJS
@@ -23,9 +23,6 @@ RUN apt-get update && apt-get install -y nodejs && apt-get clean
 WORKDIR /var/www/files/
 COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
 COPY --chown=www-data:www-data composer.* ./
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction --no-progress
-# # use  --no-dev option for production
-
 
 # Config files
 RUN echo 'ServerName ${APACHE_SERVER_NAME}' >> /etc/apache2/apache2.conf
@@ -40,6 +37,9 @@ RUN a2enmod rewrite
 RUN a2enmod info
 RUN a2enmod status
 RUN a2enmod headers
+
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction --no-progress
+# # use  --no-dev option for production
 
 
 
@@ -67,6 +67,7 @@ RUN a2enmod headers
 # USER www-data
 # RUN mkdir -p /var/www/.npm && chown -R www-data:www-data /var/www/.npm
 WORKDIR /var/www/files/
+
 # don't copy, just bind
 #COPY --chown=www-data:www-data package.json package-lock.json ./
 # # RUN npm install --verbose
@@ -74,3 +75,5 @@ WORKDIR /var/www/files/
 # helpful reference:
 # https://www.sentinelstand.com/article/docker-with-node-in-development-and-production
 # https://github.com/shopsys/project-base/blob/master/docker/php-fpm/Dockerfile
+
+

@@ -47,9 +47,9 @@ try {
         ])
         ->notEmpty();
     $app_config->set(require(FILE_ROOT . "/config/app.php"));
-    //    !d($app_config->get('app'));exit;
+
     $cache->put('test', 'This is loaded from cache.', 500);
-    //dd($cache->has('app'));
+
     $cache->put('app', $app_config->get('app'));
 
     error_log("used .env with config file");
