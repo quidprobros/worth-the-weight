@@ -4,7 +4,8 @@ A web application for tracking food consumption. You can also record whether you
 
 Worth the Weight is available to demo right here: https://wtw.paxperscientiam.com/login
 
-## Note: this will not work out of the box as db bootstrapping still needs to be setup.
+## Note:
+This will not work out of the box as db bootstrapping still needs to be setup. If you're interested in the progress, check out the dockerize branch.
 
 # sprint 1
 - [x] Add form to submit quantity of food, fractional measurement unit, food item, and date.
