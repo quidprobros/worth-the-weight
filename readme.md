@@ -105,6 +105,7 @@ A web application for tracking food consumption. You can also record whether you
 
 
 # Reach goals
+- [ ] separate service for npm stuff
 - [x] test phinx for bootstrapping database
 - [ ] when it comes to dockerizing, make sure the database has correct permissions
 - [ ] dockerize (option)

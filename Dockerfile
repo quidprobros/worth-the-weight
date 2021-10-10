@@ -76,4 +76,3 @@ WORKDIR /var/www/files/
 # https://www.sentinelstand.com/article/docker-with-node-in-development-and-production
 # https://github.com/shopsys/project-base/blob/master/docker/php-fpm/Dockerfile
 
-

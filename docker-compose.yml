@@ -6,7 +6,6 @@ services:
       context: ./
       args:
         PHP_IMAGE: ${PHP_IMAGE}
-        NODE_IMAGE: ${NODE_IMAGE}
     env_file:
       - ./docker/.env
     volumes:
@@ -22,6 +21,23 @@ services:
     ports:
       - 9000:80
     user: www-data:www-data
+#    entrypoint: /var/www/files/entry.sh
+
+  # frontend:
+  #   container_name: frontend
+  #   build:
+  #     context: ./docker/frontend/
+  #     args:
+  #       NODE_IMAGE: ${NODE_IMAGE}
+  #   env_file:
+  #     - ./docker/.env
+  #   volumes:
+  #     - ./:/var/www/files
+  #   depends_on:
+  #     - "php-apache-environment"
+
+
+
 
 volumes:
   wtw:
