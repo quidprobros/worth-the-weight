@@ -1,6 +1,6 @@
 # What is Worth the Weight?
 
-A web application for tracking food consumption. You can also record whether you exercised on any given day.
+A web application for tracking food consumption. You can also record whether you exercised on any given day. You can try out a demo right here: https://wtw.paxperscientiam.com/login
 
 Worth the Weight is available to demo right here: https://wtw.paxperscientiam.com/login
 
