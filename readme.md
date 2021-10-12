@@ -93,7 +93,6 @@ This will not work out of the box as db bootstrapping still needs to be setup. I
 - [ ] indicate how to add Secrets file
 
 
-
 # Resources
 - https://observatory.mozilla.org/ (security)
 - https://blog.logrocket.com/the-ultimate-guide-to-iframes/ (iframes)
