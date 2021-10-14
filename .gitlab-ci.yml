@@ -1,12 +1,13 @@
 ---
-default:
-  before_script:
-    - echo "Execute this `before_script` in all jobs by default."
-  after_script:
-    - echo "Execute this `after_script` in all jobs by default."
+image: alpine
+
+stages:
+  - test
 
 php:
+  stage: test
   script:
+    - composer install
     - './vendor/bin/phpcs -s -p --colors --extensions=php .'
 
 on-pull-requests:
