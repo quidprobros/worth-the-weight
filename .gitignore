@@ -136,3 +136,5 @@ tracy/
 src/app/Secrets.php
 
 /storage
+
+!/vendor/.keep
