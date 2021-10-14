@@ -9,13 +9,12 @@ before_script:
 
 php:
   stage: test
+  cache:
+    paths:
+      - vendor
   script:
     - composer install
     - './vendor/bin/phpcs -s -p --colors --extensions=php .'
-
-cache:
-  paths:
-    - vendor/
 
 on-pull-requests:
   script: echo 'this should run on pull requests'
