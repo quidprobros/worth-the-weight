@@ -4,11 +4,19 @@ image: php:7.4
 stages:
   - test
 
+before_script:
+  - bash ci/docker_install.sh > /dev/null
+
 php:
   stage: test
   script:
     - composer install
     - './vendor/bin/phpcs -s -p --colors --extensions=php .'
+
+cache:
+  paths:
+    - vendor/
+
 
 on-pull-requests:
   script: echo 'this should run on pull requests'

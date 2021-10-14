@@ -97,3 +97,4 @@ This will not work out of the box as db bootstrapping still needs to be setup. I
 # Resources
 - https://observatory.mozilla.org/ (security)
 - https://blog.logrocket.com/the-ultimate-guide-to-iframes/ (iframes)
+- https://docs.gitlab.com/ee/ci/examples/php.html
