@@ -77,7 +77,6 @@ This will not work out of the box as db bootstrapping still needs to be setup. I
   - [x] Server Leaks Information via "X-Powered-By" HTTP Response Header Field
   - [x] X-Content-Type-Options Header Missing
 
-
 # Reach goals
 - [ ] test phinx for bootstrapping database
 - [ ] when it comes to dockerizing, make sure the database has correct permissions
