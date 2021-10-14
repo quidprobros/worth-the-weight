@@ -16,7 +16,8 @@ class TestController extends BaseController
         $this->user = \App\Models\ActiveUser::init();
         $this->foods = \App\Models\Food::all();
     }
-    public function ok() {
+    public function ok()
+    {
         return 69;
     }
 }

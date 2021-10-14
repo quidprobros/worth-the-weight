@@ -1,4 +1,5 @@
 <?PHP
+
 date_default_timezone_set('US/Eastern');
 use Tracy\Debugger;
 use Carbon\Carbon;
@@ -411,7 +412,6 @@ Flight::route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($
 });
 
 Flight::route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo) {
-
     try {
         $controller = new App\Controllers\HomeController(
             Flight::request(),
@@ -425,7 +425,7 @@ Flight::route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function 
     }
 });
 
-Flight::route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo)  {
+Flight::route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
