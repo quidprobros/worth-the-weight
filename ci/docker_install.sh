@@ -8,8 +8,7 @@ set -xe
 
 # Install git (the php image doesn't have it) which is required by composer
 apt-get update -yqq
-apt-get install git apt-utils -yqq
-
+apt-get install git apt-utils libzip-dev zip unzip sqlite3 -yqq
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

@@ -5,6 +5,7 @@ stages:
   - test
 
 before_script:
+  - php -m
   - bash ci/docker_install.sh > /dev/null
 
 php:
