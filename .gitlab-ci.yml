@@ -17,7 +17,6 @@ cache:
   paths:
     - vendor/
 
-
 on-pull-requests:
   script: echo 'this should run on pull requests'
   only:
