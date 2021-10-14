@@ -1,5 +1,13 @@
-always-run:
-  script: echo 'this should always run'
+---
+default:
+  before_script:
+    - echo "Execute this `before_script` in all jobs by default."
+  after_script:
+    - echo "Execute this `after_script` in all jobs by default."
+
+php:
+  script:
+    - './vendor/bin/phpcs -s -p --colors --extensions=php .'
 
 on-pull-requests:
   script: echo 'this should run on pull requests'

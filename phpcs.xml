@@ -6,12 +6,17 @@
 <!-- check all files in the app directory, feel free to add more files with:
 <file>FOLDER NAME</file>
 -->
-<file>admin.cashortrade.org</file>
-<file>beta.cashortrade.org</file>
+
 
 <!-- exclude our migrations directory from the violation check-->
-<exclude-pattern>*/vendor/*</exclude-pattern>
-<exclude-pattern>*/admin-pwa/*</exclude-pattern>
+<exclude-pattern>/vendor/*</exclude-pattern>
+<exclude-pattern>/node_modules/*</exclude-pattern>
+<exclude-pattern>/data/*</exclude-pattern>
+<exclude-pattern>/bin/*</exclude-pattern>
+<exclude-pattern>/docker/*</exclude-pattern>
+<exclude-pattern>/db/*</exclude-pattern>
+<exclude-pattern>/old/*</exclude-pattern>
+
 
 <php-version>7224</php-version>
 
