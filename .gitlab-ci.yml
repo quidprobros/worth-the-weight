@@ -16,7 +16,7 @@ php:
   script:
     - composer install
     - './vendor/bin/phpcs -s -p --colors --extensions=php --runtime-set ignore_warnings_on_exit 1 ./'
-    - './vendor/bin/phpmd ./src/app/ ansi ./phpmd.xml'
+    - './vendor/bin/phpmd ./src/app/ ansi ./phpmd.xml --ignore-violations-on-exit'
 
 on-pull-requests:
   script: echo 'this should run on pull requests'
