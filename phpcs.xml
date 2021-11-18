@@ -17,6 +17,7 @@
 <exclude-pattern>/db/*</exclude-pattern>
 <exclude-pattern>/old/*</exclude-pattern>
 
+<arg name="extensions" value="php"/>
 
 <php-version>7224</php-version>
 
