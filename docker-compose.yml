@@ -21,7 +21,6 @@ services:
     ports:
       - 9005:80
     user: www-data:www-data
-#    entrypoint: /var/www/files/entry.sh
 
   frontend:
     container_name: frontend
@@ -35,6 +34,7 @@ services:
       - ./:/var/www/files
     depends_on:
       - "php-apache-environment"
+    entrypoint: /var/www/files/entry.sh
 
 
 volumes:

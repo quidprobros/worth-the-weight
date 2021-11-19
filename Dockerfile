@@ -38,9 +38,9 @@ RUN a2enmod info
 RUN a2enmod status
 RUN a2enmod headers
 
+
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction --no-progress
 # # use  --no-dev option for production
-
 
 # RUN usermod -m -d /home/www-data www-data && \
 #     mkdir -p /var/www/files && \

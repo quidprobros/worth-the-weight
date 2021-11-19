@@ -2,4 +2,5 @@
 
 cd /var/www/files || exit
 
-npm start
+npm install && \
+    npm build
