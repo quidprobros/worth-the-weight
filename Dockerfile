@@ -42,7 +42,6 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-inter
 # # use  --no-dev option for production
 
 
-
 # RUN usermod -m -d /home/www-data www-data && \
 #     mkdir -p /var/www/files && \
 #     mkdir -p /var/www/.npm && \

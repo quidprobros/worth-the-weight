@@ -12,31 +12,29 @@ services:
        - ./:/var/www/files
        - wtw:/var/www/files/storage/appcache # persist cache
        - wtw:/var/www/files/storage/db # persist db
-       - logs:/var/www/logs # persis logs
+       - logs:/var/www/logs/tracy # persis logs
        - node_modules:/var/www/files/node_modules # persisted node
        - vendor:/var/www/files/vendor # persisted vendor
        # - ./bootstrap:/var/www/files/bootstrap
        # - ./config:/var/www/files/config
        # - ./views:/var/www/files/views
     ports:
-      - 9000:80
+      - 9005:80
     user: www-data:www-data
 #    entrypoint: /var/www/files/entry.sh
 
-  # frontend:
-  #   container_name: frontend
-  #   build:
-  #     context: ./docker/frontend/
-  #     args:
-  #       NODE_IMAGE: ${NODE_IMAGE}
-  #   env_file:
-  #     - ./docker/.env
-  #   volumes:
-  #     - ./:/var/www/files
-  #   depends_on:
-  #     - "php-apache-environment"
-
-
+  frontend:
+    container_name: frontend
+    build:
+      context: ./docker/frontend/
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}
+    env_file:
+      - ./docker/.env
+    volumes:
+      - ./:/var/www/files
+    depends_on:
+      - "php-apache-environment"
 
 
 volumes:
