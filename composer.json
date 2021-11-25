@@ -2,10 +2,10 @@
     "name": "quidprobros/worth-the-weight.com",
     "autoload": {
         "psr-4": {
-            "App\\": "./app/"
+            "App\\": "./Application/app/"
         },
         "files": [
-            "./bootstrap/Boot.php"
+            "./Application/bootstrap/app.php"
         ]
     },
     "scripts": {

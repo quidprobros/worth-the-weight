@@ -43,6 +43,7 @@ RUN a2enmod headers
 # the user "www-data" is used when running the image, and therefore should own the workdir
 RUN usermod -m -d /home/www-data www-data && \
     mkdir -p /var/www/files && \
+    mkdir -p /var/www/files/logs/tracy && \
     chown -R www-data:www-data /home/www-data /var/www/files
 
 COPY --chown=www-data:www-data package.json ./

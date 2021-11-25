@@ -53,6 +53,7 @@ class Context {
                 pluginTypeChecker({
                     name: 'Superman',
                     tsConfig: './tsconfig.json',
+                    shortenFilenames: true,
                     // throwOnGlobal: true,
                     // throwOnSemantic: true,
                     // throwOnSyntactic: true,

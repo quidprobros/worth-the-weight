@@ -15,7 +15,7 @@ services:
        - ./package.json:/var/www/files/package.json
        - ./composer.json:/var/www/files/composer.json
        - node_modules:/var/www/files/node_modules
-       - vendor:/var/www/files/vendor
+       - vendor:/var/www/files/vendor       
     ports:
       - 9005:80
 

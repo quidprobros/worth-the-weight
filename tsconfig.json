@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "checkJs": false,
         "target": "es2017",
         "baseUrl": "./",
         "esModuleInterop": true,
@@ -17,14 +18,12 @@
         },
         "typeRoots": [
             "./src/@types/",
-            "./node_modules/foundation-sites/js/typescript",
             "./node_modules/@types"
         ]
     },
     "allowSyntheticDefaultImports": true,
     "include": [
-        "src/**/*",
-        "./node_modules/foundation-sites/js/typescript/foundation.d.ts"
+        "src/**/*"
     ]
 }
 
