@@ -114,6 +114,7 @@ USER www-data
 
 RUN composer install --optimize-autoloader --no-interaction --no-progress --no-dev
 
+#npm prune
 RUN npm build
 
 
@@ -122,3 +123,4 @@ RUN npm build
 FROM base as npm_update
 
 RUN npm update
+
