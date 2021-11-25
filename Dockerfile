@@ -45,8 +45,8 @@ RUN usermod -m -d /home/www-data www-data && \
     mkdir -p /var/www/files && \
     chown -R www-data:www-data /home/www-data /var/www/files
 
-# COPY --chown=www-data:www-data package.json ./
-# COPY --chown=www-data:www-data composer.json ./
+COPY --chown=www-data:www-data package.json ./
+COPY --chown=www-data:www-data composer.json ./
 
 # Switch to user
 USER www-data

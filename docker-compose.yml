@@ -9,13 +9,9 @@ services:
     env_file:
       - ./docker/.env
     volumes:
-       - ./app:/var/www/files/app
+       - ./Application:/var/www/files/Application
        - ./wtw.paxperscientiam.com:/var/www/files/wtw.paxperscientiam.com
-       - /var/www/files/storage/appcache
-       - /var/www/files/storage/db
-       - ./bootstrap:/var/www/files/bootstrap
-       - ./config:/var/www/files/config
-       - ./views:/var/www/files/views
+       - /var/www/files/storage/ # cache and sqlite database
        - ./package.json:/var/www/files/package.json
        - ./composer.json:/var/www/files/composer.json
        - node_modules:/var/www/files/node_modules
