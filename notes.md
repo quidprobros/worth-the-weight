@@ -67,5 +67,58 @@ WRT docker, one thing to do is to define production stuff fully in dockerfile an
 [17:25] < rawtaz> neither the .env im talking about or the configuration file you might otherwise use are part of your source code, these are separate from the actual application
                   artifact/package
 [17:25] < physikoi> right. *thinks*
+[17:28] < rawtaz> consider these two files in your production server: https://kopy.io/y4CHJ
+[17:28] < rawtaz> then imagine the same two files on your local machine where you develop the application
+[17:29] < rawtaz> ok that was a bad example, let me update it
+[17:30] < physikoi> ok. still here fyi
+[17:31] < rawtaz> https://kopy.io/9LwZb
+[17:31] < rawtaz> take those two files, one copy on your prod server, one on your local dev machine.
+[17:31] < physikoi> looking
+[17:31] < rawtaz> you'd set the MAIL_SERVER variable's value differently
+[17:34] < physikoi> Does deployment include the .env file, or is that ignored?
+[17:35] < rawtaz> totally ignored, should not be version controlled
+[17:36] < rawtaz> that file is just something that docker-compose reads automatically if it's there. its not uncommon to provide/inject environment variables to a process/service
+                  by other means.
+[17:36] < rawtaz> and in those cases they sure as heck arent going to be version controlled in the same place as the compose file
+[17:38] < physikoi> ohhhh, ok that helps. i was thinking the .env would be included
+[17:39] < rawtaz> right. nope nope. then you'd make the mistake so many does, publishing your passwords and other sensitive things on github
+[17:39] < rawtaz> so consider the .env file a way to *inject* configuration into your compose solution
+[17:39] < physikoi> so, in that case, i might have a .env that's referenced by the app itself. the way the values are interpolated would then depend on the presence of the /.env
+                    at top of project (there for development machine, not for production machine)
+[17:40] < rawtaz> NOW, once that part is clear, loook at this example. you ahve the app service with the actual webapp yuo made. and you have its database. and in production you
+                  set MAIL_SERVER to some external smtp server for sending.
+[17:40] < rawtaz> but locally when developing you want to test your mails, see what they look like, e.g. so you want to use e.g. mailhog (google it). but that mailhog service isnt
+                  in your compose file so its not running. how do you add it you ask?
+[17:41] < rawtaz> you dont reference the .env file at all, docker automatically reads it and populates the environment.
+[17:42] < physikoi> *processing*
+[17:45] < rawtaz> you add your development mail server with this:  https://kopy.io/A0fck
+[17:48] < physikoi> ohmygod. OK, so in docker-compose.yml, i might actually define, say, the mail server like this: `MAIL_SERVER: ${MAIL_SERVER:-mail.mysite.com}`. In development,
+                    MAIL_SERVER is interpolated to "mailhog" since I might set `MAIL_SERVER=mailhog` in .env. However, deployment wouldn't include .env and so docker would get
+                    mail.myite.com when building.
+[17:48] < physikoi> Am i close?
+[17:49] < physikoi> looking now
+[17:49] < rawtaz> that would be correct yes, you are talking about making use of the default value for that environment variable
+[17:50] < rawtaz> i would however not recommend to have a default value like that, as it's better to keep that type of variable as required and not have a default
+[17:50] < rawtaz> also the syntax for default value is just - not :-
+[17:54] < physikoi> ah, yeah, i mixed up bash and docker syntax
+[17:56] < physikoi> In your example posted online, you invoke docker-compose with both docker-compose.override.yaml  and docker-compose.yaml in your development environment.
+                    Deployment would then just somehow entail invoking docker-compose with docker-compose.yml only, right?
+[17:57] < rawtaz> if you are running  docker-compose up  in the same dir as those files, it will automatically read them both, no need to specify either of them
+[17:59] < physikoi> But deployment would need to exclude  docker-compose.override.yaml?
+[17:59] < devslash> physikoi, not sure if someone recommentded this but you can set env vars in your compose script that can be read from php/node/server side code
+[18:00] < rawtaz> physikoi: you dont need to version the override file, correct. it has nothing to do with the production, and all you version is what's relevant for production.
+                  the fact that you add some additional sugar in your dev env is outside of the production sources
+[18:00] < BtbN> Does a .dockerignore only work when it's in the top-level source dir?
+[18:01] < BtbN> or context-dir. i.e. right next to the Dockerfile
+[18:01] < physikoi> rawtaz: nice. i have a strategy. thank you so much. wow, what a lesson
+[18:01] < rawtaz> yeah devslash made a good point - these env vars we're talking about here are simple environment variables that are injected into the actual containers. so they
+                  are the end target for using them
+[18:01] < rawtaz> physikoi: yw
+[18:01] < rawtaz> physikoi: not that this is probably far from the best practice - it's just what *i* do :P
+[18:01] < physikoi> devslash: something to think about for sure. entry script is what you're referring to, i think
+[18:02] < physikoi> right, right.
 
+------
 
+* make the "default" values the production values
+* the default values can live in the web app configuration

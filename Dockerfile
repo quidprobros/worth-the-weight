@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y nodejs && apt-get clean
 # Install Composer
 WORKDIR /var/www/files/
 COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
-COPY --chown=www-data:www-data composer.* ./
 
 # Config files
 RUN echo 'ServerName ${APACHE_SERVER_NAME}' >> /etc/apache2/apache2.conf
@@ -39,20 +38,50 @@ RUN a2enmod status
 RUN a2enmod headers
 
 
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction --no-progress
-# # use  --no-dev option for production
+# https://github.com/shopsys/project-base/blob/7.0/docker/php-fpm/Dockerfile
+# set www-data user his home directory
+# the user "www-data" is used when running the image, and therefore should own the workdir
+RUN usermod -m -d /home/www-data www-data && \
+    mkdir -p /var/www/files && \
+    chown -R www-data:www-data /home/www-data /var/www/files
 
+# COPY --chown=www-data:www-data package.json ./
+# COPY --chown=www-data:www-data composer.json ./
+
+# Switch to user
+USER www-data
+
+########################################################################################################################
+
+FROM base as development
+
+WORKDIR /var/www/files/
+
+USER root
+
+RUN chown -R www-data:www-data /home/www-data /var/www/files
+
+USER www-data
+
+RUN composer install --optimize-autoloader --no-interaction --no-progress
+
+USER root
+
+RUN npm install # run privileged for now ...
+
+
+
+# make sure npm cache folder is available with correct permissions and ownership
 # RUN usermod -m -d /home/www-data www-data && \
-#     mkdir -p /var/www/files && \
 #     mkdir -p /var/www/.npm && \
-#     chown -R www-data:www-data /var/www/.npm /var/www/files
-
-
+#     chown -R www-data:www-data /var/www/.npm
 
 
 # # DB
 # WORKDIR /etc/db
 # RUN touch ./phinx-dev.db; chmod ug+w ./; chmod ug+w ./phinx-dev.db
+
+
 
 
 
@@ -65,13 +94,31 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-inter
 # # next stage
 # USER www-data
 # RUN mkdir -p /var/www/.npm && chown -R www-data:www-data /var/www/.npm
-WORKDIR /var/www/files/
+
 
 # don't copy, just bind
 #COPY --chown=www-data:www-data package.json package-lock.json ./
-# # RUN npm install --verbose
+#RUN npm install --verbose
 
 # helpful reference:
 # https://www.sentinelstand.com/article/docker-with-node-in-development-and-production
 # https://github.com/shopsys/project-base/blob/master/docker/php-fpm/Dockerfile
 
+########################################################################################################################
+
+FROM base as production
+
+WORKDIR /var/www/files/
+
+USER www-data
+
+RUN composer install --optimize-autoloader --no-interaction --no-progress --no-dev
+
+RUN npm build
+
+
+#####
+
+FROM base as npm_update
+
+RUN npm update

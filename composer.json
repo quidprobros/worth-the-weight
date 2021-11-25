@@ -29,7 +29,8 @@
         "vlucas/phpdotenv": "^5.3",
         "illuminate/container": "^8.57",
         "illuminate/config": "^8.57",
-        "illuminate/cache": "^8.60"
+        "illuminate/cache": "^8.60",
+        "dg/rss-php": "^1.5"
     },
     "authors": [
         {

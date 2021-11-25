@@ -2,5 +2,5 @@
 
 cd /var/www/files || exit
 
-npm install && \
-    npm build
+npm install
+composer install
