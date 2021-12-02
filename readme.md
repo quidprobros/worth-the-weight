@@ -103,6 +103,13 @@ A web application for tracking food consumption. You can also record whether you
 - [ ] how do you update docker deployment without nuking database???
   - [ ] make sure works in local dev
 
+------
+- [ ] Docker env and app env should not be mixed!
+
+   cd /opt/local/lib/apache2/modules
+        sudo /opt/local/bin/apxs -a -e -n php7 mod_php74.so
+
+add user to _www group_
 
 # Reach goals
 - [ ] separate service for npm stuff

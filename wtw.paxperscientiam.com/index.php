@@ -1,4 +1,5 @@
 <?PHP
+error_reporting(error_reporting() & ~E_DEPRECATED);
 
 date_default_timezone_set('US/Eastern');
 
@@ -19,6 +20,14 @@ const FILE_ROOT = __DIR__ . "/../";
 require_once FILE_ROOT . "/vendor/autoload.php";
 
 
+// $a = new \Aura\Payload\Payload();
+// d($a);
+// $p = new App\Payload();
+// d($p);
+// exit;
+
+
+
 session_start();
 
 Debugger::$dumpTheme = 'dark';
@@ -29,7 +38,8 @@ Debugger::setLogger(new App\TracyStreamLogger());
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
 
-Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode") && "true" === Flight::request()->query['debug']);
+Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode"));
+
 
 if (true == Flight::get("debug_mode")) {
     Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/logs/tracy');
@@ -68,10 +78,12 @@ Flight::before('route', function () {
 
 $capsule = new Capsule();
 
+
 $capsule->addConnection([
     "driver" => Config::get('app.cnx.driver'),
     "database" => Config::get('app.cnx.database'),
 ]);
+
 
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
@@ -233,6 +245,7 @@ Flight::route("POST /register", function () {
         Flight::hxheader("You have done that too many times. Try again later", "error");
     } catch (\Exception $e) {
         Debugger::log($e->getMessage());
+        Debugger::log(env("DB_PATH"));
         Flight::hxheader("Unknown error. Contact Chris.", "error");
     } catch (\Error $er) {
         Debugger::log($er->getMessage());

@@ -1,9 +1,8 @@
 <?PHP
-
 return [
     "app" => [
         'file_root' => realpath(".."),
-        'view_root' => realpath("../views"),
+        'view_root' => realpath("../Application/views"),
         'web_root' => realpath("../wtw.paxperscientiam.com"),
         'site_name' => "Worth the Weight",
         'url_sign_key' => env("URL_SIGNATURE_KEY"),

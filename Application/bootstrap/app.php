@@ -46,7 +46,7 @@ try {
             'URL_SIGNATURE_KEY'
         ])
         ->notEmpty();
-    $app_config->set(require(FILE_ROOT . "/config/app.php"));
+    $app_config->set(require(FILE_ROOT . "/Application/config/app.php"));
 
     // $cache->put('test', 'This is loaded from cache.', 500);
 

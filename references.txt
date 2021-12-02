@@ -1,4 +1,4 @@
-
+Hm, note that the storage directories should be owned by the user and group owning the httpd process
 
 
 
