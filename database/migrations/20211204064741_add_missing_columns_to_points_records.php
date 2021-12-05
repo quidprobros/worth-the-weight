@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class PointsRecordsTablesMigration extends AbstractMigration
+final class AddMissingColumnsToPointsRecords extends AbstractMigration
 {
     /**
      * Change Method.
@@ -16,9 +16,8 @@ final class PointsRecordsTablesMigration extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change(): void
+    public function up(): void
     {
-
         $table = $this->table('points_records');
         // autoincrementing key autocreated by phinx
         $table
@@ -43,12 +42,6 @@ final class PointsRecordsTablesMigration extends AbstractMigration
             ->addColumn('time', 'time')
             ->addColumn('created_at', 'datetime')
             ->addColumn('updated_at', 'datetime')
-            // ->addForeignKey('user_id', 'users', 'id', [
-            // ])
-            //   ->addForeignKey('food_id', 'food_records', 'id', [
-            // ])
-            ->create();
-
-
+            ->update();
     }
 }

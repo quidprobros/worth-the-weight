@@ -111,6 +111,8 @@ A web application for tracking food consumption. You can also record whether you
 
 add user to _www group_
 
+not clear what permissions should be for db to allow editing, and reading, and etc
+
 # Reach goals
 - [ ] separate service for npm stuff
 - [x] test phinx for bootstrapping database

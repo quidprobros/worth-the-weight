@@ -16,8 +16,9 @@ final class UsersConfirmationsTablesMigration extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change(): void
+    public function up(): void
     {
+
         $table = $this->table('users_confirmations');
         // autoincrementing key autocreated by phinx
         $table
@@ -37,6 +38,9 @@ final class UsersConfirmationsTablesMigration extends AbstractMigration
                 'length' => 255
             ])
             ->addColumn('expires', 'integer', [
+                'null' => false
+            ])
+            ->addColumn('shart', 'integer', [
                 'null' => false
             ])
             ->addIndex(['email', 'expires'], [

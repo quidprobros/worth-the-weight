@@ -25,6 +25,7 @@ final class FoodRecordsTablesMigration extends AbstractMigration
             ->addColumn('points', 'float')
             ->addColumn('created_at', 'datetime')
             ->addColumn('updated_at', 'datetime')
-            ->create();
+            ->update();
+            //->create();
     }
 }
