@@ -114,19 +114,3 @@ sudo port unload apache2
 sudo apachectl stop && sudo apachectl -k start
 sudo port load apache2
 
-
-
-
-
-
-
-# where is database
-
-
-#chmod -R 777 ~/www/worth-the-weight/storage
-
-
-# need to echo changes into dnsmasq.conf and into httpd.conf
-# need to migrate database too to make sure has lateste properties
-
-

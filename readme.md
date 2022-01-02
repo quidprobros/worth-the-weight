@@ -128,6 +128,10 @@ not clear what permissions should be for db to allow editing, and reading, and e
 - [ ] Add a new-user link to help page.
 
 
+# Temp list
+- [ ] Map logging to Flight
+- [ ] Replace Tracy debugger completely
+
 
 # Resources
 - https://observatory.mozilla.org/ (security)

@@ -19,13 +19,18 @@ const FILE_ROOT = __DIR__ . "/../";
 
 require_once FILE_ROOT . "/vendor/autoload.php";
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
-// $a = new \Aura\Payload\Payload();
-// d($a);
-// $p = new App\Payload();
-// d($p);
-// exit;
+// create a log channel
+$log = new Logger('name');
+$log->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::WARNING));
 
+Flight::map("log", $log);
+
+// add records to the log
+$log->warning('Foo');
+$log->error('Bar');
 
 
 session_start();
@@ -34,7 +39,7 @@ Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
 Debugger::$showLocation = true;
-Debugger::setLogger(new App\TracyStreamLogger());
+//Debugger::setLogger(new App\TracyStreamLogger());
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
 
@@ -42,9 +47,9 @@ Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode"));
 
 
 if (true == Flight::get("debug_mode")) {
-    Debugger::enable(Debugger::DEVELOPMENT, FILE_ROOT . '/logs/tracy');
+    Debugger::enable(Debugger::DEVELOPMENT, Config::get('app.tracy_log'));
 } else {
-    Debugger::enable(Debugger::PRODUCTION, FILE_ROOT . '/logs/tracy');
+    Debugger::enable(Debugger::PRODUCTION, Config::get('app.tracy_log'));
 }
 
 Flight::set('flight.log_errors', true);
@@ -77,7 +82,6 @@ Flight::before('route', function () {
 });
 
 $capsule = new Capsule();
-
 
 $capsule->addConnection([
     "driver" => Config::get('app.cnx.driver'),
@@ -121,7 +125,7 @@ Flight::map("verifySignature", function () {
         empty(Flight::request()->query->signature) ||
         true != Flight::url()->validate(Flight::request()->url)
     ) {
-        Debugger::log("Signature invalid");
+        Flight::log("Signature invalid");
         return false;
     }
     return true;
@@ -138,9 +142,9 @@ Flight::map("hxheader", function ($message, $status = "success", $exception = nu
     header('HX-Trigger: ' . $x);
 
     if (empty($exception)) {
-        Debugger::log($message);
+        Flight::log($message);
     } else {
-        Debugger::log($exception->getMessage());
+        Flight::log($exception->getMessage());
     }
 });
 
@@ -161,6 +165,7 @@ Flight::after("redirect", function () {
 Flight::route("GET /info", function () {
     if (true == Flight::get("debug_mode")) {
         phpinfo();
+        //xdebug_info();
     } else {
         Flight::redirect("/home", 302);
     }
@@ -183,25 +188,25 @@ Flight::route("POST /login", function () {
         $controller->loginUser();
         header("HX-Redirect: /home");
     } catch (\Delight\Auth\InvalidEmailException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader('Unrecognized email address. Have you registered yet?', 'error');
     } catch (\Delight\Auth\InvalidPasswordException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader('Wrong password', 'error');
     } catch (\Delight\Auth\EmailNotVerifiedException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader('Email not verified', 'error');
     } catch (\Delight\Auth\TooManyRequestsException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader('Too many requests', 'error');
     } catch (\App\Exceptions\FormException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader($e->getMessage(), 'error');
     } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("Unable to login at this time. Please contact Chris.", "error");
     } catch (\Error $er) {
-        Debugger::log($er->getMessage());
+        Flight::log($er->getMessage());
         Flight::hxheader("Unable to login at this time. PLease contact Chris.", "error");
     }
 
@@ -224,32 +229,50 @@ Flight::route("POST /register", function () {
         ]);
         header("HX-Redirect: /home");
     } catch (\App\Exceptions\FormException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader($e->getMessage(), 'error');
     } catch (\Delight\Auth\InvalidEmailException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("Invalid email address", "error");
     } catch (\Delight\Auth\DuplicateUsernameException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("That username is already taken", "error");
         echo "That username is already taken";
     } catch (\Delight\Auth\InvalidPasswordException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("Invalid password", "error");
     } catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("User already registered", "error");
         echo "User already registered";
     } catch (\Delight\Auth\TooManyRequestsException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("You have done that too many times. Try again later", "error");
     } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
-        Debugger::log(env("DB_PATH"));
+        Flight::log($e->getMessage());
+        Flight::log(env("DB_PATH"));
         Flight::hxheader("Unknown error. Contact Chris.", "error");
     } catch (\Error $er) {
-        Debugger::log($er->getMessage());
+        Flight::log($er->getMessage());
         Flight::hxheader($er->getMessage(), "error");
+    }
+});
+
+Flight::route("GET /reset-pw", function() {
+    Flight::render("reset-pw");
+});
+
+Flight::route("POST /reset-password", function () {
+    try {
+        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller->resetPassword();
+        sleep(1);
+        header("HX-Redirect: /");
+        //Flight::redirect("/", 302);
+    } catch (Delight\Auth\InvalidEmailException $e) {
+        Flight::hxheader('Unknown email address. Are you registered?', 'error');
+    } catch (Exception $e) {
+        Flight::log("exception: " . $e->getMessage());
     }
 });
 
@@ -261,12 +284,12 @@ Flight::route("*", function () {
     try {
         Flight::set("ActiveUser", ActiveUser::init());
     } catch (ModelNotFoundException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->logoutUser();
         Flight::redirect("/login");
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::stop();
     }
     return true;
@@ -299,7 +322,7 @@ Flight::route("GET|POST /logout", function () {
         $controller->logoutUser();
         header("HX-Redirect: /login");
     } catch (\Delight\Auth\NotLoggedInException $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("Not logged in", "info");
     } catch (Exception $e) {
         Flight::hxheader("There was an error logging out. Oops!", "error");
@@ -353,7 +376,7 @@ Flight::route('GET /beef/@min/@max', function ($min, $max) {
         );
         return Flight::json($controller->getPayload());
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         return Flight::json([]);
     }
 });
@@ -363,7 +386,7 @@ Flight::route('GET /modals/go-to-date-modal/@date', function ($date) {
         $controller = new App\Controllers\GotoDateModalController(Flight::request(), $date);
         $controller();
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::halt(404);
     }
 });
@@ -381,7 +404,7 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
         $controller->useOtherRoute("partials/journal");
         $controller();
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
     }
 });
 
@@ -403,7 +426,7 @@ Flight::route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($
         $controller->useOtherRoute("partials/title-bar");
         $controller();
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
     }
 });
 
@@ -418,7 +441,7 @@ Flight::route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function 
         $controller->useOtherRoute("partials/offcanvas-menu");
         $controller();
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
     }
 });
 
@@ -436,7 +459,7 @@ Flight::route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function 
         $controller->useOtherRoute("partials/big-picture");
         $controller();
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
     }
 });
 
@@ -450,7 +473,7 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
         $controller->deleteEntry($id);
         Flight::hxheader("Deleted.");
     } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         Flight::hxheader("Something went wrong. Contact Chris!!", "error");
         Flight::halt(204);
     }
@@ -463,7 +486,7 @@ if (true === Flight::get("debug_mode")) {
             Flight::hxheader("Food log emptied");
             Flight::stop();
         } catch (Exception $e) {
-            Debugger::log($e->getMessage());
+            Flight::log($e->getMessage());
             Flight::hxheader("Unable to dump food log table. Contact Chris!");
             Flight::stop();
         }
@@ -485,7 +508,7 @@ Flight::route('POST /journal-entry/exercised/rel/@offset', function ($offset) {
 
         $controller();
     } catch (Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
     }
 });
 
@@ -524,7 +547,7 @@ Flight::route('POST /journal-entry', function () {
         $controller->saveEntry();
         echo "<div>Successly journaled {$controller->amount} units of this food (+{$controller->points} points)!</div>";
     } catch (\Exception $e) {
-        Debugger::log($e->getMessage());
+        Flight::log($e->getMessage());
         echo '<div>Something went wrong!:(</div>';
         Flight::hxheader("Sorry, your progress was not recorded. Ask chris for help.", "error");
         return;
@@ -546,13 +569,13 @@ Flight::map('notFound', function () {
 });
 
 Flight::map('error', function ($ex) {
-    Debugger::log($ex->getMessage());
+    Flight::log($ex->getMessage());
     if (true == Flight::get("debug_mode")) {
-        Debugger::log('bluescreen in debug mode');
+        Flight::log('bluescreen in debug mode');
         $bs = new Tracy\BlueScreen();
         $bs->render($ex);
     } else {
-        Debugger::log('bluescreen in production mode');
+        Flight::log('bluescreen in production mode');
         throw $ex;
     }
 });

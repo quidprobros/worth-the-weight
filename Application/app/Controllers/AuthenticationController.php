@@ -43,13 +43,26 @@ class AuthenticationController
     public function resetPassword()
     {
         $email = $this->data['reset_email'];
+        Debugger::log($email);
 
         if (empty($email)) {
             throw new FormException("Email cannot be blank.");
         }
 
-        Flight::auth()->forgotPassword($email, function ($selector, $token) {
-            $this->sendVerificationEmail($selector, $token, $email, "Worth the Weight: Password reset");
+        Debugger::log("email2: {$email}");
+
+        Flight::auth()->forgotPassword($email, function ($selector, $token) use ($email) {
+            Debugger::log($selector);
+            mail(
+                "chrisdavidramos@gmail.com",
+                "Worth the Weight: reset your password!",
+                "OK! Worth the Weight: reset your password!",
+                'From: webmaster@paxperscientiam.com'
+            );
+
+            Debugger::log("sending email to chrisdavidramos@gmail.com");
+
+            //$this->sendVerificationEmail($selector, $token, $email, "Worth the Weight: Password reset");
         });
     }
 

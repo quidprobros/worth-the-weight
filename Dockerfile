@@ -6,7 +6,7 @@ FROM ${PHP_IMAGE} as base
 # wget for installation of other tools
 # gnupg and g++ for gd extension
 # locales for locale-gen command
-# apt-utils so package configuartion does not get delayed
+# apt-utils so package configuration does not get delayed
 # unzip to ommit composer zip packages corruption
 # dialog for apt-get to be
 # git for computing diffs and for npm to download packages

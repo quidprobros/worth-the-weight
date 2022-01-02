@@ -1,0 +1,78 @@
+<?PHP
+use Illuminate\Support\Facades\Config;
+
+?>
+<?
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport\{SendmailTransport,NullTransport,Transport};
+use Symfony\Component\Mime\Email;
+
+xdebug_start_trace();
+dump("LOL");
+xdebug_stop_trace();
+exit;
+
+$from = 'webmaster@paxperscientiam.com';
+$to = 'chrisdavidramos@gmail.com';
+
+try {
+    
+    // $from is a real email address from external server
+    // $to is a gmail address
+
+    $email = (new Email())
+    ->from($from)
+    ->to($to)
+    ->subject('My first mail using Symfony Mailer')
+    ->text('This is an important message!')
+    ->html('<strong>This is an important message!</strong>');
+
+    $transport = Symfony\Component\Mailer\Transport::fromDsn('sendmail://default?command=/usr/sbin/sendmail%20-oi%20-t');
+
+    $mailer = new Mailer($transport);
+    $r = $mailer->send($email);
+    d($r);
+//    $m = new Symfony\Component\Mailer\SentMessage($email, Symfony\Component\Mailer\Envelope::create($email));
+
+} catch (TransportExceptionInterface $e) {
+    s("some error prevented the email sending");
+} catch (\Exception $e) {
+    s($e->getMessage());
+}
+
+
+exit;
+?>
+
+<!doctype html>
+<html lang="en" class="no-js">
+    <?php Tracy\Debugger::renderLoader() ?>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Worth the Weight!</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <?=Flight::render(Config::get('app.web_root') . "/dist/resources", [])?>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
+    </head>
+    <body>
+        <form
+            hx-post="/reset-password"
+            hx-swap="none"
+            class="log-in-form"
+        >
+            <h2 class="text-center cc-form-title">Password Reset Form</h2>
+            <div class="input-group">
+                <span class="input-group-label">email address</span>
+                <input id="reset_email"
+                       class="input-group-field"
+                       type="email"
+                       name="reset_email"
+                       autocomplete="off"
+                       placeholder="user@example.com"
+                       autofocus required>
+            </div>
+            <input type="submit" class="large button expanded" value="Reset"></input>
+        </form>
+    </body>
+</html>

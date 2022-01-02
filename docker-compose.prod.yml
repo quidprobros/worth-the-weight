@@ -1,5 +1,5 @@
 version: '3.8'
-services:
-  php-apache-environment:
-    build:
-      target: production
+# services:
+#   php-apache-environment:
+#     build:
+#       target: production
