@@ -23,15 +23,13 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 // create a log channel
-$log = new Logger('name');
+$log = new Logger('main-channel');
+// test if for Docker (if docker, do "php://stderr")
 $log->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::WARNING));
 
-Flight::map("log", $log);
-
-// add records to the log
-$log->warning('Foo');
-$log->error('Bar');
-
+Flight::map("log", function () use ($log) {
+    return $log;
+});
 
 session_start();
 
@@ -161,7 +159,6 @@ Flight::after("redirect", function () {
 /*
  * routes begin!
  */
-
 Flight::route("GET /info", function () {
     if (true == Flight::get("debug_mode")) {
         phpinfo();
@@ -268,11 +265,41 @@ Flight::route("POST /reset-password", function () {
         $controller->resetPassword();
         sleep(1);
         header("HX-Redirect: /");
-        //Flight::redirect("/", 302);
     } catch (Delight\Auth\InvalidEmailException $e) {
         Flight::hxheader('Unknown email address. Are you registered?', 'error');
     } catch (Exception $e) {
         Flight::log("exception: " . $e->getMessage());
+    }
+});
+
+Flight::route("GET /verify_email", function () {
+
+    $data = Flight::request()->query->getData();
+
+    if (true !== (isset($data['selector']) && isset($data['token']))) {
+        Debugger::log("Someone attempted to verify with invalid credentials");
+        Flight::redirect("/home", 302);
+    }
+
+    Flight::render("login", [
+        "selector" => $data['selector'],
+        "token" => $data['token'],
+        "show" => false,
+        "pw_reset" => true,
+    ]);
+    exit;
+});
+
+Flight::route("POST /verify_email", function () {
+    try {
+        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller->setNewPassword();
+        $controller->useOtherRoute();
+    } catch (\App\Exceptions\FormException $e) {
+        Flight::log($e->getMessage());
+        Flight::hxheader($e->getMessage(), 'error');
+    } catch (Exception $e) {
+        Flight::log($e->getMessage());
     }
 });
 
@@ -297,21 +324,21 @@ Flight::route("*", function () {
 
 Flight::route('GET *', function () {
 
-    $data = Flight::request()->query;
+    // $data = Flight::request()->query;
 
-    // debug
-    if (true == isset($data['debug'])) {
-        $data['debug'] = true;
-    }
+    // // debug
+    // if (true == isset($data['debug'])) {
+    //     $data['debug'] = true;
+    // }
 
-    Flight::set("debug_mode", $data['debug']);
+    // Flight::set("debug_mode", $data['debug']);
 
-    Flight::request()->query->__unset("debug");
+    // Flight::request()->query->__unset("debug");
 
-    $components = parse(Flight::request()->url);
-    $components['query'] = http_build_query(Flight::request()->query->getData());
+    // $components = parse(Flight::request()->url);
+    // $components['query'] = http_build_query(Flight::request()->query->getData());
 
-    // Flight::request()->url = build($components);
+    // // Flight::request()->url = build($components);
 
     return true;
 }, true);

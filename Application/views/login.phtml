@@ -1,5 +1,6 @@
 <?PHP
 use Illuminate\Support\Facades\Config;
+$pw_reset = $pw_reset ?? false;
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
@@ -30,10 +31,16 @@ use Illuminate\Support\Facades\Config;
                   target="derp"
                   method="POST"
                   action="/login">
-                <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
-                <h2 class="text-center cc-form-title"><strong>Already a member? Login here:</strong></h2>
+                <input type="hidden" name="csrf_token" value="<?=Flight::get('csrf_token'); ?>">
+                <? if (true == $pw_reset) { ?>
+                    <h2 class="text-center cc-form-title"><strong>Login here:</strong></h2>
+                <? } else { ?>
+                    <h2 class="text-center cc-form-title"><strong>Already a member? Login here:</strong></h2>
+                <? } ?>
+                <input type='hidden' name='pw-reset-selector' value=<?=$selector ?? ''?>/>
+                <input type='hidden' name='pw-reset-token' value=<?=$token ?? ''?>/>
                 <div class="input-group">
-                    <span class="input-group-label">Email</span>
+                    <span class="input-group-label"><?=$pw_reset ? "Current email" : "Email"?></span>
                     <input id="login_email"
                            class="input-group-field"
                            type="email"
@@ -43,7 +50,7 @@ use Illuminate\Support\Facades\Config;
                            autofocus required>
                 </div>
                 <div class="input-group">
-                    <span class="input-group-label">Password</span>
+                    <span class="input-group-label"><?=$pw_reset ? "New password" : "Password"?></span>
                     <input id="current-password"
                            type="password"
                            class='input-group-field'
@@ -63,44 +70,47 @@ use Illuminate\Support\Facades\Config;
                 <input type="submit" class="large button expanded" value="Log in"></input>
                 <a type="button" href="/home" class='button nojs-show'>click after successful login</a>
             </form>
-            <div class="text-left"><a type="button" class="small button" href="/reset-pw">password reset</a></div>
+            <? if (true !== $pw_reset) { ?>
+                <div class="text-left"><a type="button" class="small button" href="/reset-pw">password reset</a></div>
+            <? } ?>
             <hr/>
+            <? if ($show ?? true) { ?>
+                <form hx-post="/register" class="registration-form" hx-swap='none' method="POST" action="/register">
+                    <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
+                    <h2 class="text-center cc-form-title"><strong>Register</strong> to be a part of Worth the Weight!</h2>
+                    <label for="register-form-email">Email (fake email address is fine)
+                        <input type="email"
+                               class="register-form-email"
+                               id="register-form-email"
+                               name="register_email"
+                               placeholder="somebody@somewhere.com"
+                               autocomplete="username"
+                               required>
+                    </label>
 
-            <form hx-post="/register" class="registration-form" hx-swap='none' method="POST" action="/register">
-                <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
-                <h2 class="text-center cc-form-title"><strong>Register</strong> to be a part of Worth the Weight!</h2>
-                <label for="register-form-email">Email (fake email address is fine)
-                    <input type="email"
-                           class="register-form-email"
-                           id="register-form-email"
-                           name="register_email"
-                           placeholder="somebody@somewhere.com"
-                           autocomplete="username"
-                           required>
-                </label>
+                    <label for="register-form-username">Username (use numbers and letters only)
+                        <input type="text"
+                               pattern="[a-zA-Z0-9]+"
+                               class="register-form-username"
+                               placeholder="zaphod123"
+                               id="register-form-username"
+                               name="register_username"
+                               required>
+                    </label>
 
-                <label for="register-form-username">Username (use numbers and letters only)
-                    <input type="text"
-                           pattern="[a-zA-Z0-9]+"
-                           class="register-form-username"
-                           placeholder="zaphod123"
-                           id="register-form-username"
-                           name="register_username"
-                           required>
-                </label>
-
-                <label for="register-form-password">Password (<?=Config::get('app.min_password_length')?> character minimum)
-                    <input  id="new-password"
-                            type="password"
-                            minlength="<?=Config::get('app.min_password_length')?>"
-                            class="register-form-password"
-                            placeholder="password123"
-                            autocomplete="new-password"
-                            name="register_password"
-                            required>
-                </label>
-                <button type="submit" class="large button expanded sign-in-form-button">Register</button>
-            </form>
+                    <label for="register-form-password">Password (<?=Config::get('app.min_password_length')?> character minimum)
+                        <input  id="new-password"
+                                type="password"
+                                minlength="<?=Config::get('app.min_password_length')?>"
+                                class="register-form-password"
+                                placeholder="password123"
+                                autocomplete="new-password"
+                                name="register_password"
+                                required>
+                    </label>
+                    <button type="submit" class="large button expanded sign-in-form-button">Register</button>
+                </form>
+            <? } ?>
         </div>
     </body>
 </html>

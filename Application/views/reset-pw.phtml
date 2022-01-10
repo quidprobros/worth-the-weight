@@ -1,47 +1,5 @@
 <?PHP
 use Illuminate\Support\Facades\Config;
-
-?>
-<?
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport\{SendmailTransport,NullTransport,Transport};
-use Symfony\Component\Mime\Email;
-
-xdebug_start_trace();
-dump("LOL");
-xdebug_stop_trace();
-exit;
-
-$from = 'webmaster@paxperscientiam.com';
-$to = 'chrisdavidramos@gmail.com';
-
-try {
-    
-    // $from is a real email address from external server
-    // $to is a gmail address
-
-    $email = (new Email())
-    ->from($from)
-    ->to($to)
-    ->subject('My first mail using Symfony Mailer')
-    ->text('This is an important message!')
-    ->html('<strong>This is an important message!</strong>');
-
-    $transport = Symfony\Component\Mailer\Transport::fromDsn('sendmail://default?command=/usr/sbin/sendmail%20-oi%20-t');
-
-    $mailer = new Mailer($transport);
-    $r = $mailer->send($email);
-    d($r);
-//    $m = new Symfony\Component\Mailer\SentMessage($email, Symfony\Component\Mailer\Envelope::create($email));
-
-} catch (TransportExceptionInterface $e) {
-    s("some error prevented the email sending");
-} catch (\Exception $e) {
-    s($e->getMessage());
-}
-
-
-exit;
 ?>
 
 <!doctype html>
