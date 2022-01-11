@@ -16,3 +16,13 @@
 		    return '--';
 	    }
     }
+
+
+    if(!function_exists('dd') && function_exists('d')) {
+        Kint::$aliases[] = 'dd';
+        function dd(...$vars)
+        {
+            Kint::dump(...$vars);
+            exit;
+        }
+    }

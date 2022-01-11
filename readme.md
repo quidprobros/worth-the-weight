@@ -79,6 +79,18 @@ A web application for tracking food consumption. You can also record whether you
 
 # PHASE 2
 
+# Security again
+- [x] Instead of indicating that a username is unrecognized, say 'email will be received if this account exists'
+- [ ] Dont access resources by id!!!
+- [] Test if the user is a superadmin ()
+- [] Retool the 'delete food log' button.
+- [] Determine if URL signature should be updated periodically, automatically
+- [] ensure enviroment fallbacks work properly
+
+
+# other
+- [] replace tracy logs with monologger
+
 # docker
 - [ ] find that docker multistage document that explained how to keep local vendor and docker vendor separated
 - [ ] use multi-stage builds to for creating images for dev and prod

@@ -25,7 +25,7 @@ use Monolog\Handler\StreamHandler;
 // create a log channel
 $log = new Logger('main-channel');
 // test if for Docker (if docker, do "php://stderr")
-$log->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::WARNING));
+$log->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEBUG));
 
 Flight::map("log", function () use ($log) {
     return $log;
@@ -42,7 +42,7 @@ Debugger::getBar()->addPanel(new App\TracyExtension());
 
 
 Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode"));
-
+Flight::set("domain", Config::get("domain"));
 
 if (true == Flight::get("debug_mode")) {
     Debugger::enable(Debugger::DEVELOPMENT, Config::get('app.tracy_log'));
@@ -53,7 +53,7 @@ if (true == Flight::get("debug_mode")) {
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', Config::get("app.view_root"));
 Flight::set('flight.views.extension', ".phtml");
-//dd(Config::all());
+
 $connection = \Delight\Db\PdoDatabase::fromDsn(new \Delight\Db\PdoDsn(Config::get('app.cnx.dsn')));
 
 Flight::register(
@@ -263,8 +263,10 @@ Flight::route("POST /reset-password", function () {
     try {
         $controller = new App\Controllers\AuthenticationController(Flight::request());
         $controller->resetPassword();
-        sleep(1);
-        header("HX-Redirect: /");
+        $controller->useOtherRoute("partials/pw-reset");
+        $controller();
+        //        sleep(1);
+        //header("HX-Redirect: /");
     } catch (Delight\Auth\InvalidEmailException $e) {
         Flight::hxheader('Unknown email address. Are you registered?', 'error');
     } catch (Exception $e) {
@@ -496,7 +498,7 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     }
 
     try {
-        $controller = new App\Controllers\JournalEntryRemoveController($id);
+        $controller = new App\Controllers\JournalEntryRemoveController();
         $controller->deleteEntry($id);
         Flight::hxheader("Deleted.");
     } catch (\Exception $e) {
@@ -506,14 +508,14 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     }
 });
 
-if (true === Flight::get("debug_mode")) {
+if (true == Flight::get("debug_mode")) {
     Flight::route('POST /drop-food-log', function () {
         try {
-            Flight::journalItem()::truncate();
-            Flight::hxheader("Food log emptied");
+            $controller = new App\Controllers\JournalEntryRemoveController();
+            $controller->deleteAll();
             Flight::stop();
         } catch (Exception $e) {
-            Flight::log($e->getMessage());
+            Flight::log()->info($e->getMessage());
             Flight::hxheader("Unable to dump food log table. Contact Chris!");
             Flight::stop();
         }

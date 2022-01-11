@@ -1,13 +1,14 @@
 <?PHP
 use Illuminate\Support\Facades\Config;
 $pw_reset = $pw_reset ?? false;
+$page_title = $page_title ?? "Worth the Weight!";
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
     <?php Tracy\Debugger::renderLoader() ?>
     <head>
         <meta charset="UTF-8"/>
-        <title>Worth the Weight!</title>
+        <title><?=$page_title?></title>
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <?=Flight::render(Config::get('app.web_root') . "/dist/resources", [])?>

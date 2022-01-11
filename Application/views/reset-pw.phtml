@@ -7,19 +7,25 @@ use Illuminate\Support\Facades\Config;
     <?php Tracy\Debugger::renderLoader() ?>
     <head>
         <meta charset="UTF-8"/>
-        <title>Worth the Weight!</title>
+        <title>"Reset Your Password | Worth the Weight!</title>
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <?=Flight::render(Config::get('app.web_root') . "/dist/resources", [])?>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
     <body>
+        <div class="title-bar">
+            <div class="title-bar-left">
+                <h1>Worth the Weight!</h1>
+            </div>
+        </div>
         <form
             hx-post="/reset-password"
-            hx-swap="none"
+            hx-swap="outerHTML"
             class="log-in-form"
         >
-            <h2 class="text-center cc-form-title">Password Reset Form</h2>
+            <h2 class="text-left cc-form-title">Password Reset Form</h2>
+            <p>Forgotten your password? Don’t worry, happens to the best of us. Use this form to recover your Worth the Weight account.</p>
             <div class="input-group">
                 <span class="input-group-label">email address</span>
                 <input id="reset_email"
@@ -30,7 +36,8 @@ use Illuminate\Support\Facades\Config;
                        placeholder="user@example.com"
                        autofocus required>
             </div>
-            <input type="submit" class="large button expanded" value="Reset"></input>
+            <input type="submit" class="large button expanded" value="Email me a recovery link"></input>
         </form>
+        <div id="response-target"></div>
     </body>
 </html>

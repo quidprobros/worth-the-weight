@@ -15,7 +15,7 @@ use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport\{SendmailTransport,NullTransport,Transport};
 use Symfony\Component\Mime\Email;
 
-class AuthenticationController
+class AuthenticationController extends BaseController
 {
     private $data;
 
@@ -53,7 +53,7 @@ class AuthenticationController
         }
 
         Flight::auth()->forgotPassword($email_address, function ($selector, $token) use ($email_address) {
-            $url = Config('domain') . '/verify_email?selector=' . \urlencode($selector) . '&token=' . \urlencode($token);
+            $url = "http://" . Flight::get('domain') . '/verify_email?selector=' . \urlencode($selector) . '&token=' . \urlencode($token);
 
             try {
 
