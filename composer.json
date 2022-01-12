@@ -29,8 +29,7 @@
         "league/uri-parser": "^1.4",
         "vlucas/phpdotenv": "^5.3",
         "symfony/mailer": "^6.0",
-        "monolog/monolog": "^2.3",
-        "doctrine/dbal": "^3.2"
+        "monolog/monolog": "^2.3"
     },
     "authors": [
         {
