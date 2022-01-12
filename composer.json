@@ -23,17 +23,12 @@
         "spatie/url-signer": "^1.2",
         "delight-im/auth": "^8.2",
         "illuminate/filesystem": "^8.60",
-        "kriswallsmith/buzz": "^1.2",
-        "nyholm/psr7": "^1.4",
         "league/uri-parser": "^1.4",
-        "robmorgan/phinx": "^0.12.7",
         "vlucas/phpdotenv": "^5.3",
         "illuminate/container": "^8.57",
         "illuminate/config": "^8.57",
         "illuminate/cache": "^8.60",
-        "dg/rss-php": "^1.5",
         "symfony/mailer": "^6.0",
-        "symfony/google-mailer": "^5.4",
         "monolog/monolog": "^2.3"
     },
     "authors": [
@@ -46,6 +41,7 @@
         "kint-php/kint": "^4.1",
         "tracy/tracy": "@stable",
         "league/csv": "^9.7",
-        "jdorn/sql-formatter": "^1.2"
+        "jdorn/sql-formatter": "^1.2",
+        "robmorgan/phinx": "^0.12.9"
     }
 }
