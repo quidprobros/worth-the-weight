@@ -4,6 +4,10 @@ A web application for tracking food consumption. You can also record whether you
 
 ## Note: this will not work out of the box as db bootstrapping still needs to be setup.
 
+## Testing 
+When in a development environment, dev mode can be disabled with ?DEBUG=0
+
+
 # PHASE 1
 
 # sprint 1
@@ -89,7 +93,9 @@ A web application for tracking food consumption. You can also record whether you
 
 
 # other
-- [] replace tracy logs with monologger
+- [x] use tracy's PSR adapter to incorporate monolog.
+- [ ] update tracy docks to put example of using monolog
+- [ ] make sure debug mode determines which level of logging is used!
 
 # docker
 - [ ] find that docker multistage document that explained how to keep local vendor and docker vendor separated

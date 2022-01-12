@@ -4,6 +4,8 @@ error_reporting(error_reporting() & ~E_DEPRECATED);
 date_default_timezone_set('US/Eastern');
 
 use Tracy\Debugger;
+use Tracy\ILogger;
+use Tracy\Bridges\Psr\PsrToTracyLoggerAdapter;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,44 +13,47 @@ use Spatie\UrlSigner\MD5UrlSigner;
 use App\Models\ActiveUser;
 use Delight\Base64\Throwable\Exception;
 use Illuminate\Support\Facades\Config;
-
-use function League\Uri\parse;
-// use function League\Uri\build;
-
-const FILE_ROOT = __DIR__ . "/../";
-
-require_once FILE_ROOT . "/vendor/autoload.php";
-
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-// create a log channel
-$log = new Logger('main-channel');
-// test if for Docker (if docker, do "php://stderr")
-$log->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEBUG));
+use function League\Uri\parse;
 
-Flight::map("log", function () use ($log) {
-    return $log;
-});
+const FILE_ROOT = __DIR__ . "/../";
 
 session_start();
+
+require_once FILE_ROOT . "/vendor/autoload.php";
 
 Debugger::$dumpTheme = 'dark';
 Debugger::$logSeverity = E_NOTICE | E_WARNING;
 Debugger::$strictMode = true;
 Debugger::$showLocation = true;
-//Debugger::setLogger(new App\TracyStreamLogger());
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
+$monolog = new Logger('main-channel');
+$monolog->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEBUG));
 
-Flight::set("debug_mode", "DEBUG" == Config::get("app.run_mode"));
-Flight::set("domain", Config::get("domain"));
+$tracyLogger = new PsrToTracyLoggerAdapter($monolog);
 
-if (true == Flight::get("debug_mode")) {
-    Debugger::enable(Debugger::DEVELOPMENT, Config::get('app.tracy_log'));
+Debugger::setLogger($tracyLogger);
+
+Debugger::setSessionStorage(new Tracy\NativeSession);
+Debugger::enable();
+
+Flight::map("log", ['Tracy\Debugger', 'log']);
+
+if ("DEBUG" == Config::get("app.run_mode")) {
+    $debug_request_mode = Flight::request()->query->getData()['DEBUG'] ?? 1;
+    if (0 == $debug_request_mode) {
+        Flight::set("debug_mode", false);
+    } else {
+        Flight::set("debug_mode", true);
+    }
 } else {
-    Debugger::enable(Debugger::PRODUCTION, Config::get('app.tracy_log'));
+    Flight::set("debug_mode", false);
 }
+
+Flight::set("domain", Config::get("domain"));
 
 Flight::set('flight.log_errors', true);
 Flight::set('flight.views.path', Config::get("app.view_root"));
@@ -159,14 +164,13 @@ Flight::after("redirect", function () {
 /*
  * routes begin!
  */
-Flight::route("GET /info", function () {
-    if (true == Flight::get("debug_mode")) {
+if (true == Flight::get("debug_mode")) {
+    Flight::route("GET /info", function () {
         phpinfo();
-        //xdebug_info();
-    } else {
-        Flight::redirect("/home", 302);
-    }
-});
+    });
+} else {
+    Flight::redirect("/home", 302);
+}
 
 Flight::route("GET /login", function () {
     if (true == Flight::auth()->isLoggedIn()) {

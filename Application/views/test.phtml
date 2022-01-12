@@ -1,24 +1,3 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8"/>
-        <title>Document</title>
-        <?=Flight::render("../wtw.paxperscientiam.com/dist/resources", [])?>
-    </head>
-    <body hx-boost="true">
-        hi there
-        <a hx-post="/derp">get derp</a>
-        <script type="text/javascript">
-         $(function() {
-
-             htmx.on("htmx:responseError", function () {
-                 console.error("omfg");
-             })
-             htmx.on("htmx:afterOnLoad", function () {
-                     console.log('afta');
-             });
-         })
-        </script>
-    </body>
-
-</html>
+<?PHP
+echo 'shirt';
+Flight::log("SHIT");
