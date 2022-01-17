@@ -164,12 +164,11 @@ Flight::after("redirect", function () {
 /*
  * routes begin!
  */
+// routes for debugging
 if (true == Flight::get("debug_mode")) {
     Flight::route("GET /info", function () {
         phpinfo();
     });
-} else {
-    Flight::redirect("/home", 302);
 }
 
 Flight::route("GET /login", function () {
@@ -530,7 +529,6 @@ Flight::route('POST /journal-entry/exercised/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
     }
-
     try {
         $controller = new App\Controllers\ExerciseController(
             Flight::request(),

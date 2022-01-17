@@ -4,3 +4,7 @@ Hm, note that the storage directories should be owned by the user and group owni
 
 
 https://burnedikt.com/dockerized-node-development-and-mounting-node-volumes/
+
+https://laracasts.com/discuss/channels/eloquent/how-to-use-events-with-standalone-eloquent
+
+https://atymic.dev/blog/adding-uuids-to-existing-models/
