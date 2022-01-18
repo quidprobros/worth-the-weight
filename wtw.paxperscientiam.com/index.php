@@ -4,7 +4,6 @@ error_reporting(error_reporting() & ~E_DEPRECATED);
 date_default_timezone_set('US/Eastern');
 
 use Tracy\Debugger;
-use Tracy\ILogger;
 use Tracy\Bridges\Psr\PsrToTracyLoggerAdapter;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -271,7 +270,9 @@ Flight::route("POST /reset-password", function () {
         //        sleep(1);
         //header("HX-Redirect: /");
     } catch (Delight\Auth\InvalidEmailException $e) {
-        Flight::hxheader('Unknown email address. Are you registered?', 'error');
+        Flight::render("partials/pw-reset", []);
+        //Flight::hxheader('Unknown email address. Are you registered?', 'error');
+        Debugger::log("Attempt to reset password for unknown email address", Tracy\ILogger::EXCEPTION);
     } catch (Exception $e) {
         Flight::log("exception: " . $e->getMessage());
     }

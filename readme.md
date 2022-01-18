@@ -85,6 +85,11 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
 
 # Security again
 - [x] Instead of indicating that a username is unrecognized, say 'email will be received if this account exists'
+- [ ] Password reset via email
+  - [x] Get email to go through on dev machine
+  - [ ] Distinguish between plain text and HTML emails
+  - [ ] Follow this design guide: https://blog.prototypr.io/ux-guide-password-reset-user-flow-bfa35a16e527
+  - [ ] Get email to go through on live.
 - [ ] Dont access resources by id!!!
 - [] Test if the user is a superadmin ()
 - [x] Retool the 'delete food log' button.
@@ -95,6 +100,8 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
   - [ ] Use https://github.com/webpatser/laravel-uuid
   - [ ] update migration
 
+# More features
+- [ ] Allow to add a point goals
 
 # other
 - [x] use tracy's PSR adapter to incorporate monolog.

@@ -8,3 +8,5 @@ https://burnedikt.com/dockerized-node-development-and-mounting-node-volumes/
 https://laracasts.com/discuss/channels/eloquent/how-to-use-events-with-standalone-eloquent
 
 https://atymic.dev/blog/adding-uuids-to-existing-models/
+
+https://blog.prototypr.io/ux-guide-password-reset-user-flow-bfa35a16e527

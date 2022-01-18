@@ -57,12 +57,15 @@ class AuthenticationController extends BaseController
 
             try {
 
+                $html = Flight::view()
+                      ->fetch("emails/password-reset-link", ["url" => $url]);
+
                 $email = (new Email())
                        ->sender(Config::get('app.email.sender'))
                        ->to($email_address)
                        ->subject('Password Reset')
                        ->text("To reset your Worth the Weight password, please click here: {$url}")
-                       ->html("<strong>To reset your Worth the Weight password, please click here: {$url}</strong>");
+                       ->html($html);
 
                 $transport = \Symfony\Component\Mailer\Transport::fromDsn('sendmail://default?command=/usr/sbin/sendmail%20-oi%20-t');
 
