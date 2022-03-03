@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -50,4 +51,17 @@ class User extends Model
             ;
     }
 
+
+    public function currentDailyPointsGoal()
+        // https://laravel.com/docs/9.x/eloquent-relationships#advanced-has-one-of-many-relationships
+    {
+        return $this->hasOne(Goals::class, 'user_id')
+                    ->ofMany([
+                        'created_at' => 'max',
+                    ], function ($query) {
+                        $query
+                            // ->where('created_at', '<', Carbon::now())
+                            ->whereNotNull('daily_points');
+                    });
+    }
 }

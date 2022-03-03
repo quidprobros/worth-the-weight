@@ -1,3 +1,9 @@
 <?PHP
-echo 'shirt';
-Flight::log("SHIT");
+
+$user = Flight::get('ActiveUser');
+
+s($user->today->toArray());;
+
+s($user->currentDailyPointsGoal->toArray());
+
+

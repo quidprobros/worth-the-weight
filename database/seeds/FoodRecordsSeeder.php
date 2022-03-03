@@ -11,17 +11,17 @@ class FoodRecordsSeeder extends AbstractSeed
     public function init()
     {
         //load the CSV document from a file path
-        $csv = Reader::createFromPath(FILE_ROOT . "/data/food data.csv", 'r');
-        $csv->setHeaderOffset(0);
-        $records = $csv->getRecords();
+        // $csv = Reader::createFromPath(FILE_ROOT . "/data/food data.csv", 'r');
+        // $csv->setHeaderOffset(0);
+        // $records = $csv->getRecords();
 
-        foreach ($records as $record) {
-            $this->csv_data[] = $record;
-        }
+        // foreach ($records as $record) {
+        //     $this->csv_data[] = $record;
+        // }
 
-        $food_records = $this->table("food_records");
-        $food_records->insert($this->csv_data)
-                     ->saveData();
+        // $food_records = $this->table("food_records");
+        // $food_records->insert($this->csv_data)
+        //              ->saveData(); 
     }
 
     /**

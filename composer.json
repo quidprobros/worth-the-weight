@@ -32,7 +32,8 @@
         "monolog/monolog": "^2.3",
         "illuminate/support": "^8.79",
         "ramsey/uuid": "^4.2",
-        "illuminate/events": "^8.79"
+        "illuminate/events": "^8.79",
+        "laravel/helpers": "^1.5"
     },
     "authors": [
         {
