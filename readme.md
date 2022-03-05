@@ -144,9 +144,11 @@ add user to _www group_
 not clear what permissions should be for db to allow editing, and reading, and etc
 
 # Reach goals
+- [ ] Should check if query value exists before making query
 - [ ] separate service for npm stuff
 - [x] test phinx for bootstrapping database
 - [ ] when it comes to dockerizing, make sure the database has correct permissions
+- [ ] preview amount of points to be added
 - [ ] dockerize (option)
 - [ ] Allow individual cell editing
 - [ ] Allow for storing and tracking goals 

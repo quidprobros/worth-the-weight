@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class FoodRecordsTablesMigration extends AbstractMigration
+final class FoodTableNewColumnsMigration extends AbstractMigration
 {
     /**
      * Change Method.
@@ -19,12 +19,20 @@ final class FoodRecordsTablesMigration extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('food_records');
-        // autoincrementing key autocreated by phinx
+        $table->renameColumn('points', 'blue_plan_points');
+
         $table
-            ->addColumn('food_name', 'text')
-            ->addColumn('points', 'float')
-            ->addColumn('created_at', 'datetime')
-            ->addColumn('updated_at', 'datetime')
+            ->addColumn('green_plan_points', 'float',
+                        [
+                            'after' => 'blue_plan_points',
+                            'default' => 0.0
+                        ]
+            )
+            ->addColumn('purple_plan_points', 'float', [
+                'after' => 'blue_plan_points',
+                'default' => 0.0
+            ])
             ->update();
+
     }
 }

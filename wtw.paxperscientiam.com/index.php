@@ -387,12 +387,12 @@ Flight::route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo)
 
     Flight::set("omo", $omo); // journal
     Flight::set("bpo", $bpo); // big-picture
-
     $controller = new App\Controllers\HomeController(
         Flight::request(),
         Flight::get('omo'),
         Flight::get('bpo')
     );
+    return;
     $controller();
 });
 
