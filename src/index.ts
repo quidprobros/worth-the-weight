@@ -38,7 +38,7 @@ import Inputmask from "inputmask"
 export {Inputmask}
 
 import SlimSelect from 'slim-select'
-
+window.SlimSelect = SlimSelect
 // @ts-ignore
 import notify from "notifyjs-browser"
 notify(window, $)
@@ -88,34 +88,34 @@ export function initCalendar() {
         dayFormat: "DDD",
         monthFormat: "MONTH YYYY"
     });
--
-    myCalendar.onDateClick((_event: Event, date: Date) => {
-        // @ts-ignore
-        const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD") as string
-        fetch(`/modals/go-to-date-modal/${strDate}`, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'text/html'
-            },
-        })
-            .then(response => response.text())
-            .then(text => {
-                const $text = $(text)
-                const modal = new Reveal($text)
-                modal.open()
+        -
+        myCalendar.onDateClick((_event: Event, date: Date) => {
+            // @ts-ignore
+            const strDate = jsCalendar.tools.dateToString(date, "YYYY-MM-DD") as string
+            fetch(`/modals/go-to-date-modal/${strDate}`, {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'text/html'
+                },
+            })
+                .then(response => response.text())
+                .then(text => {
+                    const $text = $(text)
+                    const modal = new Reveal($text)
+                    modal.open()
 
-                $("[data-accept]", $text).on("click", () => {
-                    window.location.pathname = `/goto/${strDate}`
-                });
+                    $("[data-accept]", $text).on("click", () => {
+                        window.location.pathname = `/goto/${strDate}`
+                    });
 
-                $text.on("closed.zf.reveal", () => {
-                    $text.remove()
+                    $text.on("closed.zf.reveal", () => {
+                        $text.remove()
+                    })
                 })
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    })
+                .catch(err => {
+                    console.log(err)
+                })
+        })
 
     myCalendar.onMonthRender(<T extends {start: Date, end:Date}>(_index: number, _element: HTMLElement, info: T) => {
         // @ts-ignore
@@ -202,6 +202,36 @@ $(() => {
     if (0 < $("#offCanvas2").length) {
         new OffCanvas($("#offCanvas2"))
     }
+
+    $(document).on("click",  "#show-user-settings-button", function () {
+        fetch(`/modals/user-settings`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'text/html'
+            },
+        })
+            .then(response => response.text())
+            .then(text => {
+                const $text = $(text)
+                const modal = new Reveal($text)
+                $(`#${modal.id}`).on('closed.zf.reveal', function (e) {
+                    e.currentTarget.remove();
+                });
+
+                new SlimSelect({
+                    select: '#plan-selection',
+                    allowDeselect: true,
+                    allowDeselectOption: true,
+                    placeholder: "sdfafasdfsd",
+                })
+
+                modal.open();
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    });
 
     $(document).on("action", function (e) {
         dlv(App, dlv(e, "detail.xpath") as string)

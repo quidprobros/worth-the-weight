@@ -66,6 +66,15 @@ class HomeController extends BaseController
         $this->today_points = $this->stats->points($this->big_picture_day_offset);
         $this->journal_points = $this->stats->points($this->journal_day_offset);
 
+        // $bpoExercisedModel = Flight::get("ActiveUser")
+        //                    ->exercises()
+        //                    ->where(function ($query) {
+        //                        $query->whereDate("date", "=", $this->date_bpo)
+        //                              ->orWhere(function($query) {
+        //                                  $query->whereDate("date", "=", $this->date_omo); 
+        //                              });
+        //                    });
+
         $bpoExercisedModel = Flight::get("ActiveUser")
                            ->exercises()->whereDate("date", "=", $this->date_bpo)->get()->first();
         $this->exercised_bpo = empty($bpoExercisedModel) ? 0 : $bpoExercisedModel->exercised;

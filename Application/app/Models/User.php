@@ -42,6 +42,12 @@ class User extends Model
             ;
     }
 
+    public function settings()
+    {
+        return $this->hasOne(UserSettings::class, "user_id");
+    }
+
+
     public function exercisedOnDate($date)
     {
         return $this->hasMany(Exercise::class, "user_id")

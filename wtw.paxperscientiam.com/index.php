@@ -3,6 +3,7 @@ error_reporting(error_reporting() & ~E_DEPRECATED);
 
 date_default_timezone_set('US/Eastern');
 
+
 use Tracy\Debugger;
 use Tracy\Bridges\Psr\PsrToTracyLoggerAdapter;
 use Carbon\Carbon;
@@ -392,7 +393,7 @@ Flight::route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo)
         Flight::get('omo'),
         Flight::get('bpo')
     );
-    return;
+
     $controller();
 });
 
@@ -417,6 +418,16 @@ Flight::route('GET /beef/@min/@max', function ($min, $max) {
 Flight::route('GET /modals/go-to-date-modal/@date', function ($date) {
     try {
         $controller = new App\Controllers\GotoDateModalController(Flight::request(), $date);
+        $controller();
+    } catch (Exception $e) {
+        Flight::log($e->getMessage());
+        Flight::halt(404);
+    }
+});
+
+Flight::route('GET /modals/user-settings', function () {
+    try {
+        $controller = new App\Controllers\UserSettingsModalController(Flight::request());
         $controller();
     } catch (Exception $e) {
         Flight::log($e->getMessage());
@@ -566,13 +577,31 @@ Flight::route('GET /food-support-message', function () {
     echo $greetings[0];
 });
 
+Flight::route('POST /user-settings', function () {
+    try {
+        $controller = new \App\Controllers\UserSettingsController(Flight::request());
+    } catch (\App\Exceptions\FormException $e) {
+
+    }
+
+});
+
 Flight::route('POST /journal-entry', function () {
     try {
+        if (!Flight::verifySignature()) {
+            throw new \App\Exceptions\FormException("Sorry, your progress was not recorded.");
+        }
         $controller = new App\Controllers\JournalEntryCreateController(Flight::request());
     } catch (\App\Exceptions\FormException $e) {
         echo '<div>Something went wrong!:(</div>';
         Flight::hxheader($e->getMessage(), "error");
-        return;
+        Flight::log($e->getMessage(), "error");
+        exit;
+    } catch (\Exception $e) {
+        echo '<div>Something went wrong!:(</div>';
+        Flight::hxheader("Sorry, your progress was not recorded.", "error");
+        Flight::log($e->getMessage(), "error");
+        exit;
     }
 
     try {
@@ -581,7 +610,7 @@ Flight::route('POST /journal-entry', function () {
     } catch (\Exception $e) {
         Flight::log($e->getMessage());
         echo '<div>Something went wrong!:(</div>';
-        Flight::hxheader("Sorry, your progress was not recorded. Ask chris for help.", "error");
+        Flight::hxheader("Sorry, your progress was not recorded.", "error");
         return;
     }
 

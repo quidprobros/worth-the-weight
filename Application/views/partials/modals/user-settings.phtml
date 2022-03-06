@@ -1,0 +1,31 @@
+<div class="reveal" id="user-settings-modal" data-reveal>
+    <h1>Settings</h1>
+    <form name='user-settings-form'
+          class='grid-x'
+          action='/user-settings'
+          method='POST'>
+        <fieldset class="cell small-12 fieldset">
+            <legend>Plan</legend>
+            <div class="form-group">
+                <label><strong>select plan</strong></label>
+                <select id="plan-selection" name='plan-selection' class='form-control' required>
+                    <option data-placeholder="Select plan ..."></option>
+                    <option>blue</option>
+                    <option value="">green</option>
+                    <option value="">purple</option>
+                </select>
+            </div>
+        </fieldset>
+        <div class="cell small-12">
+            <button type="submit" class="shadow expanded rounded button success large"
+                    hx-post="/user-settings"
+                    hx-swap="none">save</button>
+        </div>
+    </form>
+          
+
+
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
