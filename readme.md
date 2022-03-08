@@ -104,11 +104,13 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
 # More features
 - [ ] Allow to add a point goals
 
+
 # other
 - [x] use tracy's PSR adapter to incorporate monolog.
 - [ ] update tracy docks to put example of using monolog
 - [ ] make sure debug mode determines which level of logging is used!
 - [ ] figure out events/listeners
+- [ ] new user, autocreate new settings entry, new user goals
 
 # docker
 - [ ] find that docker multistage document that explained how to keep local vendor and docker vendor separated

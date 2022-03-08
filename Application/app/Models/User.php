@@ -47,6 +47,11 @@ class User extends Model
         return $this->hasOne(UserSettings::class, "user_id");
     }
 
+    public function plan()
+    {
+        return $this->settings->belongsTo(Plans::class);
+    }
+
 
     public function exercisedOnDate($date)
     {

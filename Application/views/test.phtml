@@ -2,7 +2,39 @@
 
 $user = Flight::get('ActiveUser');
 
-d($user->settings);
+d($user->settings->id);
+
+
+
+exit;
+
+$plans = new App\Models\Plans();
+
+/* d(Flight::get("ActiveUser")
+ *         ->hasOneThrough(
+ *             App\Models\Plans::class,
+ *             App\Models\UserSettings::class,
+ *             "user_id", */
+
+d(Flight::get("ActiveUser")->plan->toArray());
+
+
+
+
+
+
+exit;
+
+foreach ($plans::get() as $plan) {
+    s($plan->hasOneThrough(
+        App\Models\User::class,
+        App\Models\UserSettings::class,
+        'plan_id', // Foreign key on the user_settings table...
+        'id', // Foreign key on the user table...
+        'id', // Local key on the plans table...
+        'user_id' // Local key on the user_settings table...
+    )->toSql());
+}
 
 /* $food_model = new App\Models\Food();
  * 

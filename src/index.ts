@@ -38,7 +38,7 @@ import Inputmask from "inputmask"
 export {Inputmask}
 
 import SlimSelect from 'slim-select'
-window.SlimSelect = SlimSelect
+
 // @ts-ignore
 import notify from "notifyjs-browser"
 notify(window, $)
@@ -214,6 +214,8 @@ $(() => {
             .then(text => {
                 const $text = $(text)
                 const modal = new Reveal($text)
+                htmx.process(modal.$element[0]);
+
                 $(`#${modal.id}`).on('closed.zf.reveal', function (e) {
                     e.currentTarget.remove();
                 });
@@ -222,7 +224,7 @@ $(() => {
                     select: '#plan-selection',
                     allowDeselect: true,
                     allowDeselectOption: true,
-                    placeholder: "sdfafasdfsd",
+                    addToBody: true,
                 })
 
                 modal.open();

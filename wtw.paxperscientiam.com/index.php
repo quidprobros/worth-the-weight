@@ -580,8 +580,11 @@ Flight::route('GET /food-support-message', function () {
 Flight::route('POST /user-settings', function () {
     try {
         $controller = new \App\Controllers\UserSettingsController(Flight::request());
+        $controller->saveUpdate();
     } catch (\App\Exceptions\FormException $e) {
-
+        Flight::hxheader($e->getMessage(), "error");
+        Flight::log($e->getMessage(), "error");
+        exit;
     }
 
 });
@@ -626,7 +629,7 @@ if (true == Flight::get("debug_mode")) {
 
 Flight::map('notFound', function () {
     $message = "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
-    Flight::halt('404', $message);
+    Flight::halt(404, $message);
 });
 
 Flight::map('error', function ($ex) {
