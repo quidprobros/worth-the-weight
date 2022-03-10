@@ -20,7 +20,7 @@
             </tr>
         <? } ?>
         <? foreach ($records->get() as $record) { ?>
-            <tr>
+            <tr style="border-left: solid 10px <?=$record->food->plan->html_color?>">
                 <?
                 $_date = $record->date;
                 if (false == strtotime($_date)) {

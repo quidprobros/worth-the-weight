@@ -1,22 +1,6 @@
 <?PHP
 
-$user = Flight::get('ActiveUser');
-
-d($user->settings->id);
-
-
-
-exit;
-
-$plans = new App\Models\Plans();
-
-/* d(Flight::get("ActiveUser")
- *         ->hasOneThrough(
- *             App\Models\Plans::class,
- *             App\Models\UserSettings::class,
- *             "user_id", */
-
-d(Flight::get("ActiveUser")->plan->toArray());
+s(App\Enums\PlanSelection::GREEN);
 
 
 

@@ -216,6 +216,10 @@ $(() => {
                 const modal = new Reveal($text)
                 htmx.process(modal.$element[0]);
 
+                $("form", modal.$element).on("submit", () => {
+                    delayedReload(300);
+                });
+
                 $(`#${modal.id}`).on('closed.zf.reveal', function (e) {
                     e.currentTarget.remove();
                 });

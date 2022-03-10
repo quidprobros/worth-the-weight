@@ -66,7 +66,7 @@ Illuminate\Support\Facades\Config;
                                                     <select id="food-selection" name='food-selection' class='form-control' required>
                                                         <option data-placeholder="Select food ..."></option>
                                                         <? foreach ($foods as $food) { ?>
-                                                            <option value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                            <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
                                                         <? } ?>
                                                     </select>
                                                 </div>
