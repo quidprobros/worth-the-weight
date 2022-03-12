@@ -60,6 +60,7 @@ class HomeController extends BaseController
                 break;
         };
 
+        
         $this->foods = Flight::get("ActiveUser")->plan->foods()->get();
         $this->title = $title;
         $this->stats = Flight::stats();

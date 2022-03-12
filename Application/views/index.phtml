@@ -2,6 +2,7 @@
 use Carbon\Carbon,
 Tracy\Debugger,
 Illuminate\Support\Facades\Config;
+
 ?>
 <!-- mode: web -->
 <!doctype html>
@@ -62,7 +63,7 @@ Illuminate\Support\Facades\Config;
                                                     <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><strong>Select food:</strong></label>
+                                                    <label><strong>Select food from <span style="text-decoration:underline;text-decoration-color=<?=Flight::get("ActiveUser")->plan->html_color?>"><?=Flight::get("ActiveUser")->plan->plan_short_name?></span></strong></label>
                                                     <select id="food-selection" name='food-selection' class='form-control' required>
                                                         <option data-placeholder="Select food ..."></option>
                                                         <? foreach ($foods as $food) { ?>

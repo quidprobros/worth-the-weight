@@ -38,20 +38,20 @@ $tracyLogger = new PsrToTracyLoggerAdapter($monolog);
 Debugger::setLogger($tracyLogger);
 
 Debugger::setSessionStorage(new Tracy\NativeSession);
-Debugger::enable();
 
-Flight::map("log", ['Tracy\Debugger', 'log']);
 
 if ("DEBUG" == Config::get("app.run_mode")) {
-    $debug_request_mode = Flight::request()->query->getData()['DEBUG'] ?? 1;
-    if (0 == $debug_request_mode) {
-        Flight::set("debug_mode", false);
-    } else {
-        Flight::set("debug_mode", true);
-    }
+    Flight::set("debug_mode", true);
+    Debugger::enable(Debugger::DETECT);
 } else {
     Flight::set("debug_mode", false);
+    Debugger::enable(Debugger::PRODUCTION);
 }
+
+// prevent interference with signing
+Flight::request()->query->__unset("DEBUG");
+
+Flight::map("log", ['Tracy\Debugger', 'log']);
 
 Flight::set("domain", Config::get("domain"));
 
@@ -330,23 +330,6 @@ Flight::route("*", function () {
 });
 
 Flight::route('GET *', function () {
-
-    // $data = Flight::request()->query;
-
-    // // debug
-    // if (true == isset($data['debug'])) {
-    //     $data['debug'] = true;
-    // }
-
-    // Flight::set("debug_mode", $data['debug']);
-
-    // Flight::request()->query->__unset("debug");
-
-    // $components = parse(Flight::request()->url);
-    // $components['query'] = http_build_query(Flight::request()->query->getData());
-
-    // // Flight::request()->url = build($components);
-
     return true;
 }, true);
 
@@ -633,15 +616,17 @@ Flight::map('notFound', function () {
 });
 
 Flight::map('error', function ($ex) {
-    Flight::log($ex->getMessage());
-    if (true == Flight::get("debug_mode")) {
-        Flight::log('bluescreen in debug mode');
-        $bs = new Tracy\BlueScreen();
-        $bs->render($ex);
-    } else {
-        Flight::log('bluescreen in production mode');
-        throw $ex;
-    }
+    // bdump(Debugger::)
+    //Flight::log($e->getMessage(), "error");
+//     Flight::log($ex->getMessage());
+//     if (true == Flight::get("debug_mode")) {
+//         Flight::log('bluescreen in debug mode');
+//         $bs = new Tracy\BlueScreen();
+//         $bs->render($ex);
+//     } else {
+//         Flight::log('bluescreen in production mode');
+//         throw $ex;
+//     }
 });
 
 Flight::start();

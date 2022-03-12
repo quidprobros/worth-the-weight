@@ -24,12 +24,11 @@ class UserSettingsController
         $this->plan_id = $formData['plan-selection'];
 
         try {
-            (new \App\Models\Plans())->find($this->plan_id);
+            (new \App\Models\Plans())->findOrFail($this->plan_id);
+            header("HX-Refresh: true");
         } catch (ModelNotFoundException $e) {
             throw new FormException("Sorry, this meal plan is not recognized");
         }
-
-       
     }
 
     public function saveUpdate()
