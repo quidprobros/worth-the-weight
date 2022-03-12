@@ -616,7 +616,6 @@ Flight::map('notFound', function () {
 });
 
 Flight::map('error', function ($ex) {
-    // bdump(Debugger::)
     //Flight::log($e->getMessage(), "error");
 //     Flight::log($ex->getMessage());
 //     if (true == Flight::get("debug_mode")) {

@@ -6,7 +6,7 @@ class JournalItem extends \Illuminate\Database\Eloquent\Model
 {
     protected $primaryKey = "id";
     protected $table = "points_records";
-    protected $fillable = ["user_id", "food_id", "points", "quantity", "date"];
+    protected $fillable = ["user_id", "food_id", "points", "quantity", "date", "plan_id"];
 
     public function getSum($date)
     {

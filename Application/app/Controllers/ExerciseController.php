@@ -13,7 +13,6 @@ class ExerciseController extends BaseController
 
     public function __construct(Request $request, $offset)
     {
-        bdump($request->data);
         $this->request = $request;
         $this->offset = $offset;
         $this->exercised = isset($request->data['exercised']) ? 1 : 0; // from checkbox
