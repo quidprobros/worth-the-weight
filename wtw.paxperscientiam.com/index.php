@@ -616,16 +616,15 @@ Flight::map('notFound', function () {
 });
 
 Flight::map('error', function ($ex) {
-    //Flight::log($e->getMessage(), "error");
-//     Flight::log($ex->getMessage());
-//     if (true == Flight::get("debug_mode")) {
-//         Flight::log('bluescreen in debug mode');
-//         $bs = new Tracy\BlueScreen();
-//         $bs->render($ex);
-//     } else {
-//         Flight::log('bluescreen in production mode');
-//         throw $ex;
-//     }
+    Flight::log($ex->getMessage(), "error");
+    if (true == Flight::get("debug_mode")) {
+        Flight::log('bluescreen in debug mode');
+        $bs = new Tracy\BlueScreen();
+        $bs->render($ex);
+    } else {
+        Flight::log('bluescreen in production mode');
+        throw $ex;
+    }
 });
 
 Flight::start();

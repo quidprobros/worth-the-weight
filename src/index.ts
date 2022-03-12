@@ -132,6 +132,7 @@ export function initCalendar() {
             })
                 .then(response => response.json())
                 .then((json) => {
+                    console.log(json)
                     if (Array.isArray(json.output)) {
                         json.output.forEach(<T extends {date:string,points:number}>(item: T) => {
                             const date = item.date // this is CORRECT
