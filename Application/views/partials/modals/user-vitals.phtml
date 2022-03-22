@@ -1,0 +1,40 @@
+<?
+use Carbon\Carbon;
+?>
+<div class="reveal medium" id="user-settings-modal" data-reveal>
+    <h1>Settings</h1>
+    <form name='user-settings-form'
+          hx-post="/user-vitals"
+          hx-swap='none'
+          class='grid-x'>
+        <fieldset class="cell small-12 fieldset">
+            <legend>Weight</legend>
+            <div class="form-group">
+                <label><strong>Select log date</strong></label>
+                <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
+                <p class="help-text">Only change if entering your weight for a past date.</p>
+            </div>
+            <div class="grid-x">
+                <div class="cell auto">
+                    <label><strong>Weight value</strong></label>
+                    <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'"/>
+                </div>
+                <div class="cell small-3">
+                    <label><strong>Unit</strong></label>
+                    <select id="food-selection" name='food-selection' class='form-control'>
+                        <? foreach ($weight_units_collection as $weight_model) { ?>
+                        <option value="<?=$weight_model->id?>"><?=$weight_model->unit_name?></option>
+                        <? } ?>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+        <div class="cell small-12">
+            <input type="submit" class="large button expanded" value="Save"></input>
+        </div>
+    </form>
+
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>

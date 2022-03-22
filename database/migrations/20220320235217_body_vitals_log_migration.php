@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class UserGoalsMigration extends AbstractMigration
+final class BodyVitalsLogMigration extends AbstractMigration
 {
     /**
      * Change Method.
@@ -18,19 +18,15 @@ final class UserGoalsMigration extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('user_goals');
-        // autoincrementing key autocreated by phinx
-        $table
-            ->addColumn('personal_title', 'text')
+        $table = $this->table('body_vitals_log')
             ->addColumn('user_id', 'integer', [
                 'null' => false,
+                'signed' => false,
             ])
-            // this is the limit for a given day
-            ->addColumn('daily_points', 'float', [
-                'default' => 0.0
+            ->addColumn('body_weight_id', 'integer')
+            ->addTimeStamps()
+            ->addForeignKey('body_weight_id', 'body_weight', 'id', [
             ])
-            ->addColumn('created_at', 'datetime')
-            ->addColumn('updated_at', 'datetime')
             ->create();
 
     }

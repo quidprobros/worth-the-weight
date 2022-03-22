@@ -240,6 +240,43 @@ $(() => {
 
     });
 
+    $(document).on("click",  "#show-user-vitals-button", function () {
+        fetch(`/modals/user-vitals`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'text/html'
+            },
+        })
+            .then(response => response.text())
+            .then(text => {
+                const $text = $(text)
+                const modal = new Reveal($text)
+                htmx.process(modal.$element[0]);
+
+                $("form", modal.$element).on("submit", () => {
+                   // delayedReload(300);
+                });
+
+                $(`#${modal.id}`).on('closed.zf.reveal', function (e) {
+                    e.currentTarget.remove();
+                });
+
+                // new SlimSelect({
+                //     select: '#plan-selection',
+                //     allowDeselect: true,
+                //     allowDeselectOption: true,
+                //     addToBody: true,
+                // })
+
+                modal.open();
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    });
+
+
     $(document).on("action", function (e) {
         dlv(App, dlv(e, "detail.xpath") as string)
     })

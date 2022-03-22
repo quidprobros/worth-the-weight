@@ -418,6 +418,17 @@ Flight::route('GET /modals/user-settings', function () {
     }
 });
 
+Flight::route('GET /modals/user-vitals', function () {
+    try {
+        $controller = new App\Controllers\UserVitalsModalController(Flight::request());
+        $controller();
+    } catch (Exception $e) {
+        Flight::log($e->getMessage());
+        Flight::halt(404);
+    }
+});
+
+
 Flight::route('GET /journal/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
         Flight::notFound();
@@ -569,8 +580,19 @@ Flight::route('POST /user-settings', function () {
         Flight::log($e->getMessage(), "error");
         exit;
     }
-
 });
+
+Flight::route('POST /user-vitals', function () {
+    try {
+        $controller = new \App\Controllers\UserVitalsController(Flight::request());
+        $controller->saveUpdate();
+    } catch (\App\Exceptions\FormException $e) {
+        Flight::hxheader($e->getMessage(), "error");
+        Flight::log($e->getMessage(), "error");
+        exit;
+    }
+});
+
 
 Flight::route('POST /journal-entry', function () {
     try {

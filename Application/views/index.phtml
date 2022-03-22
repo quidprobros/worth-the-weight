@@ -67,7 +67,7 @@ Illuminate\Support\Facades\Config;
                                                     <select id="food-selection" name='food-selection' class='form-control' required>
                                                         <option data-placeholder="Select food ..."></option>
                                                         <? foreach ($foods as $food) { ?>
-                                                            <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                        <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
                                                         <? } ?>
                                                     </select>
                                                 </div>
@@ -75,8 +75,10 @@ Illuminate\Support\Facades\Config;
                                             <fieldset class="cell small-12 fieldset">
                                                 <div class="form-group">
                                                     <label>
-                                                        <strong class="help-cursor" aria-label="Fraction of base unit consumed" data-microtip-position="right" role="tooltip">Multiplier<sup>ⓘ</sup></strong></label>
+                                                        <strong class="help-cursor" aria-label="Fraction of base unit consumed" data-microtip-position="right" role="tooltip">Multiplier&nbsp;ⓘ</strong></label>
                                                     <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
+
+
                                                 </div>
                                             </fieldset>
                                             <div class="cell small-12">
@@ -124,7 +126,8 @@ Illuminate\Support\Facades\Config;
                     Portrait mode works best!
                 </div>
                 <div class="cell auto">
-                    <div class="grid-x text-right">
+                    <div class="grid-x text-right small-up-3">
+                        <div class="cell"><button id='show-user-vitals-button' type="button" class="clear button">[vitals] </button></div>
                         <div class="cell"><button id='show-user-settings-button' type="button" class="clear button">[settings] </button></div>
                         <div class="cell"><span>Logged in as <strong><?=Flight::auth()->getUsername()?></strong></span></div>
                     </div>
@@ -132,6 +135,19 @@ Illuminate\Support\Facades\Config;
             </div>
 
         </div>
+        <?PHP
+        $template = \Tamtamchik\SimpleFlash\TemplateFactory::create(\Tamtamchik\SimpleFlash\Templates::FOUNDATION);
+        $flash = new \Tamtamchik\SimpleFlash\Flash($template);
+
+        echo $flash
+        ->error(['Invalid email!', 'Invalid username!'])
+        ->warning('Warning message.')
+        ->info('Info message.')
+        ->success('Success message!')
+        ->display();
+
+
+        ?>
 
         <script>
          htmx.onLoad(function(elt){

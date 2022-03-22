@@ -16,7 +16,6 @@ class JournalEntryCreateController
     public function __construct(Request $request)
     {
         $formData = $request->data;
-        Debugger::log($formData);
         $this->active_user = Flight::get('ActiveUser');
 
         if (false == is_numeric($formData['amount'])) {

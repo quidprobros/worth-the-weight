@@ -1,30 +1,68 @@
 <?PHP
 
-s(App\Enums\PlanSelection::GREEN);
+$m = new App\Models\MeasurementUnits();
 
-
-
-s(gethostname());
-
-
+d($m->heights()->toArray());
 exit;
 
-foreach ($plans::get() as $plan) {
-    s($plan->hasOneThrough(
-        App\Models\User::class,
-        App\Models\UserSettings::class,
-        'plan_id', // Foreign key on the user_settings table...
-        'id', // Foreign key on the user table...
-        'id', // Local key on the plans table...
-        'user_id' // Local key on the user_settings table...
-    )->toSql());
-}
 
+$template = \Tamtamchik\SimpleFlash\TemplateFactory::create(\Tamtamchik\SimpleFlash\Templates::FOUNDATION);
+$flash = new \Tamtamchik\SimpleFlash\Flash($template);
+
+echo $flash
+        ->error(['Invalid email!', 'Invalid username!'])
+        ->warning('Warning message.')
+        ->info('Info message.')
+        ->success('Success message!')
+        ->display();
+
+
+?>
+
+// Start a Session
+if( !session_id() ) @session_start();
+
+use \Tamtamchik\SimpleFlash\Flash;
+use Tamtamchik\SimpleFlash\Templates;
+use Tamtamchik\SimpleFlash\TemplateFactory;
+
+// Instance
+$template = TemplateFactory::create(Templates::FOUNDATION);
+$flash = new Flash($template);
+
+echo $flash
+  ->error(['Invalid email!', 'Invalid username!'])
+  ->warning('Warning message.')
+  ->info('Info message.')
+  ->success('Success message!')
+  ->display();
+
+
+// s(App\Enums\PlanSelection::GREEN);
+//
+//
+//
+// s(gethostname());
+//
+//
+// exit;
+//
+// foreach ($plans::get() as $plan) {
+//    s($plan->hasOneThrough(
+//        App\Models\User::class,
+//        App\Models\UserSettings::class,
+//        'plan_id', // Foreign key on the user_settings table...
+//        'id', // Foreign key on the user table...
+//        'id', // Local key on the plans table...
+//        'user_id' // Local key on the user_settings table...
+//    )->toSql());
+// }
+//
 /* $food_model = new App\Models\Food();
- * 
+ *
  * s($user->today->toArray());;
- * 
+ *
  * s($user->currentDailyPointsGoal->toArray());
- * 
- * 
+ *
+ *
  * s($food_model->first()->green_plan_points); */

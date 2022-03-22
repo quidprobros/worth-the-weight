@@ -33,7 +33,9 @@
         "illuminate/support": "^8.79",
         "ramsey/uuid": "^4.2",
         "illuminate/events": "^8.79",
-        "laravel/helpers": "^1.5"
+        "laravel/helpers": "^1.5",
+        "plasticbrain/php-flash-messages": "^1.0",
+        "tamtamchik/simple-flash": "^2.0"
     },
     "authors": [
         {
