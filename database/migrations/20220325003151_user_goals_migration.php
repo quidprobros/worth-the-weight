@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class BodyWeightMigration extends AbstractMigration
+final class UserGoalsMigration extends AbstractMigration
 {
     /**
      * Change Method.
@@ -18,16 +18,15 @@ final class BodyWeightMigration extends AbstractMigration
      */
     public function change(): void
     {
-        $$this->table('body_weight')
-            ->addColumn("weight_value", "float", [
+        $this->table("user_goals")
+            ->addColumn('user_id', 'integer', [
                 'null' => false,
+                'signed' => false,
             ])
-            ->addColumn("measurement_unit_id", "integer", [
-                'null' => false,
-            ])
+            ->addColumn("point_goals_id", "integer")
             ->addTimeStamps()
-            ->addForeignKey('measurement_unit_id', 'measurement_unit_type', 'id', [
-            ])
+            ->addForeignKey('user_id', 'users', 'id')
+            ->addForeignKey('point_goals_id', "point_goals", "id")
             ->create();
     }
 }

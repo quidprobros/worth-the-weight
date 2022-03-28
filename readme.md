@@ -112,6 +112,7 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
 - [ ] figure out events/listeners
 - [ ] new user, autocreate new settings entry, new user goals
 - [ ] figure out flash messages
+- [ ] use validation library
 
 # docker
 - [ ] find that docker multistage document that explained how to keep local vendor and docker vendor separated

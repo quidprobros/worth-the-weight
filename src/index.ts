@@ -213,10 +213,17 @@ $(() => {
         })
             .then(response => response.text())
             .then(text => {
+
                 const $text = $(text)
                 const modal = new Reveal($text)
                 htmx.process(modal.$element[0]);
 
+                if (0 < $("[name='user-settings-form']").length) {
+                    console.log("USF");
+                    Inputmask({"alias": "decimal"}).mask($("[name='plan-points-goal']", "[name='user-settings-form']")[0]);
+                }
+
+                
                 $("form", modal.$element).on("submit", () => {
                    // delayedReload(300);
                 });
@@ -291,3 +298,5 @@ $(() => {
     });
 
 });
+
+

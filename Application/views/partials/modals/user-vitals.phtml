@@ -11,17 +11,17 @@ use Carbon\Carbon;
             <legend>Weight</legend>
             <div class="form-group">
                 <label><strong>Select log date</strong></label>
-                <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
+                <input class="form-control" name="weight_log[date]" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
                 <p class="help-text">Only change if entering your weight for a past date.</p>
             </div>
             <div class="grid-x">
                 <div class="cell auto">
                     <label><strong>Weight value</strong></label>
-                    <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'"/>
+                    <input class='form-control' type="text" name="weight_log[amount]" value="" data-inputmask="'alias': 'numeric'"/>
                 </div>
                 <div class="cell small-3">
                     <label><strong>Unit</strong></label>
-                    <select id="food-selection" name='food-selection' class='form-control'>
+                    <select id="weight-log-unit" name="weight_log[unit_id]" class='form-control'>
                         <? foreach ($weight_units_collection as $weight_model) { ?>
                         <option value="<?=$weight_model->id?>"><?=$weight_model->unit_name?></option>
                         <? } ?>

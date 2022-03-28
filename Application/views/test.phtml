@@ -1,5 +1,20 @@
 <?PHP
 
+$v = new App\Validations\UserVitalsFormValidator();
+
+$data = [
+    'weight' => [
+        'date' => '2022-02-02',
+        'amount' => 33,
+        'unit_id' => 1,
+    ]
+];
+
+s($v->rules->validate($data));
+s($v->rules->check($data));
+
+exit;
+
 $m = new App\Models\MeasurementUnits();
 
 d($m->heights()->toArray());

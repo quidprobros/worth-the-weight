@@ -12,17 +12,30 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\FormException;
 use Flight;
 use Exception;
+use Respect\Validation\Validator;
+use Respect\Validation\Exceptions\ValidationException;
 
 class UserSettingsController
 {
-    public function __construct(Request $req)
+    public function __construct(Request $req, Validator $validator)
     {
         $formData = $req->data;
-        
+
         $this->active_user = Flight::get('ActiveUser');
 
         $this->plan_id = $formData['plan-selection'];
 
+        // Validate form
+        try {
+            $validator->check($formData);
+        } catch (ValidationException $e) {
+            bdump(['valex' => $e->getMessage()]);
+        } catch (\Error $e) {
+            bdump($e);
+        }
+
+
+        // verify data integrity
         try {
             (new \App\Models\Plans())->findOrFail($this->plan_id);
             header("HX-Refresh: true");

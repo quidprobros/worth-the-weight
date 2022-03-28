@@ -2,9 +2,7 @@
 use Carbon\Carbon,
 Tracy\Debugger,
 Illuminate\Support\Facades\Config;
-
 ?>
-<!-- mode: web -->
 <!doctype html>
 <html lang="en" class="no-js">
     <?php Debugger::renderLoader() ?>
@@ -67,7 +65,7 @@ Illuminate\Support\Facades\Config;
                                                     <select id="food-selection" name='food-selection' class='form-control' required>
                                                         <option data-placeholder="Select food ..."></option>
                                                         <? foreach ($foods as $food) { ?>
-                                                        <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                            <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
                                                         <? } ?>
                                                     </select>
                                                 </div>
@@ -127,7 +125,7 @@ Illuminate\Support\Facades\Config;
                 </div>
                 <div class="cell auto">
                     <div class="grid-x text-right small-up-3">
-                        <div class="cell"><button id='show-user-vitals-button' type="button" class="clear button">[vitals] </button></div>
+                        <div class="cell"><button id='show-user-vitals-button' type="button" class="clear button" disabled>[vitals] </button></div>
                         <div class="cell"><button id='show-user-settings-button' type="button" class="clear button">[settings] </button></div>
                         <div class="cell"><span>Logged in as <strong><?=Flight::auth()->getUsername()?></strong></span></div>
                     </div>
@@ -135,26 +133,27 @@ Illuminate\Support\Facades\Config;
             </div>
 
         </div>
-        <?PHP
-        $template = \Tamtamchik\SimpleFlash\TemplateFactory::create(\Tamtamchik\SimpleFlash\Templates::FOUNDATION);
-        $flash = new \Tamtamchik\SimpleFlash\Flash($template);
-
-        echo $flash
-        ->error(['Invalid email!', 'Invalid username!'])
-        ->warning('Warning message.')
-        ->info('Info message.')
-        ->success('Success message!')
-        ->display();
+        <?
+        //
+        //         $template = \Tamtamchik\SimpleFlash\TemplateFactory::create(\Tamtamchik\SimpleFlash\Templates::FOUNDATION);
+        //         $flash = new \Tamtamchik\SimpleFlash\Flash($template);
+        //
+        //         $result = $flash
+        //         ->error(['Invalid email!', 'Invalid username!'])
+        //         ->warning('Warning message.')
+        //         ->info('Info message.')
+        //         ->success('Success message!')
+        //         ->display();
 
 
         ?>
 
         <script>
-         htmx.onLoad(function(elt){
-             if ("this-container2" == elt.id) {
-                 initCalendar()
-             }
-         });
+          htmx.onLoad(function(elt){
+              if ("this-container2" == elt.id) {
+                  initCalendar()
+              }
+          });
         </script>
     </body>
 </html>

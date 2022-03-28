@@ -1,22 +1,40 @@
 <?PHP
+
 error_reporting(error_reporting() & ~E_DEPRECATED);
 
 date_default_timezone_set('US/Eastern');
 
-
 use Tracy\Debugger;
 use Tracy\Bridges\Psr\PsrToTracyLoggerAdapter;
+
 use Carbon\Carbon;
+
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Spatie\UrlSigner\MD5UrlSigner;
-use App\Models\ActiveUser;
-use Delight\Base64\Throwable\Exception;
 use Illuminate\Support\Facades\Config;
+
+use Spatie\UrlSigner\MD5UrlSigner;
+use Delight\Base64\Throwable\Exception;
+
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-use function League\Uri\parse;
+use App\Validations\{UserVitalsFormValidator, UserSettingsFormValidator};
+use App\Models\ActiveUser;
+use App\Controllers\{
+AuthenticationController,
+    BeefController,
+    ExerciseController,
+    GotoDateModalController,
+    HomeController,
+    JournalEntryRemoveController,
+    JournalEntryCreateController,
+    RedirectDateController,
+    UserSettingsModalController,
+    UserSettingsController,
+    UserVitalsModalController,
+    UserVitalsCreateController
+};
 
 const FILE_ROOT = __DIR__ . "/../";
 
@@ -37,7 +55,7 @@ $tracyLogger = new PsrToTracyLoggerAdapter($monolog);
 
 Debugger::setLogger($tracyLogger);
 
-Debugger::setSessionStorage(new Tracy\NativeSession);
+Debugger::setSessionStorage(new Tracy\NativeSession());
 
 
 if ("DEBUG" == Config::get("app.run_mode")) {
@@ -184,7 +202,7 @@ Flight::route("POST /login", function () {
     }
 
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new AuthenticationController(Flight::request());
         $controller->loginUser();
         header("HX-Redirect: /home");
     } catch (\Delight\Auth\InvalidEmailException $e) {
@@ -216,7 +234,7 @@ Flight::route("POST /login", function () {
 
 Flight::route("POST /register", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new AuthenticationController(Flight::request());
         $controller->registerUser(true); // argument: true means login immediately after successful registration
         Flight::hxtrigger([
             "action" => [
@@ -258,13 +276,13 @@ Flight::route("POST /register", function () {
     }
 });
 
-Flight::route("GET /reset-pw", function() {
+Flight::route("GET /reset-pw", function () {
     Flight::render("reset-pw");
 });
 
 Flight::route("POST /reset-password", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new AuthenticationController(Flight::request());
         $controller->resetPassword();
         $controller->useOtherRoute("partials/pw-reset");
         $controller();
@@ -299,7 +317,7 @@ Flight::route("GET /verify_email", function () {
 
 Flight::route("POST /verify_email", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new AuthenticationController(Flight::request());
         $controller->setNewPassword();
         $controller->useOtherRoute();
     } catch (\App\Exceptions\FormException $e) {
@@ -319,7 +337,7 @@ Flight::route("*", function () {
         Flight::set("ActiveUser", ActiveUser::init());
     } catch (ModelNotFoundException $e) {
         Flight::log($e->getMessage());
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new AuthenticationController(Flight::request());
         $controller->logoutUser();
         Flight::redirect("/login");
     } catch (Exception $e) {
@@ -335,7 +353,7 @@ Flight::route('GET *', function () {
 
 Flight::route("GET|POST /logout", function () {
     try {
-        $controller = new App\Controllers\AuthenticationController(Flight::request());
+        $controller = new AuthenticationController(Flight::request());
         $controller->logoutUser();
         header("HX-Redirect: /login");
     } catch (\Delight\Auth\NotLoggedInException $e) {
@@ -371,7 +389,7 @@ Flight::route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo)
 
     Flight::set("omo", $omo); // journal
     Flight::set("bpo", $bpo); // big-picture
-    $controller = new App\Controllers\HomeController(
+    $controller = new HomeController(
         Flight::request(),
         Flight::get('omo'),
         Flight::get('bpo')
@@ -381,12 +399,12 @@ Flight::route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo)
 });
 
 Flight::route('GET /goto/@date', function ($date) {
-    (new App\Controllers\RedirectDateController($date))();
+    (new RedirectDateController($date))();
 });
 
 Flight::route('GET /beef/@min/@max', function ($min, $max) {
     try {
-        $controller = new App\Controllers\BeefController(
+        $controller = new BeefController(
             Flight::request(),
             $min,
             $max
@@ -400,7 +418,7 @@ Flight::route('GET /beef/@min/@max', function ($min, $max) {
 
 Flight::route('GET /modals/go-to-date-modal/@date', function ($date) {
     try {
-        $controller = new App\Controllers\GotoDateModalController(Flight::request(), $date);
+        $controller = new GotoDateModalController(Flight::request(), $date);
         $controller();
     } catch (Exception $e) {
         Flight::log($e->getMessage());
@@ -410,7 +428,7 @@ Flight::route('GET /modals/go-to-date-modal/@date', function ($date) {
 
 Flight::route('GET /modals/user-settings', function () {
     try {
-        $controller = new App\Controllers\UserSettingsModalController(Flight::request());
+        $controller = new UserSettingsModalController(Flight::request());
         $controller();
     } catch (Exception $e) {
         Flight::log($e->getMessage());
@@ -420,7 +438,7 @@ Flight::route('GET /modals/user-settings', function () {
 
 Flight::route('GET /modals/user-vitals', function () {
     try {
-        $controller = new App\Controllers\UserVitalsModalController(Flight::request());
+        $controller = new UserVitalsModalController(Flight::request());
         $controller();
     } catch (Exception $e) {
         Flight::log($e->getMessage());
@@ -434,7 +452,7 @@ Flight::route('GET /journal/rel/@offset', function ($offset) {
         Flight::notFound();
     }
     try {
-        $controller = new App\Controllers\HomeController(
+        $controller = new HomeController(
             Flight::request(),
             $offset,
             Flight::get("bpo")
@@ -456,7 +474,7 @@ Flight::route('GET /home/right-canvas/rel', function () {
 
 Flight::route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($omo, $bpo) {
     try {
-        $controller = new App\Controllers\HomeController(
+        $controller = new HomeController(
             Flight::request(),
             $omo,
             $bpo
@@ -471,7 +489,7 @@ Flight::route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($
 Flight::route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo) {
 
     try {
-        $controller = new App\Controllers\HomeController(
+        $controller = new HomeController(
             Flight::request(),
             $omo,
             $bpo
@@ -489,7 +507,7 @@ Flight::route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function 
     }
 
     try {
-        $controller = new App\Controllers\HomeController(
+        $controller = new HomeController(
             Flight::request(),
             $omo,
             $bpo
@@ -507,7 +525,7 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     }
 
     try {
-        $controller = new App\Controllers\JournalEntryRemoveController();
+        $controller = new JournalEntryRemoveController();
         $controller->deleteEntry($id);
         Flight::hxheader("Deleted.");
     } catch (\Exception $e) {
@@ -520,7 +538,7 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
 if (true == Flight::get("debug_mode")) {
     Flight::route('POST /drop-food-log', function () {
         try {
-            $controller = new App\Controllers\JournalEntryRemoveController();
+            $controller = new JournalEntryRemoveController();
             $controller->deleteAll();
             Flight::stop();
         } catch (Exception $e) {
@@ -536,7 +554,7 @@ Flight::route('POST /journal-entry/exercised/rel/@offset', function ($offset) {
         Flight::notFound();
     }
     try {
-        $controller = new App\Controllers\ExerciseController(
+        $controller = new ExerciseController(
             Flight::request(),
             $offset
         );
@@ -573,7 +591,10 @@ Flight::route('GET /food-support-message', function () {
 
 Flight::route('POST /user-settings', function () {
     try {
-        $controller = new \App\Controllers\UserSettingsController(Flight::request());
+        $controller = new UserSettingsController(
+            Flight::request(),
+            (new UserSettingsFormValidator())->rules
+        );
         $controller->saveUpdate();
     } catch (\App\Exceptions\FormException $e) {
         Flight::hxheader($e->getMessage(), "error");
@@ -584,7 +605,10 @@ Flight::route('POST /user-settings', function () {
 
 Flight::route('POST /user-vitals', function () {
     try {
-        $controller = new \App\Controllers\UserVitalsController(Flight::request());
+        $controller = new UserVitalsCreateController(
+            Flight::request(),
+            (new UserVitalsFormValidator())->rules
+        );
         $controller->saveUpdate();
     } catch (\App\Exceptions\FormException $e) {
         Flight::hxheader($e->getMessage(), "error");
@@ -599,7 +623,7 @@ Flight::route('POST /journal-entry', function () {
         if (!Flight::verifySignature()) {
             throw new \App\Exceptions\FormException("Sorry, your progress was not recorded.");
         }
-        $controller = new App\Controllers\JournalEntryCreateController(Flight::request());
+        $controller = new JournalEntryCreateController(Flight::request());
     } catch (\App\Exceptions\FormException $e) {
         echo '<div>Something went wrong!:(</div>';
         Flight::hxheader($e->getMessage(), "error");
