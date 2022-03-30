@@ -148,6 +148,10 @@ add user to _www group_
 
 not clear what permissions should be for db to allow editing, and reading, and etc
 
+
+# .
+- [ ] Popup telling user to select plan before proceeding
+
 # Reach goals
 - [ ] Should check if query value exists before making query
 - [ ] separate service for npm stuff

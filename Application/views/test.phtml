@@ -2,14 +2,26 @@
 
 // get user
 $user = Flight::get("ActiveUser");
+
+// foreach ($user->settings->get() as $sett) {
+//     d($sett->toArray());
+// }
+
+d($user->settings->plan()->exists());
+
+
+exit;
+
 //s($user->id);
 //exit;
 // get settings from user
 $settings = $user->settings;
-d($settings->toArray());
-s($settings->toSql());
+!d($settings->toArray());
+!d(Illuminate\Database\Capsule\Manager::getQueryLog());
+//s($settings->getQuery()->toSql());
 
-
+!d($settings->plan->toArray());
+!d(Illuminate\Database\Capsule\Manager::getQueryLog());
 
 
 exit;

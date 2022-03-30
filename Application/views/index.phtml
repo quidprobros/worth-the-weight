@@ -2,6 +2,9 @@
 use Carbon\Carbon,
 Tracy\Debugger,
 Illuminate\Support\Facades\Config;
+
+$has_plan = Flight::get("ActiveUser")->settings->plan()->exists();
+$disabled = $has_plan ? "" : "disabled";
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
@@ -51,10 +54,7 @@ Illuminate\Support\Facades\Config;
                                               action="/journal-entry"
                                               method="POST"
                                               target="some-iframe">
-                                            <input type="hidden"
-                                                   name="token"
-                                                   value="<?=Flight::get('csrf_token'); ?>">
-                                            <fieldset class="cell small-12 fieldset">
+                                            <fieldset class="cell small-12 fieldset" <?=$disabled?>>
                                                 <legend>food info</legend>
                                                 <div class='form-group'>
                                                     <label><strong>Select date</strong></label>
@@ -65,12 +65,12 @@ Illuminate\Support\Facades\Config;
                                                     <select id="food-selection" name='food-selection' class='form-control' required>
                                                         <option data-placeholder="Select food ..."></option>
                                                         <? foreach ($foods as $food) { ?>
-                                                            <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                            <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->settings->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
                                                         <? } ?>
                                                     </select>
                                                 </div>
                                             </fieldset>
-                                            <fieldset class="cell small-12 fieldset">
+                                            <fieldset class="cell small-12 fieldset" <?=$disabled?>>
                                                 <div class="form-group">
                                                     <label>
                                                         <strong class="help-cursor" aria-label="Fraction of base unit consumed" data-microtip-position="right" role="tooltip">Multiplier&nbsp;ⓘ</strong></label>
@@ -79,11 +79,11 @@ Illuminate\Support\Facades\Config;
 
                                                 </div>
                                             </fieldset>
-                                            <div class="cell small-12">
-                                                <button type="submit" class="shadow expanded rounded button success large"
+                                            <fieldset class="cell small-12 fieldset" <?=$disabled?>>
+                                                <button type="submit" class="shadow expanded rounded button success large <?=$disabled?>"
                                                         hx-post="<?=Flight::url()->sign('/journal-entry/')?>"
                                                         hx-swap="none">submit journal entry</button>
-                                            </div>
+                                            </fieldset>
                                         </form>
 
                                     </div>
@@ -133,7 +133,9 @@ Illuminate\Support\Facades\Config;
             </div>
 
         </div>
+
         <?
+
         //
         //         $template = \Tamtamchik\SimpleFlash\TemplateFactory::create(\Tamtamchik\SimpleFlash\Templates::FOUNDATION);
         //         $flash = new \Tamtamchik\SimpleFlash\Flash($template);
@@ -149,6 +151,15 @@ Illuminate\Support\Facades\Config;
         ?>
 
         <script>
+         <? if (true != $has_plan) { ?>
+         $.notify("Hello! You must choose a plan from the settings menu!",
+                  {
+                      "className": "info",
+                      "position": "top left",
+                      "autoHide": false
+                  }
+         );
+         <? } ?>
           htmx.onLoad(function(elt){
               if ("this-container2" == elt.id) {
                   initCalendar()
