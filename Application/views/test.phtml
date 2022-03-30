@@ -1,5 +1,34 @@
 <?PHP
 
+// get user
+$user = Flight::get("ActiveUser");
+//s($user->id);
+//exit;
+// get settings from user
+$settings = $user->settings;
+d($settings->toArray());
+s($settings->toSql());
+
+
+
+
+exit;
+
+
+foreach ((new App\Models\Plans())::get() as $plan) {
+    s($plan->hasOneThrough(
+        App\Models\User::class,
+        App\Models\UserSettings::class,
+        'plan_id', // Foreign key on the user_settings table...
+        'id', // Foreign key on the user table...
+        'id', // Local key on the plans table...
+        'user_id' // Local key on the user_settings table...
+    )->get()->toArray());
+}
+
+
+
+exit;
 $v = new App\Validations\UserVitalsFormValidator();
 
 $data = [

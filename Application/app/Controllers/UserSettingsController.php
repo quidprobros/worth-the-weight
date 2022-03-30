@@ -9,7 +9,7 @@ use Aura\Payload_Interface\PayloadStatus;
 use flight\net\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use App\Exceptions\FormException;
+use App\Exceptions\{FormException, FormInlineException};
 use Flight;
 use Exception;
 use Respect\Validation\Validator;
@@ -21,18 +21,20 @@ class UserSettingsController
     {
         $formData = $req->data;
 
-        $this->active_user = Flight::get('ActiveUser');
+        // $this->active_user = Flight::get('ActiveUser');
 
-        $this->plan_id = $formData['plan-selection'];
+        // $this->plan_id = $formData['plan-selection'];
 
-        // Validate form
-        try {
-            $validator->check($formData);
-        } catch (ValidationException $e) {
-            bdump(['valex' => $e->getMessage()]);
-        } catch (\Error $e) {
-            bdump($e);
-        }
+        // // Validate form
+        // Flight::log($formData);
+        // bdump($formData);
+        //        try {
+            $validator->check($formData->getData());
+            //        } catch (ValidationException $e) {
+            //            throw new FormInlineException($e->getMessage());
+            //        } catch (\Error $e) {
+            //            bdump($e);
+            //        }
 
 
         // verify data integrity

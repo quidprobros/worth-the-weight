@@ -11,6 +11,6 @@ class UserSettings extends \Illuminate\Database\Eloquent\Model
 
     public function plan()
     {
-        return $this->belongsTo(Plans::class, "plan_id");
+        return $this->belongsTo(Plans::class, "plan_id")->withDefault();
     }
 }

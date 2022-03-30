@@ -589,13 +589,24 @@ Flight::route('GET /food-support-message', function () {
     echo $greetings[0];
 });
 
-Flight::route('POST /user-settings', function () {
+Flight::route('POST /user-settings/@setting', function ($setting) {
+    // assert that @setting exists
+    
+
     try {
+        if ("plan-points-goal" == $setting) {
+            (new UserSettingsFormValidator())->pointsRule->check($setting);
+            exit;
+        }
+
         $controller = new UserSettingsController(
             Flight::request(),
             (new UserSettingsFormValidator())->rules
         );
         $controller->saveUpdate();
+    } catch (\Respect\Validation\Exceptions\ValidationException $e) {
+        echo $e->getMessage();
+        exit;
     } catch (\App\Exceptions\FormException $e) {
         Flight::hxheader($e->getMessage(), "error");
         Flight::log($e->getMessage(), "error");

@@ -44,14 +44,8 @@ class User extends Model
 
     public function settings()
     {
-        return $this->hasOne(UserSettings::class, "user_id");
+        return $this->hasOne(UserSettings::class, "user_id")->withDefault();
     }
-
-    public function plan()
-    {
-        return $this->settings->belongsTo(Plans::class);
-    }
-
 
     public function exercisedOnDate($date)
     {

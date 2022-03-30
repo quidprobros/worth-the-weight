@@ -8,10 +8,10 @@
             <legend>Plan</legend>
             <div class="form-group">
                 <label><strong>select plan</strong></label>
-                <select id="plan-selection" name='plan-selection' class='form-control' required>
+                <select id="plan-selection" name='plan-selection' class='form-control'>
                     <option data-placeholder="Select plan ..."></option>
                     <? foreach ((new \App\Models\Plans())::get() as $plan) { ?>
-                        <? if (Flight::get('ActiveUser')->plan->id == $plan->id) { ?>
+                        <? if (Flight::get('ActiveUser')->settings->plan->id == $plan->id) { ?>
                             <option value="<?=$plan->id?>" selected><?=$plan->plan_short_name?></option>
                         <? } else { ?>
                             <option value="<?=$plan->id?>"><?=$plan->plan_short_name?></option>
@@ -19,9 +19,10 @@
                     <? } ?>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" hx-target="#error">
                 <label for=""><strong>points goal</strong></label>
-                <input id="plan-points-goal" class="form-control" name="plan-points-goal" type="text" value="" data-inputmask="'alias': 'numeric'"/>
+                <input id="plan-points-goal" class="form-control" name="plan-points-goal" type="text" value="" data-inputmask="'alias': 'numeric'" hx-post="/user-settings/plan-points-goal"/>
+                <div id="error"></div>
             </div>
         </fieldset>
         <div class="cell small-12">

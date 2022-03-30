@@ -10,8 +10,9 @@ class UserSettingsFormValidator
 
     public function __construct()
     {
+        $this->pointsRule = (new V())->intVal();
         $this->rules = (new V())
-            ->key("plan-selection", (new V())->intVal())
+            ->key("plan-selection", $this->pointsRule)
             ->key("plan-points-goal", (new V())->number());
     }
 }

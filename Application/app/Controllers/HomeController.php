@@ -60,8 +60,12 @@ class HomeController extends BaseController
                 break;
         };
 
-        
-        $this->foods = Flight::get("ActiveUser")->plan->foods()->get();
+        if (null == Flight::get("ActiveUser")->settings) {
+            $this->foods = (new Illuminate\Database\Eloquent\Collection());
+        } else {
+            $this->foods = Flight::get("ActiveUser")->settings->plan->foods()->get();
+        }
+
         $this->title = $title;
         $this->stats = Flight::stats();
         $this->today_points = $this->stats->points($this->big_picture_day_offset);

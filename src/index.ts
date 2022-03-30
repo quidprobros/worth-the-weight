@@ -219,8 +219,7 @@ $(() => {
                 htmx.process(modal.$element[0]);
 
                 if (0 < $("[name='user-settings-form']").length) {
-                    console.log("USF");
-                    Inputmask({"alias": "decimal"}).mask($("[name='plan-points-goal']", "[name='user-settings-form']")[0]);
+                    // Inputmask({"alias": "decimal"}).mask($("[name='plan-points-goal']", "[name='user-settings-form']")[0]);
                 }
 
                 
