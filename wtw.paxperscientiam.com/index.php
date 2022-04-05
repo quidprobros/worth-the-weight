@@ -605,22 +605,19 @@ Flight::route('POST /user-settings', function () {
             Flight::request(),
             App\Validations\ValidatorStore::userSettingsValidator()
         );
-        if (true === $form->validate()) {
-            Flight::hxheader("YES");
-            $form->saveUpdate();
-        } else {
-            Flight::hxheader("NO");
-        }
+        
+        $form->validate(1);
+        Flight::hxheader("Success!");
+        $form->saveUpdate();
+        header("HX-Refresh:true");
     } catch (ValidationException $e) {
         echo Flight::json(['message' => $e->getMessage()]);
         Flight::hxheader($e->getMessage(), "error");
         Flight::log($e->getMessage(), "error");
     } catch (\App\Exceptions\FormException $e) {
-        echo Flight::json(['message' => $e->getMessage()]);
         Flight::hxheader($e->getMessage(), "error");
         Flight::log($e->getMessage(), "error");
     } catch (\Exception $e) {
-        echo Flight::json(['message' => $e->getMessage()]);
         Flight::hxheader("Something went wrong", "error");
         Flight::log($e->getMessage(), "error");
     }

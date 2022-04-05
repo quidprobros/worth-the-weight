@@ -23,6 +23,7 @@ final class UsersSettingsMigration extends AbstractMigration
              ->addColumn('user_id', 'integer', [
                  'null' => false,
                  'signed' => false,
+                 'unique' => true,
              ])
              ->addColumn('plan_selection', 'text', [
              ])

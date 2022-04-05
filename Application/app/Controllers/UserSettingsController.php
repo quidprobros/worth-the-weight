@@ -25,10 +25,11 @@ class UserSettingsController extends FormController
     public function saveUpdate()
     {
         $result = Flight::get("ActiveUser")
-            ->settings
-            ->updateOrCreate([
-                "plan_id" => $this->data['plan-selection'],
-            ]);
+                ->settings()->upsert([
+                    "user_id" => Flight::get("ActiveUser")->id,
+                    "plan_id" => $this->data['plan-selection'],
+                ], ["user_id"], ["plan_id"])
+                ;
         if (false == $result) {
             throw new FormException("Something went wrong!");
         }

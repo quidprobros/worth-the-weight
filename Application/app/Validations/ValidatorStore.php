@@ -14,9 +14,12 @@ class ValidatorStore
     public static function userSettingsValidator(): Validator
     {
         $pointsRule = (new Validator())->intVal();
-        $planPointsRule = (new Validator())->number();
+        $planPointsRule = (new Validator())
+                        ->optional((new Validator())
+                                   ->number());
         return (new Validator())
                      ->key("plan-selection", $pointsRule)
-                     ->key("plan-points-goal", $planPointsRule, false);
+                     ->key("plan-points-goal", $planPointsRule);
+            ;
     }
 }
