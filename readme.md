@@ -100,6 +100,8 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
   - [ ] Use https://github.com/webpatser/laravel-uuid
   - [ ] update migration
     - [ ] When creating users table, should also create record in users_settings table
+- [ ] need to sanitize all form inputs BEFORE trying to validate
+      
 
 # More features
 - [ ] Allow to add a point goals

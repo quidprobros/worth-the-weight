@@ -15,43 +15,22 @@ use Exception;
 use Respect\Validation\Validator;
 use Respect\Validation\Exceptions\ValidationException;
 
-class UserSettingsController
+class UserSettingsController extends FormController
 {
-    public function __construct(Request $req, Validator $validator)
-    {
-        $formData = $req->data;
-
-        // $this->active_user = Flight::get('ActiveUser');
-
-        // $this->plan_id = $formData['plan-selection'];
-
-        // // Validate form
-        // Flight::log($formData);
-        // bdump($formData);
-        //        try {
-            $validator->check($formData->getData());
-            //        } catch (ValidationException $e) {
-            //            throw new FormInlineException($e->getMessage());
-            //        } catch (\Error $e) {
-            //            bdump($e);
-            //        }
-
-
-        // verify data integrity
-        try {
-            (new \App\Models\Plans())->findOrFail($this->plan_id);
-            header("HX-Refresh: true");
-        } catch (ModelNotFoundException $e) {
-            throw new FormException("Sorry, this meal plan is not recognized");
-        }
-    }
+    protected $filters = [
+        'plan-selection' => 'trim|empty_string_to_null',
+        'plan-points-goal' => 'trim|empty_string_to_null',
+    ];
 
     public function saveUpdate()
     {
-        $settings_modal = $this->active_user->settings;
-        $settings_modal->update([
-            "plan_id" => $this->plan_id,
-        ]);
-
+        $result = Flight::get("ActiveUser")
+            ->settings
+            ->updateOrCreate([
+                "plan_id" => $this->data['plan-selection'],
+            ]);
+        if (false == $result) {
+            throw new FormException("Something went wrong!");
+        }
     }
 }

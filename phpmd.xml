@@ -24,4 +24,6 @@
         <exclude name="CamelCaseParameterName" />
         <exclude name="CamelCaseVariableName" />
     </rule>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
 </ruleset>

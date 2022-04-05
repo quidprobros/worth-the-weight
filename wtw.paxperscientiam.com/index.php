@@ -36,6 +36,8 @@ AuthenticationController,
     UserVitalsCreateController
 };
 
+use Respect\Validation\Exceptions\ValidationException;
+
 const FILE_ROOT = __DIR__ . "/../";
 
 session_start();
@@ -56,7 +58,6 @@ $tracyLogger = new PsrToTracyLoggerAdapter($monolog);
 Debugger::setLogger($tracyLogger);
 
 Debugger::setSessionStorage(new Tracy\NativeSession());
-
 
 if ("DEBUG" == Config::get("app.run_mode")) {
     Flight::set("debug_mode", true);
@@ -351,6 +352,15 @@ Flight::route('GET *', function () {
     return true;
 }, true);
 
+
+// middleware kinda
+// Flight::before("start", function () {
+
+// });
+// Flight::route('POST *', function () {
+//     bdump("MIDDLE");
+// }, true);
+
 Flight::route("GET|POST /logout", function () {
     try {
         $controller = new AuthenticationController(Flight::request());
@@ -589,28 +599,30 @@ Flight::route('GET /food-support-message', function () {
     echo $greetings[0];
 });
 
-Flight::route('POST /user-settings/@setting', function ($setting) {
-    // assert that @setting exists
-    
-
+Flight::route('POST /user-settings', function () {
     try {
-        if ("plan-points-goal" == $setting) {
-            (new UserSettingsFormValidator())->pointsRule->check($setting);
-            exit;
-        }
-
-        $controller = new UserSettingsController(
+        $form = new UserSettingsController(
             Flight::request(),
-            (new UserSettingsFormValidator())->rules
+            App\Validations\ValidatorStore::userSettingsValidator()
         );
-        $controller->saveUpdate();
-    } catch (\Respect\Validation\Exceptions\ValidationException $e) {
-        echo $e->getMessage();
-        exit;
-    } catch (\App\Exceptions\FormException $e) {
+        if (true === $form->validate()) {
+            Flight::hxheader("YES");
+            $form->saveUpdate();
+        } else {
+            Flight::hxheader("NO");
+        }
+    } catch (ValidationException $e) {
+        echo Flight::json(['message' => $e->getMessage()]);
         Flight::hxheader($e->getMessage(), "error");
         Flight::log($e->getMessage(), "error");
-        exit;
+    } catch (\App\Exceptions\FormException $e) {
+        echo Flight::json(['message' => $e->getMessage()]);
+        Flight::hxheader($e->getMessage(), "error");
+        Flight::log($e->getMessage(), "error");
+    } catch (\Exception $e) {
+        echo Flight::json(['message' => $e->getMessage()]);
+        Flight::hxheader("Something went wrong", "error");
+        Flight::log($e->getMessage(), "error");
     }
 });
 
@@ -618,7 +630,7 @@ Flight::route('POST /user-vitals', function () {
     try {
         $controller = new UserVitalsCreateController(
             Flight::request(),
-            (new UserVitalsFormValidator())->rules
+            App\Validations\ValidatorStore::userVitalsValidator()
         );
         $controller->saveUpdate();
     } catch (\App\Exceptions\FormException $e) {
@@ -665,6 +677,21 @@ if (true == Flight::get("debug_mode")) {
         $controller = new App\Controllers\TestController('test');
         $controller();
     });
+
+    Flight::route('GET /form', function () {
+        Flight::render("form");
+    });
+
+    Flight::route('POST /form-test', function () {
+        $controller = new App\Controllers\ProcessFormController(Flight::request()->data->getData());
+
+        // 1. Filter data.
+        // 2. Validate data.
+        // 3. Process data
+
+
+    });
+
 }
 
 Flight::map('notFound', function () {
@@ -678,6 +705,7 @@ Flight::map('error', function ($ex) {
         Flight::log('bluescreen in debug mode');
         $bs = new Tracy\BlueScreen();
         $bs->render($ex);
+        exit;
     } else {
         Flight::log('bluescreen in production mode');
         throw $ex;

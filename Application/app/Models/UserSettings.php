@@ -7,7 +7,7 @@ class UserSettings extends \Illuminate\Database\Eloquent\Model
     protected $primaryKey = "id";
     protected $table = "users_settings";
 
-    protected $fillable = ["plan_id"];
+    protected $fillable = ["plan_id", "user_id"];
 
     public function plan()
     {

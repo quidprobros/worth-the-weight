@@ -43,7 +43,7 @@ import SlimSelect from 'slim-select'
 import notify from "notifyjs-browser"
 notify(window, $)
 
-import {OffCanvas, Reveal} from 'foundation-sites'
+import {Abide, OffCanvas, Reveal} from 'foundation-sites'
 
 
 async function delay(duration = 0) {
@@ -219,13 +219,10 @@ $(() => {
                 htmx.process(modal.$element[0]);
 
                 if (0 < $("[name='user-settings-form']").length) {
-                    // Inputmask({"alias": "decimal"}).mask($("[name='plan-points-goal']", "[name='user-settings-form']")[0]);
+                    //Inputmask({"alias": "decimal"}).mask($("[name='plan-points-goal']", "[name='user-settings-form']")[0]);
                 }
 
-                
-                $("form", modal.$element).on("submit", () => {
-                   // delayedReload(300);
-                });
+                //new Abide($("form", modal.$element));
 
                 $(`#${modal.id}`).on('closed.zf.reveal', function (e) {
                     e.currentTarget.remove();

@@ -1,5 +1,65 @@
 <?PHP
 
+use App\Controllers\UserSettingsController;
+use App\Validations\ValidatorStore;
+
+Flight::request()->data->setData(
+    [
+        'name' => '   x2!sally69 ',
+        'plan-selection' => '123',
+        'plan-points-goal' => 'dsaf'
+    ]
+);
+
+$form = new UserSettingsController(Flight::request(), ValidatorStore::userSettingsValidator());
+
+
+d($form->data);
+exit;
+
+try {
+    $isValid = $form->validate(1);
+    bdump($isValid);
+} catch (Respect\Validation\Exceptions\ValidationException $e) {
+    s($e->getMessage());
+    !d($e);
+}
+
+
+
+
+
+
+
+
+exit;
+
+
+
+$v = new App\Validations\UserSettingsFormValidator();
+
+try {
+    $v->rules->check([
+        "shit" => 33
+        // "plan-points-goal" => 'wer',
+        //"plan-selection" => 2.0
+    ]);
+    //$v->planPointsRule->check("FSD");
+} catch (Respect\Validation\Exceptions\NestedValidationException $e) {
+    s($e->getMessage());
+    !d($e);
+} catch (Respect\Validation\Exceptions\ValidationException $e) {
+    //    s($e->getMessage());
+    !d($e);
+} catch (Respect\Validation\Exceptions\Exception $e) {
+    //    s($e->getMessage());
+    !d($e);
+} catch (\Exception $e) {
+    !d($e);
+}
+
+exit;
+
 // get user
 $user = Flight::get("ActiveUser");
 
