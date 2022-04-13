@@ -13,13 +13,22 @@ class ValidatorStore
 
     public static function userSettingsValidator(): Validator
     {
-        $pointsRule = (new Validator())->intVal();
+        $pointsIdRule = (new Validator())->intVal();
+        $weightUnitIdRule = (new Validator())->intVal();
+        $heightUnitIdRule = (new Validator())->intVal();
+        return (new Validator())
+            ->key("plan-selection", $pointsIdRule)
+            ->key("weight-unit-selection", $weightUnitIdRule)
+            ->key("height-unit-selection", $heightUnitIdRule)
+            ;
+    }
+
+    public static function userGoalsValidator(): Validator
+    {
         $planPointsRule = (new Validator())
                         ->optional((new Validator())
                                    ->number());
         return (new Validator())
-                     ->key("plan-selection", $pointsRule)
-                     ->key("plan-points-goal", $planPointsRule);
-            ;
+            ->key("plan-points-goal", $planPointsRule);
     }
 }

@@ -12,10 +12,8 @@ class UserSettingsFormValidator extends FormController
     public function __construct()
     {
         $this->pointsRule = (new V())->intVal();
-        $this->planPointsRule = (new V())->number();
         $this->rules = (new V())
-            ->key("plan-selection", $this->pointsRule)
-            ->key("plan-points-goal", $this->planPointsRule, false);
+                     ->key("plan-selection", $this->pointsRule);
     }
 
     public function getInlineError($data)

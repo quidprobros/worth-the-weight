@@ -24,7 +24,6 @@ abstract class FormController
 
     public function validate(int $elevation = 0)
     {
-        bdump($this->data);
         switch ($elevation) {
             case 2:
                 return $this->validator->assert($this->data);

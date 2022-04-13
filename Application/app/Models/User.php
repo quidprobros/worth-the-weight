@@ -69,4 +69,22 @@ class User extends Model
                             ->whereNotNull('daily_points');
                     });
     }
+
+    public function goals()
+    {
+        return $this->hasMany(Goals::class, 'user_id');
+    }
+
+    public function point_goals()
+    {
+        return $this->goals()->whereNotNull("point_goals_id");
+    }
+
+    public function current_point_goal()
+    {
+        return $this->point_goals()
+                    ->orderBy('created_at','desc')
+                    ->get()
+                    ->first();
+    }
 }

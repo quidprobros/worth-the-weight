@@ -537,7 +537,7 @@ Flight::route('DELETE /journal-entry/@id', function ($id) {
     try {
         $controller = new JournalEntryRemoveController();
         $controller->deleteEntry($id);
-        Flight::hxheader("Deleted.");
+        Flight::hxheader("Entry removed.");
     } catch (\Exception $e) {
         Flight::log($e->getMessage());
         Flight::hxheader("Something went wrong. Contact Chris!!", "error");
@@ -596,7 +596,7 @@ Flight::route('GET /food-support-message', function () {
         'Woot woot!',
     ];
     shuffle($greetings);
-    echo $greetings[0];
+    echo $greetings[0];;
 });
 
 Flight::route('POST /user-settings', function () {
@@ -605,7 +605,7 @@ Flight::route('POST /user-settings', function () {
             Flight::request(),
             App\Validations\ValidatorStore::userSettingsValidator()
         );
-        
+        bdump(Flight::request()->data->getData());
         $form->validate(1);
         Flight::hxheader("Success!");
         $form->saveUpdate();
@@ -621,6 +621,30 @@ Flight::route('POST /user-settings', function () {
         Flight::hxheader("Something went wrong", "error");
         Flight::log($e->getMessage(), "error");
     }
+});
+
+Flight::route('POST /user-goals', function () {
+    try {
+        $form = new UserSettingsController(
+            Flight::request(),
+            App\Validations\ValidatorStore::userGoalsValidator()
+        );
+        $form->validate(1);
+        Flight::hxheader("Success!");
+        $form->saveUpdate();
+        header("HX-Refresh:true");
+    } catch (ValidationException $e) {
+        echo Flight::json(['message' => $e->getMessage()]);
+        Flight::hxheader($e->getMessage(), "error");
+        Flight::log($e->getMessage(), "error");
+    } catch (\App\Exceptions\FormException $e) {
+        Flight::hxheader($e->getMessage(), "error");
+        Flight::log($e->getMessage(), "error");
+    } catch (\Exception $e) {
+        Flight::hxheader("Something went wrong", "error");
+        Flight::log($e->getMessage(), "error");
+    }
+
 });
 
 Flight::route('POST /user-vitals', function () {
@@ -643,6 +667,8 @@ Flight::route('POST /journal-entry', function () {
         if (!Flight::verifySignature()) {
             throw new \App\Exceptions\FormException("Sorry, your progress was not recorded.");
         }
+        Flight::log(Flight::request()->data->getData());
+
         $controller = new JournalEntryCreateController(Flight::request());
     } catch (\App\Exceptions\FormException $e) {
         echo '<div>Something went wrong!:(</div>';

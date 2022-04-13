@@ -63,7 +63,7 @@ class JournalEntryCreateController
             "food_id" => $this->food_id,
             "quantity" => $this->amount,
             "points" => $this->points,
-            "plan_id" => $this->active_user->plan->id
+            "plan_id" => $this->active_user->settings->plan->id
         ]);
 
         return $this->active_user->journal()->save($entry);

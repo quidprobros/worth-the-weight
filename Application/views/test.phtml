@@ -1,37 +1,47 @@
 <?PHP
 
-use App\Controllers\UserSettingsController;
+use App\Controllers\{UserSettingsController, UserGoalsController};
 use App\Validations\ValidatorStore;
 use Respect\Validation\Validator as v;
 
-$data = [
-    'parentKey' => [
-        'field1' => 'value1',
-        'field2' => 'value2',
-        'field3' => '!!!',
-    ]
-];
+$user = Flight::get("ActiveUser");
+$goals = $user->goals;
 
-try {
-$re = v::key(
-    'parentKey',
-    v::key('field1', v::stringType())
-    ->key('field2', v::stringType())
-    ->key('field3', v::optional(v::alpha()))
-)
-    ->assert($data); // You can also use check() or validate()
-
-s($re);
-
-} catch (Exception $e) {
-    s($e->getMessages());
-}
-
-
-
+s($goals->count());
+s($user->point_goals->count());
 
 exit;
 
+s($user->id);
+!d($user->exercises->first()->toArray());
+exit;
+
+/* $data = [
+ *     'parentKey' => [
+ *         'field1' => 'value1',
+ *         'field2' => 'value2',
+ *         '
+ * 
+ * try {
+ * $re = v::key(
+ *     'parentKey',
+ *     v::key('field1', v::stringType())
+ *     ->key('field2', v::stringType())
+ *     ->key('field3', v::optional(v::alpha()))
+ * )
+ *     ->assert($data); // You can also use check() or validate()
+ * 
+ * s($re);
+ * 
+ * } catch (Exception $e) {
+ *     s($e->getMessages());
+ * }
+ * 
+ * 
+ * 
+ * 
+ * exit;
+ *  */
 
 
 
@@ -39,24 +49,22 @@ Flight::request()->data->setData(
     [
         'name' => '   x2!sally69 ',
         'plan-selection' => '123',
-        'plan-points-goal' => 'dsaf'
+        'plan-points-goal' => ' 33.3zsaf'
     ]
 );
 
-$form = new UserSettingsController(Flight::request(), ValidatorStore::userSettingsValidator());
+$form = new UserGoalsController(Flight::request(), ValidatorStore::userGoalsValidator());
 
-
-d($form->data);
-exit;
 
 try {
     $isValid = $form->validate(1);
-    bdump($isValid);
-} catch (Respect\Validation\Exceptions\ValidationException $e) {
+    !d($isValid);
+} catch (Respect\Validation\Exceptions\Exception $e) {
     s($e->getMessage());
     !d($e);
 }
 
+exit;
 
 
 
@@ -99,7 +107,7 @@ $user = Flight::get("ActiveUser");
 //     d($sett->toArray());
 // }
 
-d($user->settings->plan()->exists());
+d($user->settings->point_goals);
 
 
 exit;
