@@ -1,5 +1,28 @@
 <?PHP
 
+/**
+
+   OK, so i'm conflating things -- things and logs of things.
+
+   I need a Goals table that defines the possible Goals.
+   - Goals::class
+   I also need a UserGoals table that records the goals of a user
+   - UserGoals::class
+   -- This is our pivot table ... many users can have same goal, many goals can have same user
+   Then maybe a log for goals
+   - UserGoalsLog
+
+
+*/
+
+
+exit;
+
+
+
+
+
+
 use App\Controllers\{UserSettingsController, UserGoalsController};
 use App\Validations\ValidatorStore;
 use Respect\Validation\Validator as v;
@@ -7,8 +30,16 @@ use Respect\Validation\Validator as v;
 $user = Flight::get("ActiveUser");
 $goals = $user->goals;
 
+
+$pg = App\Models\PointGoals::first();
+
+s($user->goals->first()->point_goals()->count());
+//s($pg->goal->id);
+exit;
+
+
 s($goals->count());
-s($user->point_goals->count());
+s($user->point_goals->first()->toArray());
 
 exit;
 

@@ -83,7 +83,7 @@ class User extends Model
     public function current_point_goal()
     {
         return $this->point_goals()
-                    ->orderBy('created_at','desc')
+                    ->orderBy('created_at', 'desc')
                     ->get()
                     ->first();
     }

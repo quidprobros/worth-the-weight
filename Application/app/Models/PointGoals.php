@@ -13,4 +13,10 @@ class PointGoals extends Model
         "plan_id",
         "points_value",
     ];
+
+    public function goal()
+    {
+        return $this->hasOne(Goals::class, 'point_goals_id');
+    }
 }
+
