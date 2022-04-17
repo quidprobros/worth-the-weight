@@ -18,7 +18,7 @@ final class BodyWeightMigration extends AbstractMigration
      */
     public function change(): void
     {
-        $$this->table('body_weight')
+        $this->table('body_weight')
             ->addColumn("weight_value", "float", [
                 'null' => false,
             ])

@@ -23,12 +23,12 @@ final class UsersSettingsMigration extends AbstractMigration
              ->addColumn('user_id', 'integer', [
                  'null' => false,
                  'signed' => false,
-                 'unique' => true,
              ])
              ->addColumn('plan_selection', 'text', [
              ])
              ->addColumn('created_at', 'datetime')
              ->addColumn('updated_at', 'datetime')
+             ->addIndex("user_id", ['unique' => true])
              ->addForeignKey('user_id', 'users', 'id')
              ->create();
     }
