@@ -18,4 +18,16 @@ class UserSettings extends \Illuminate\Database\Eloquent\Model
     {
         return $this->belongsTo(Plans::class, "plan_id")->withDefault();
     }
+
+    public function height_unit()
+    {
+        return $this->belongsTo(MeasurementUnits::class, "height_unit_id")
+                    ->withDefault();
+    }
+
+    public function weight_unit()
+    {
+        return $this->belongsTo(MeasurementUnits::class, "weight_unit_id")
+                    ->withDefault();
+    }
 }

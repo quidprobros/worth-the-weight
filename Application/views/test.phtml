@@ -16,9 +16,21 @@
 */
 
 
-exit;
+/**
+   lets look at many-to-many
+   A post can have many tags, and a tag can have many tags.
+   This is implemented with a pivot table.
 
+   A Goal can be 'tagged'.
 
+   Goal is the unique thing (like posts).
+
+   'Tag' in this case would be the type of goal: points goal, weight goal, etc
+
+   OR, i could just have a PointsGoals table
+   -> id, user_id, points, plan_id, timestamps
+
+*/
 
 
 
@@ -28,9 +40,10 @@ use App\Validations\ValidatorStore;
 use Respect\Validation\Validator as v;
 
 $user = Flight::get("ActiveUser");
-$goals = $user->goals;
 
+d($user->settings->height_unit->toArray());
 
+exit;
 $pg = App\Models\PointGoals::first();
 
 s($user->goals->first()->point_goals()->count());
