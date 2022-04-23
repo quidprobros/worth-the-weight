@@ -41,6 +41,11 @@ use Respect\Validation\Validator as v;
 
 $user = Flight::get("ActiveUser");
 
+
+// get user vitals log
+!d($user->vitals_log->toArray());
+
+exit;
 d($user->settings->height_unit->toArray());
 
 exit;

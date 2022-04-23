@@ -87,4 +87,10 @@ class User extends Model
                     ->get()
                     ->first();
     }
+
+    public function vitals_log()
+    {
+        bdump($this->username);
+        return $this->hasMany(UserVitals::class, "user_id");
+    }
 }

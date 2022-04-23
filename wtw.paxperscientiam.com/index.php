@@ -644,20 +644,27 @@ Flight::route('POST /user-goals', function () {
         Flight::hxheader("Something went wrong", "error");
         Flight::log($e->getMessage(), "error");
     }
-
 });
 
-Flight::route('POST /user-vitals', function () {
+Flight::route('POST /user-vitals/weight', function () {
     try {
-        $controller = new UserVitalsCreateController(
+        $form = new UserVitalsCreateController(
             Flight::request(),
-            App\Validations\ValidatorStore::userVitalsValidator()
+            App\Validations\ValidatorStore::userWeightValidator()
         );
-        $controller->saveUpdate();
+        $form->validate(1);
+        Flight::hxheader("Success!");
+        $form->saveWeight();
+    } catch (ValidationException $e) {
+        echo Flight::json(['message' => $e->getMessage()]);
+        Flight::hxheader($e->getMessage(), "error");
+        Flight::log($e->getMessage(), "error");
     } catch (\App\Exceptions\FormException $e) {
         Flight::hxheader($e->getMessage(), "error");
         Flight::log($e->getMessage(), "error");
-        exit;
+    } catch (\Exception $e) {
+        Flight::hxheader("Something went wrong", "error");
+        Flight::log($e->getMessage(), "error");
     }
 });
 
