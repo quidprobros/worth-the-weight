@@ -43,7 +43,10 @@ $user = Flight::get("ActiveUser");
 
 
 // get user vitals log
-!d($user->vitals_log->toArray());
+//!d($user->vitals_log->toArray());
+foreach ($user->weight_log->all() as $wl) {
+    d($wl->toArray());
+}
 
 exit;
 d($user->settings->height_unit->toArray());

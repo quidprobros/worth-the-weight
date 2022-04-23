@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    use \Znck\Eloquent\Traits\BelongsToThrough;
+
     protected $primaryKey = "id";
     protected $table = "users";
 
@@ -90,7 +92,11 @@ class User extends Model
 
     public function vitals_log()
     {
-        bdump($this->username);
         return $this->hasMany(UserVitals::class, "user_id");
+    }
+
+    public function weight_log()
+    {
+        return $this->belongsToMany(BodyWeight::class, 'body_vitals_log', 'user_id', 'body_weight_id');
     }
 }
