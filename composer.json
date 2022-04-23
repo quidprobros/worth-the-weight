@@ -13,6 +13,9 @@
         "bootstrap": [
             "@php vendor/bin/phinx migrate -e development",
             "@php vendor/bin/phinx seed:run -e development"
+        ],
+        "lint": [
+            "@php phpcs --runtime-set php_version 80103 --colors"
         ]
     },
     "require": {

@@ -29,6 +29,5 @@ class UserSettingsFormValidator extends FormController
         } catch (\Exception $e) {
             return $e->getMessage();
         }
-
     }
 }

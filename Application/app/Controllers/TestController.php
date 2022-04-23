@@ -14,7 +14,9 @@ class TestController extends BaseController
     {
         $this->route = $route;
     }
-    public function ok() {
+
+    public function ok()
+    {
         return 69;
     }
 }

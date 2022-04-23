@@ -9,11 +9,6 @@ class JournalEntryRemoveController
 {
     private $journal_entry_id;
 
-    public function __construct()
-    {
-
-    }
-
     public function deleteEntry($journal_entry_id)
     {
         if (true != is_numeric($journal_entry_id)) {

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 class Plans extends \Illuminate\Database\Eloquent\Model
 {
     protected $primaryKey = "id";
@@ -13,4 +12,3 @@ class Plans extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany(Food::class, "plan_id");
     }
 }
-

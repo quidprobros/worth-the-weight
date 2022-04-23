@@ -4,8 +4,7 @@ namespace App;
 
 class Payload extends \Aura\Payload\Payload
 {
-
-    public function getAll($json_encode = true)
+    public function getAll()
     {
         $arr = [
             "messages" => $this->getMessages(),
