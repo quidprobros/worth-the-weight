@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    use \Znck\Eloquent\Traits\BelongsToThrough;
 
     protected $primaryKey = "id";
     protected $table = "users";
