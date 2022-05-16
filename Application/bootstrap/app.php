@@ -46,18 +46,18 @@ try {
             'URL_SIGNATURE_KEY'
         ])
         ->notEmpty();
-    $app_config->set(require(FILE_ROOT . "/Application/config/app.php"));
-
-    // $cache->put('test', 'This is loaded from cache.', 500);
-
-    // $cache->put('app', $app_config->get('app'));
-
     error_log("used .env with config file");
 } catch (Exception $e) {
     error_log(print_r($e->getMessage(), true));
     // error_log("reading app configuration from app cache.");
     // $app_config->set(['app' => $cache->get('app')]);
 } finally {
+    $app_config->set(require(FILE_ROOT . "/Application/config/app.php"));
+
+    // $cache->put('test', 'This is loaded from cache.', 500);
+
+    // $cache->put('app', $app_config->get('app'));
+
     if (empty($app_config)) {
         throw new Exception('Configuration is missing!');
     }

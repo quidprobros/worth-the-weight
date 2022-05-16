@@ -51,6 +51,9 @@ Debugger::$showLocation = true;
 Debugger::getBar()->addPanel(new App\TracyExtension());
 
 $monolog = new Logger('main-channel');
+
+d(Config::get('domain'));
+exit;
 $monolog->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEBUG));
 
 $tracyLogger = new PsrToTracyLoggerAdapter($monolog);
@@ -269,7 +272,6 @@ Flight::route("POST /register", function () {
         Flight::hxheader("You have done that too many times. Try again later", "error");
     } catch (\Exception $e) {
         Flight::log($e->getMessage());
-        Flight::log(env("DB_PATH"));
         Flight::hxheader("Unknown error. Contact Chris.", "error");
     } catch (\Error $er) {
         Flight::log($er->getMessage());
