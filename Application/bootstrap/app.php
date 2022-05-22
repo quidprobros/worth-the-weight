@@ -1,10 +1,5 @@
 <?PHP
 
-/*
-  Note, these variables aren't directly accessible. Use globals
-  EG: Illuminate\Support\Facades\Config::get("app.cnx")
-*/
-
 use Illuminate\Container\Container;
 use Illuminate\Support\Arr;
 use Illuminate\Config\Repository;
@@ -20,16 +15,6 @@ defined("FILE_ROOT") ? true : define("FILE_ROOT", realpath("./"));
 
 // create dummy app
 $app = new Container();
-
-// // configure cache access
-// $cacheC = new Container();
-// $cache_config = new Repository(require(FILE_ROOT . "/config/cache.php"));
-
-// $cacheC['config'] = $cache_config->get('cache');
-
-// $cacheC["files"] = new Filesystem();
-// $cacheManager = new CacheManager($cacheC);
-// $cache = $cacheManager->store();
 
 $app_config = new Repository();
 
@@ -49,14 +34,8 @@ try {
     error_log("used .env with config file");
 } catch (Exception $e) {
     error_log(print_r($e->getMessage(), true));
-    // error_log("reading app configuration from app cache.");
-    // $app_config->set(['app' => $cache->get('app')]);
 } finally {
     $app_config->set(require(FILE_ROOT . "/Application/config/app.php"));
-
-    // $cache->put('test', 'This is loaded from cache.', 500);
-
-    // $cache->put('app', $app_config->get('app'));
 
     if (empty($app_config)) {
         throw new Exception('Configuration is missing!');
@@ -68,11 +47,5 @@ $app->instance(
     'config',
     $app_config
 );
-
-// bind $cache to $app
-// $app->instance(
-//     'cache',
-//     $cache
-// );
 
 Facade::setFacadeApplication($app);

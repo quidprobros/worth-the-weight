@@ -52,8 +52,6 @@ Debugger::getBar()->addPanel(new App\TracyExtension());
 
 $monolog = new Logger('main-channel');
 
-d(Config::get('domain'));
-exit;
 $monolog->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEBUG));
 
 $tracyLogger = new PsrToTracyLoggerAdapter($monolog);

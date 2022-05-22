@@ -17,7 +17,7 @@ return [
         'email' => [
             'sender' => 'webmaster@paxperscientiam.com',
         ],
-        'run_mode' => gethostname() === 'pluto.local' ? "DEBUG" : env('RUN_MODE', 'live'),
+        'run_mode' => env('RUN_MODE', 'live'),
         'min_password_length' => 8,
         'max_data_request_range' => 366,
     ],
