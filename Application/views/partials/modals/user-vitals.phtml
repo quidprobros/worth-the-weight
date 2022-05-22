@@ -7,25 +7,29 @@ use Carbon\Carbon;
           hx-post="/user-vitals/weight"
           hx-swap='none'
           class='grid-x'>
-        <input name="weight_unit_id" type="hidden" value="<?=$settings->weight_unit->id?>" required/>
-        <fieldset class="cell small-12 fieldset">
+        <input name="weight_unit_id" type="hidden" value="<?=$settings->weight_unit->id ?? ''?>" required/>
+        <fieldset class="cell small-12 fieldset" <?=$settings->weight_unit ?? 'disabled'?>>
             <legend>Weight</legend>
-            <div class="form-group">
-                <label><strong>Select log date</strong></label>
-                <input class="form-control" name="weight_log_date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
-                <p class="help-text">Only change if entering your weight for a past date.</p>
-            </div>
-            <div class="grid-x input-group">
-                <label><strong>Weight</strong></label>
-                <div class="input-group">
-                    <input class='input-group-field' type="text" name="weight_log_amount" value="" data-inputmask="'alias': 'numeric'" required/>
-                    <span class="input-group-label"><?=$settings->weight_unit->unit_name?></span>
-                    <div class="input-group-button">
-                        <input type="submit" class="button" value="Submit">
-                    </div>
+            <? if (null ==  $settings->weight_unit) { ?>
+                <strong class="is-invalid-label">Set your preferred unit of weight -- pounds or kilograms -- in the settings options; then, return here. </strong>
+            <? } else { ?>
+                <div class="form-group">
+                    <label><strong>Select log date</strong></label>
+                    <input class="form-control" name="weight_log_date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
+                    <p class="help-text">Only change if entering your weight for a past date.</p>
                 </div>
-                <p class="help-text">To change how weight is measured (pounds or kilos), edit your settings.</p>
-            </div>
+                <div class="grid-x input-group">
+                    <label><strong>Weight</strong></label>
+                    <div class="input-group">
+                        <input class='input-group-field' type="text" name="weight_log_amount" value="" placeholder="" data-inputmask="'alias': 'numeric'" required/>
+                        <span class="input-group-label"><?=$settings->weight_unit->unit_name?></span>
+                        <div class="input-group-button">
+                            <input type="submit" class="button" value="Submit">
+                        </div>
+                    </div>
+                    <p class="help-text">To change how weight is measured (pounds or kilos), edit your settings.</p>
+                </div>
+            <? } ?>
         </fieldset>
     </form>
 

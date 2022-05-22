@@ -2,6 +2,13 @@
 
 d(Illuminate\Support\Facades\Config::get('app.run_mode'));
 
+$user = Flight::get("ActiveUser");
+
+d($user->id);
+d($user->settings->weight_unit);
+exit;
+
+
 /**
 
    OK, so i'm conflating things -- things and logs of things.
@@ -15,7 +22,7 @@ d(Illuminate\Support\Facades\Config::get('app.run_mode'));
    - UserGoalsLog
 
 
-*/
+ */
 
 
 /**
@@ -32,7 +39,7 @@ d(Illuminate\Support\Facades\Config::get('app.run_mode'));
    OR, i could just have a PointsGoals table
    -> id, user_id, points, plan_id, timestamps
 
-*/
+ */
 
 
 
