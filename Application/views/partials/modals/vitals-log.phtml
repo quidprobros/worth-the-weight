@@ -1,0 +1,29 @@
+<?
+Flight::log($vitals_log);
+?>
+<div class="reveal medium" id="user-vitals-log-modal" data-reveal>
+    <h1>Vitals Log</h1>
+    <table>
+        <caption>Weight Log</caption>
+        <thead>
+            <tr>
+                <th>date</th>
+                <th>value</th>
+                <th>unit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <? if (null != $vitals_log) { ?>
+                <? foreach ($vitals_log as $item) { ?>
+                    <tr>
+                        <td><?=$item->date?></td>
+                    </tr>
+                <? } ?>
+            <? } ?>
+        </tbody>
+    </table>
+
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>

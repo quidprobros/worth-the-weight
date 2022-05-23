@@ -24,6 +24,7 @@ $("html").removeClass("no-js");
 import 'htmx.org/dist/htmx.min.js'
 import 'htmx.org/dist/ext/path-deps.js'
 import 'htmx.org/dist/ext/class-tools.js'
+import 'htmx.org/dist/ext/loading-states.js'
 
 import {jsCalendar} from 'simple-jscalendar/source/jsCalendar'
 export {jsCalendar}
@@ -257,7 +258,7 @@ $(() => {
                 htmx.process(modal.$element[0]);
 
                 $("form", modal.$element).on("submit", () => {
-                   // delayedReload(300);
+                    // delayedReload(300);
                 });
 
                 $(`#${modal.id}`).on('closed.zf.reveal', function (e) {
@@ -276,9 +277,22 @@ $(() => {
             .catch(err => {
                 console.log(err)
             })
-
     });
 
+    $(document).on("click", "#view-vitals-log", function() {
+        fetch(`/modals/vitals-log`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'text/html'
+            },
+        })
+            .then(response => response.text())
+            .then(text => {
+                const $text = $(text)
+                const modal = new Reveal($text)
+                modal.open();
+            });
+    });
 
     $(document).on("action", function (e) {
         dlv(App, dlv(e, "detail.xpath") as string)

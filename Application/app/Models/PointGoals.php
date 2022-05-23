@@ -19,4 +19,3 @@ class PointGoals extends Model
         return $this->hasOne(Goals::class, 'point_goals_id');
     }
 }
-

@@ -76,7 +76,7 @@ class HomeController extends BaseController
         //                    ->where(function ($query) {
         //                        $query->whereDate("date", "=", $this->date_bpo)
         //                              ->orWhere(function($query) {
-        //                                  $query->whereDate("date", "=", $this->date_omo); 
+        //                                  $query->whereDate("date", "=", $this->date_omo);
         //                              });
         //                    });
 

@@ -34,7 +34,7 @@ AuthenticationController,
     UserSettingsController,
     UserVitalsModalController,
     UserVitalsCreateController
-};
+    };
 
 use Respect\Validation\Exceptions\ValidationException;
 
@@ -456,6 +456,15 @@ Flight::route('GET /modals/user-vitals', function () {
     }
 });
 
+Flight::route('GET /modals/vitals-log', function () {
+    try {
+        $controller = new App\Controllers\UserVitalsLogController(Flight::request());
+        $controller();
+    } catch (Exception $e) {
+        Flight::log($e->getMessage());
+        Flight::halt(404);
+    }
+});
 
 Flight::route('GET /journal/rel/@offset', function ($offset) {
     if (!Flight::verifySignature()) {
@@ -670,6 +679,7 @@ Flight::route('POST /user-vitals/weight', function () {
 
 
 Flight::route('POST /journal-entry', function () {
+    sleep(3);
     try {
         if (!Flight::verifySignature()) {
             throw new \App\Exceptions\FormException("Sorry, your progress was not recorded.");

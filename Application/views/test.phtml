@@ -1,11 +1,16 @@
 <?PHP
+use flight\Engine;
 
+$app = new Engine();
+
+d($app->request());
+
+exit;
 d(Illuminate\Support\Facades\Config::get('app.run_mode'));
 
-$user = Flight::get("ActiveUser");
-
-d($user->id);
-d($user->settings->weight_unit);
+$c = new App\Controllers\UserVitalsLogController();
+$c2 = new App\Controllers\UserVitalsModalController();
+$c();
 exit;
 
 

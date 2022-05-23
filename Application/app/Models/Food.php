@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 class Food extends \Illuminate\Database\Eloquent\Model
 {
     use \Illuminate\Database\Eloquent\SoftDeletes;

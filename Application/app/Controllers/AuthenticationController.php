@@ -56,7 +56,6 @@ class AuthenticationController extends BaseController
             $url = "http://" . Flight::get('domain') . '/verify_email?selector=' . \urlencode($selector) . '&token=' . \urlencode($token);
 
             try {
-
                 $html = Flight::view()
                       ->fetch("emails/password-reset-link", ["url" => $url]);
 
@@ -107,7 +106,6 @@ class AuthenticationController extends BaseController
 
     private function handleNewPasswordSubmission()
     {
-        
     }
 
     public function registerUser($immediateLogin = false)

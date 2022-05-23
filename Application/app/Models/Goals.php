@@ -15,4 +15,3 @@ class Goals extends Model
         "goal_description",
     ];
 }
-
