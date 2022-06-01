@@ -14,9 +14,9 @@ class UserGoalsController extends FormController
 
     public function saveUpdate()
     {
-        $result = Flight::get("ActiveUser")
+        $result = $this->app->get("ActiveUser")
                 ->goals()->upsert([
-                    "user_id" => Flight::get("ActiveUser")->id,
+                    "user_id" => $this->app->get("ActiveUser")->id,
                     "plan_id" => $this->data['plan-selection'],
                 ], ["user_id"], ["plan_id"])
                 ;

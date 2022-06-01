@@ -2,8 +2,7 @@
 
 namespace App\Controllers;
 
-use flight\net\Request;
-use Flight;
+use flight\Engine;
 
 class UserVitalsLogController extends BaseController
 {
@@ -12,9 +11,9 @@ class UserVitalsLogController extends BaseController
     public $vitals_log;
     public $request;
 
-    public function __contruct(Request $request)
+    public function __contruct(Engine $app)
     {
-        $this->request = $request;
-        $this->vitals_log = Flight::get("ActiveUser")->vitals_log;
+        $this->request = $this->app->request();
+        $this->vitals_log = $this->app->get("ActiveUser")->vitals_log;
     }
 }

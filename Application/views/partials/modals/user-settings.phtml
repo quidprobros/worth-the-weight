@@ -10,7 +10,7 @@
                 <select id="plan-selection" name='plan-selection' class='form-control' required>
                     <option data-placeholder="true"></option>
                     <? foreach ((new \App\Models\Plans())::get() as $plan) { ?>
-                        <? if (Flight::get('ActiveUser')->settings->plan->id == $plan->id) { ?>
+                        <? if ($app->get('ActiveUser')->settings->plan->id == $plan->id) { ?>
                             <option value="<?=$plan->id?>" selected><?=$plan->plan_short_name?></option>
                         <? } else { ?>
                             <option value="<?=$plan->id?>"><?=$plan->plan_short_name?></option>
@@ -24,7 +24,7 @@
                 <select id="weight-unit-selection" name="weight-unit-selection" class='form-selection'>
                     <option value="" data-placeholder="true"></option>
                     <? foreach ((new \App\Models\MeasurementUnits())->weights() as $measurement_unit) { ?>
-                        <? if (Flight::get('ActiveUser')->settings->weight_unit_id == $measurement_unit->id) { ?>
+                        <? if ($app->get('ActiveUser')->settings->weight_unit_id == $measurement_unit->id) { ?>
                             <option value="<?=$measurement_unit->id?>" selected><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>
                         <? } else { ?>
                             <option value="<?=$measurement_unit->id?>"><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>
@@ -39,7 +39,7 @@
                 <select id="height-unit-selection" name="height-unit-selection" class='form-selection'>
                     <option value="" data-placeholder="true"></option>
                     <? foreach ((new \App\Models\MeasurementUnits())->heights() as $measurement_unit) { ?>
-                        <? if (Flight::get('ActiveUser')->settings->height_unit_id == $measurement_unit->id) { ?>
+                        <? if ($app->get('ActiveUser')->settings->height_unit_id == $measurement_unit->id) { ?>
                             <option value="<?=$measurement_unit->id?>" selected><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>
                         <? } else { ?>
                             <option value="<?=$measurement_unit->id?>"><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>

@@ -6,17 +6,17 @@ $next = $big_picture_day_offset + 1;
 ?>
 
 <div class="cell"
-     hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
+     hx-get='<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
      hx-trigger="path-deps"
      hx-target="#big-picture"
      path-deps="/journal-entry">
     <div class="grid-x align-middle">
         <div class="small-1 cell text-left align-self-stretch">
             <a class="special-button-left padding-0" title="see total for previous day"
-               href='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
+               href='<?=$app->url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
                hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
-               hx-get='<?=Flight::url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$prev}")?>'
-               hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
+               hx-get='<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$prev}")?>'
+               hx-push-url='<?=$app->url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
                hx-swap="innerHTML swap:200ms"
                hx-target='#big-picture'>
             </a>
@@ -28,11 +28,11 @@ $next = $big_picture_day_offset + 1;
         </div>
         <div class="small-1 cell text-right align-self-stretch">
             <a class="special-button-right padding-0" title="see total for next day"
-               href='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$next}")?>'
+               href='<?=$app->url()->sign("/home/{$journal_day_offset}/{$next}")?>'
                hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
-               hx-get="<?=Flight::url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$next}")?>"
+               hx-get="<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$next}")?>"
                hx-swap="innerHTML swap:200ms"
-               hx-push-url='<?=Flight::url()->sign("/home/{$journal_day_offset}/{$next}")?>'
+               hx-push-url='<?=$app->url()->sign("/home/{$journal_day_offset}/{$next}")?>'
                hx-target='#big-picture'>
             </a>
         </div>
@@ -49,13 +49,13 @@ $next = $big_picture_day_offset + 1;
             <legend>exercise info</legend>
             <input name="exercised"
                    type="checkbox"
-                   hx-post='<?=Flight::url()->sign("/journal-entry/exercised/rel/{$big_picture_day_offset}")?>'
+                   hx-post='<?=$app->url()->sign("/journal-entry/exercised/rel/{$big_picture_day_offset}")?>'
                    hx-target="#exercised-statement"
                    <?=(1 == $exercised_bpo) ? "checked":""?>
             />
             <label for="exercised">Did you exercise today?</label>
             <br>
-            <?=Flight::render("partials/exercised-statement", [])?>
+            <?=$app->render("partials/exercised-statement", [])?>
         </fieldset>
     </form>
 </div>

@@ -4,17 +4,17 @@ namespace App\Controllers;
 
 use Elegant\Sanitizer\Sanitizer;
 use Respect\Validation\Validator;
-use flight\net\Request;
+use flight\Engine;
 
 abstract class FormController
 {
     protected $data;
 
     public function __construct(
-        Request $req,
+        public Engine $app,
         private Validator $validator
     ) {
-        $this->data = $this->normalize($req->data->getData());
+        $this->data = $this->normalize($this->app->request()->data->getData());
     }
 
     private function normalize($data)

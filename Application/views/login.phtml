@@ -11,7 +11,7 @@ $page_title = $page_title ?? "Worth the Weight!";
         <title><?=$page_title?></title>
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <?=Flight::render(Config::get('app.web_root') . "/dist/resources", [])?>
+        <?=$app->render(Config::get('app.web_root') . "/dist/resources", [])?>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
     <body>
@@ -21,9 +21,9 @@ $page_title = $page_title ?? "Worth the Weight!";
             </div>
         </div>
         <div class="grid-container">
-            <? if (Flight::auth()->isLoggedIn()) { ?>
-                <h1>You are currently logged in as "<?=Flight::auth()->getUsername()?>"</h1>
-                <a href="/logout">Not <?=Flight::auth()->getUsername()?>?</a>
+            <? if ($app->auth()->isLoggedIn()) { ?>
+                <h1>You are currently logged in as "<?=$app->auth()->getUsername()?>"</h1>
+                <a href="/logout">Not <?=$app->auth()->getUsername()?>?</a>
             <? } ?>
             <iframe frameborder="0" name="derp"></iframe>
             <form hx-post="/login"
@@ -32,7 +32,7 @@ $page_title = $page_title ?? "Worth the Weight!";
                   target="derp"
                   method="POST"
                   action="/login">
-                <input type="hidden" name="csrf_token" value="<?=Flight::get('csrf_token'); ?>">
+                <input type="hidden" name="csrf_token" value="<?=$app->get('csrf_token'); ?>">
                 <? if (true == $pw_reset) { ?>
                     <h2 class="text-center cc-form-title"><strong>Login here:</strong></h2>
                 <? } else { ?>
@@ -77,7 +77,7 @@ $page_title = $page_title ?? "Worth the Weight!";
             <hr/>
             <? if ($show ?? true) { ?>
                 <form hx-post="/register" class="registration-form" hx-swap='none' method="POST" action="/register">
-                    <input type="hidden" name="token" value="<?=Flight::get('csrf_token'); ?>">
+                    <input type="hidden" name="token" value="<?=$app->get('csrf_token'); ?>">
                     <h2 class="text-center cc-form-title"><strong>Register</strong> to be a part of Worth the Weight!</h2>
                     <label for="register-form-email">Email (fake email address is fine)
                         <input type="email"

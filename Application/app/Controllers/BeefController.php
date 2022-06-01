@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Payload;
 use Carbon\Carbon;
 use Aura\Payload_Interface\PayloadStatus;
-use flight\net\Request;
+use flight\Engine;
 use Illuminate\Support\Facades\Config;
 use Flight;
 use Exception;
@@ -14,7 +14,7 @@ class BeefController
 {
     public $payload;
 
-    public function __construct(Request $request, $min, $max)
+    public function __construct(public Engine $app, $min, $max)
     {
         $dates = [$min, $max];
         usort($dates, "strcmp");
@@ -35,9 +35,9 @@ class BeefController
             throw new Exception("Too much data requested");
         }
 
-        $query = Flight::get("ActiveUser")->journal()
-                                            ->whereDate("date", ">=", $min)
-                                            ->whereDate("date", "<=", $max);
+        $query = $this->app->get("ActiveUser")->journal()
+                           ->whereDate("date", ">=", $min)
+                           ->whereDate("date", "<=", $max);
 
         $records = $query->orderBy('date')
                          ->get()

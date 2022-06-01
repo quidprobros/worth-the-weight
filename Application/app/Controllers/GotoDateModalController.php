@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Carbon\Carbon;
 use Exception;
-use flight\net\Request;
+use flight\Engine;
 
 class GotoDateModalController extends BaseController
 {
@@ -12,7 +12,7 @@ class GotoDateModalController extends BaseController
     public $date;
     public $displayDate;
 
-    public function __construct(Request $request, string $date)
+    public function __construct(public Engine $app, string $date)
     {
         if (false === strtotime($date)) {
             throw new Exception("Bad date value: ${$date}");

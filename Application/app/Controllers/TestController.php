@@ -8,12 +8,7 @@ class TestController extends BaseController
 {
     public $user;
     public $foods;
-    public $route;
-
-    public function __construct($route)
-    {
-        $this->route = $route;
-    }
+    public $route = 'test';
 
     public function ok()
     {

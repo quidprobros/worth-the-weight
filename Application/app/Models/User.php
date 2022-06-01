@@ -56,9 +56,8 @@ class User extends Model
             ;
     }
 
-
+    // https://laravel.com/docs/9.x/eloquent-relationships#advanced-has-one-of-many-relationships
     public function currentDailyPointsGoal()
-        // https://laravel.com/docs/9.x/eloquent-relationships#advanced-has-one-of-many-relationships
     {
         return $this->hasOne(Goals::class, 'user_id')
                     ->ofMany([

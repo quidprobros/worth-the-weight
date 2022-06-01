@@ -13,7 +13,7 @@ class Exercise extends \Illuminate\Database\Eloquent\Model
     public function entryOnDate($date)
     {
         return $this->belongsTo(User::class)
-                    ->where("user_id", Flight::get('ActiveUser'))
+                    ->where("user_id", $this->app->get('ActiveUser'))
                     ->whereDate("date", "=", $date);
     }
 }

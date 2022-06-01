@@ -3,7 +3,7 @@ use Carbon\Carbon,
 Tracy\Debugger,
 Illuminate\Support\Facades\Config;
 
-$has_plan = Flight::get("ActiveUser")->settings->plan()->exists();
+$has_plan = $app->get("ActiveUser")->settings->plan()->exists();
 $disabled = $has_plan ? "" : "disabled";
 ?>
 <!doctype html>
@@ -14,7 +14,7 @@ $disabled = $has_plan ? "" : "disabled";
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Worth the Weight!</title>
-        <?=Flight::render(Config::get('app.web_root') . "/dist/resources", [])?>
+        <?=$app->render(Config::get('app.web_root') . "/dist/resources", [])?>
         <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
     </head>
     <body hx-ext="path-deps,class-tools" class="medium-grid-frame grid-y align-justify">
@@ -22,19 +22,19 @@ $disabled = $has_plan ? "" : "disabled";
             <?=$record->id?>
         <? } ?>
 
-        <?=Flight::render("partials/title-bar")?>
+        <?=$app->render("partials/title-bar")?>
 
         <div id="main-container" class=" cell medium-auto medium-cell-block-container">
             <div class="grid-x grid-padding-x">
                 <div class="cell medium-cell-block-y">
                     <div class="off-canvas-wrapper">
                         <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas>
-                            <?=Flight::render("partials/offcanvas-menu", [
+                            <?=$app->render("partials/offcanvas-menu", [
                             ])?>
                         </div>
 
                         <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
-                            <?=Flight::render("partials/offcanvas-graphs", [
+                            <?=$app->render("partials/offcanvas-graphs", [
                             ])?>
                         </div>
                         <div id="main-offcanvas-content" class="off-canvas-content" data-off-canvas-content>
@@ -64,11 +64,11 @@ $disabled = $has_plan ? "" : "disabled";
                                                     <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><strong>Select food from <span style="text-decoration:underline;text-decoration-color=<?=Flight::get("ActiveUser")->settings->plan->html_color?>"><?=Flight::get("ActiveUser")->settings->plan->plan_short_name?></span></strong></label>
+                                                    <label><strong>Select food from <span style="text-decoration:underline;text-decoration-color=<?=$app->get("ActiveUser")->settings->plan->html_color?>"><?=$app->get("ActiveUser")->settings->plan->plan_short_name?></span></strong></label>
                                                     <select id="food-selection" name='food-selection' class='form-control' required>
                                                         <option data-placeholder="Select food ..."></option>
                                                         <? foreach ($foods as $food) { ?>
-                                                            <option style="border-left: solid 5px <?=Flight::get("ActiveUser")->settings->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                            <option style="border-left: solid 5px <?=$app->get("ActiveUser")->settings->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
                                                         <? } ?>
                                                     </select>
                                                 </div>
@@ -85,7 +85,7 @@ $disabled = $has_plan ? "" : "disabled";
                                             <fieldset class="cell small-12 fieldset" <?=$disabled?>>
                                                 <button type="submit" class="shadow expanded rounded button success large <?=$disabled?>"
                                                         data-loading-disable
-                                                        hx-post="<?=Flight::url()->sign('/journal-entry/')?>"
+                                                        hx-post="<?=$app->url()->sign('/journal-entry/')?>"
                                                         hx-swap="none">submit journal entry</button>
                                             </fieldset>
                                             <div id="loading" class="hide">Loading ...</div>
@@ -94,7 +94,7 @@ $disabled = $has_plan ? "" : "disabled";
                                     </div>
                                     <div class="cell small-12 large-8 small-order-1 large-order-2">
                                         <div id="big-picture" class="grid-y grid-frame">
-                                            <?Flight::render("partials/big-picture")?>
+                                            <?$app->render("partials/big-picture")?>
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +108,7 @@ $disabled = $has_plan ? "" : "disabled";
             <div class="grid-x grid-padding-x align-middle">
                 <div class="cell small-3">
                     <div class="button-group margin-1">
-                        <? if (true === Flight::get("debug_mode")) { ?>
+                        <? if (true === $app->get("debug_mode")) { ?>
                             <button type="button"
                                     onclick="delayedReload(500)"
                                     class="button alert"
@@ -120,7 +120,7 @@ $disabled = $has_plan ? "" : "disabled";
                         <form method="POST" action="/logout">
                             <input type="hidden"
                                    name="token"
-                                   value="<?=Flight::get('csrf_token'); ?>">
+                                   value="<?=$app->get('csrf_token'); ?>">
                             <button type="submit" class="small button" hx-swap='none' hx-post="/logout">log out</button>
                         </form>
                     </div>
@@ -132,7 +132,7 @@ $disabled = $has_plan ? "" : "disabled";
                     <div class="grid-x text-right small-up-3">
                         <div class="cell"><button id='show-user-vitals-button' type="button" class="clear button">[vitals] </button></div>
                         <div class="cell"><button id='show-user-settings-button' type="button" class="clear button">[settings] </button></div>
-                        <div class="cell"><span>Logged in as <strong><?=Flight::auth()->getUsername()?></strong></span></div>
+                        <div class="cell"><span>Logged in as <strong><?=$app->auth()->getUsername()?></strong></span></div>
                     </div>
                 </div>
             </div>

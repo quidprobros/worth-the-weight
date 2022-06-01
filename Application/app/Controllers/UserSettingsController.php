@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Exceptions\FormException;
-use Flight;
 use Exception;
 
 class UserSettingsController extends FormController
@@ -16,10 +15,10 @@ class UserSettingsController extends FormController
 
     public function saveUpdate()
     {
-        Flight::log($this->data);
-        $result = Flight::get("ActiveUser")
+        $this->app->log($this->data);
+        $result = $this->app->get("ActiveUser")
                 ->settings()->upsert([
-                    "user_id" => Flight::get("ActiveUser")->id,
+                    "user_id" => $this->app->get("ActiveUser")->id,
                     "plan_id" => $this->data['plan-selection'],
                     "weight_unit_id" => $this->data['weight-unit-selection'],
                     "height_unit_id" => $this->data['height-unit-selection'],

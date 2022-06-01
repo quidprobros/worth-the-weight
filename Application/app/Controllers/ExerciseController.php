@@ -3,19 +3,18 @@
 namespace App\Controllers;
 
 use Carbon\Carbon;
-use flight\net\Request;
-use Flight;
+use flight\Engine;
 use App\Models\Exercise;
 
 class ExerciseController extends BaseController
 {
     public $route;
 
-    public function __construct(Request $request, $offset)
+    public function __construct(public Engine $app, $offset)
     {
-        $this->request = $request;
+        $this->request = $this->app->request;
         $this->offset = $offset;
-        $this->exercised = isset($request->data['exercised']) ? 1 : 0; // from checkbox
+        $this->exercised = isset($this->request->data['exercised']) ? 1 : 0; // from checkbox
         $this->exercised_bpo = &$this->exercised;
     }
 
@@ -25,7 +24,7 @@ class ExerciseController extends BaseController
             "date" => Carbon::now()->addDays($this->offset)->format("Y-m-d"),
         ], [
             "exercised" => $this->exercised,
-            "user_id" => Flight::get("ActiveUser")->id,
+            "user_id" => $this->app->get("ActiveUser")->id,
         ]);
     }
 }

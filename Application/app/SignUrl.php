@@ -4,7 +4,6 @@ namespace App;
 
 use DateTime;
 use Spatie\UrlSigner\MD5UrlSigner;
-use Tracy\Debugger;
 
 class SignUrl
 {

@@ -3,15 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Capsule\Manager as DB;
-use Flight;
+use flight\Engine;
 use Carbon\Carbon;
 use App\Models\ActiveUser;
 
 class Stats
 {
+    public function __construct(public Engine $app)
+    {
+    }
+
     public function avgDaily()
     {
-        $aggregateDays = Flight::get('ActiveUser')
+        $aggregateDays = $this->app->get('ActiveUser')
                        ->journal()
                        ->select("date", DB::raw('sum(points) points'), DB::raw('count(date) quantity'))
                        ->where("points", ">", 0)
@@ -35,7 +39,7 @@ class Stats
 
     public function avgDailyTrailing7()
     {
-        $aggregateDays = Flight::get('ActiveUser')
+        $aggregateDays = $this->app->get('ActiveUser')
                        ->journal()
                        ->select("date", DB::raw('sum(points) points'), DB::raw('count(date) quantity'))
                        ->where("points", ">", 0)
@@ -60,16 +64,16 @@ class Stats
 
     public function points(int $index): int
     {
-        return (int) \Flight::journalItem()
-            ->where("user_id", Flight::auth()->getUserId())
+        return (int) $this->app->journalItem()
+            ->where("user_id", $this->app->auth()->getUserId())
             ->whereDate("date", "=", Carbon::now()->addDays($index))
             ->sum('points');
     }
 
     public function getPointsByDate(string $journalDate)
     {
-        return \Flight::journalItem()
-            ->where("user_id", Flight::auth()->getUserId())
+        return $this->app->journalItem()
+                         ->where("user_id", $this->app->auth()->getUserId())
             ->first()
             ->getSum($journalDate);
     }

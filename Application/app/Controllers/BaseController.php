@@ -2,11 +2,15 @@
 
 namespace App\Controllers;
 
-use Flight;
+use flight\Engine;
 use Exception;
 
 abstract class BaseController
 {
+    public function __construct(public Engine $app)
+    {
+    }
+
     final public function useOtherRoute(string $route)
     {
         $this->setRoute($route);
@@ -14,7 +18,7 @@ abstract class BaseController
 
     final public function setRoute(string $route)
     {
-        if (true != Flight::view()->exists($route)) {
+        if (true != $this->app->view()->exists($route)) {
             throw new Exception("template not found: {$route}");
         }
         $this->route = $route;
@@ -31,11 +35,11 @@ abstract class BaseController
             throw new Exception("Route must be defined!");
         }
 
-        if (true != Flight::view()->exists($this->route)) {
+        if (true != $this->app->view()->exists($this->route)) {
             throw new Exception("template not found: {$this->route}");
         }
 
-        return Flight::render(
+        return $this->app->render(
             $this->route,
             get_object_vars($this),
         );

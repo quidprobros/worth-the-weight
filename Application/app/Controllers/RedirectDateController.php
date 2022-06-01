@@ -3,17 +3,16 @@
 namespace App\Controllers;
 
 use Carbon\Carbon;
-use Flight;
-use Tracy\Debugger;
+use flight\Engine;
 
 class RedirectDateController
 {
     private $diff = 0;
 
-    public function __construct(string $date)
+    public function __construct(public Engine $app, string $date)
     {
         if (false === strtotime($date)) {
-            Flight::halt(404);
+            $this->app->halt(404);
         }
 
         $date1 = new Carbon($date);
@@ -24,6 +23,6 @@ class RedirectDateController
 
     public function __invoke()
     {
-        Flight::redirect(Flight::url()->sign("/home/{$this->diff}/{$this->diff}"));
+        $this->app->redirect($this->app->url()->sign("/home/{$this->diff}/{$this->diff}"));
     }
 }

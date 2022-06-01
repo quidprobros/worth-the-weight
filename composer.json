@@ -15,7 +15,8 @@
             "@php vendor/bin/phinx seed:run -e development"
         ],
         "lint": [
-            "@php phpcs --runtime-set php_version 80103 --colors"
+            "@php phpcs --runtime-set php_version 80103 --colors",
+            "@php phpmd Application/ ansi ./phpmd.xml"
         ]
     },
     "require": {
@@ -50,7 +51,7 @@
     ],
     "require-dev": {
         "kint-php/kint": "^4.1",
-        "tracy/tracy": "@stable",
+        "tracy/tracy": "2.9.3",
         "league/csv": "^9.7",
         "jdorn/sql-formatter": "^1.2",
         "robmorgan/phinx": "^0.12.9"

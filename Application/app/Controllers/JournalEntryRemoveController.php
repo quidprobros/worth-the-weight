@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use Exception;
-use Flight;
+use flight\Engine;
 
 class JournalEntryRemoveController
 {
@@ -16,12 +16,12 @@ class JournalEntryRemoveController
         }
 
         $this->journal_entry_id = (int) $journal_entry_id;
-        $item =  Flight::get('ActiveUser')->journal()->findOrFail($this->journal_entry_id);
+        $item =  $this->app->get('ActiveUser')->journal()->findOrFail($this->journal_entry_id);
         $item->delete();
     }
 
     public function deleteAll()
     {
-        Flight::get('ActiveUser')->journal()->truncate();
+        $this->app->get('ActiveUser')->journal()->truncate();
     }
 }

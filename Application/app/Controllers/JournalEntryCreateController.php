@@ -6,17 +6,16 @@ use App\Exceptions\FormException;
 use App\Models\JournalItem;
 use Exception;
 use Flight;
-use flight\net\Request;
-use Tracy\Debugger;
+use flight\Engine;
 
 class JournalEntryCreateController
 {
     private $active_user;
 
-    public function __construct(Request $request)
+    public function __construct(public Engine $app)
     {
-        $formData = $request->data;
-        $this->active_user = Flight::get('ActiveUser');
+        $formData = $this->app->request->data;
+        $this->active_user = $this->app->get('ActiveUser');
 
         if (false == is_numeric($formData['amount'])) {
             throw new FormException("Amount must be numeric");
@@ -36,7 +35,7 @@ class JournalEntryCreateController
         }
 
         try {
-            $this->food_model = Flight::food()::findOrFail($formData['food-selection']);
+            $this->food_model = $this->app->food()::findOrFail($formData['food-selection']);
         } catch (\Exception $e) {
             throw new FormException("Sorry, this food item is not recognized.");
         }

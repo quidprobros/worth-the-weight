@@ -2,9 +2,7 @@
 
 namespace App\Controllers;
 
-use Tracy\Debugger;
-use flight\net\Request;
-use Flight;
+use flight\Engine;
 use Exception;
 use Delight\Auth\InvalidPasswordException;
 use App\Exceptions\InvalidUsernameException;
@@ -22,9 +20,9 @@ class AuthenticationController extends BaseController
     // one year
     private $rememberDuration = 31557600;
 
-    public function __construct(Request $req, Mailgun $client = null)
+    public function __construct(public Engine $app, Mailgun $client = null)
     {
-        $this->data = $req->data;
+        $this->data = $this->app->request()->data;
         $this->mailgun = $client;
     }
 
@@ -41,7 +39,7 @@ class AuthenticationController extends BaseController
             throw new FormException("Password cannot be blank.");
         }
 
-        Flight::auth()->login($email, $password, $this->rememberDuration);
+        $this->app->auth()->login($email, $password, $this->rememberDuration);
     }
 
     public function resetPassword()
@@ -52,11 +50,11 @@ class AuthenticationController extends BaseController
             throw new FormException("Email cannot be blank.");
         }
 
-        Flight::auth()->forgotPassword($email_address, function ($selector, $token) use ($email_address) {
-            $url = "http://" . Flight::get('domain') . '/verify_email?selector=' . \urlencode($selector) . '&token=' . \urlencode($token);
+        $this->app->auth()->forgotPassword($email_address, function ($selector, $token) use ($email_address) {
+            $url = "http://" . $this->app->get('domain') . '/verify_email?selector=' . \urlencode($selector) . '&token=' . \urlencode($token);
 
             try {
-                $html = Flight::view()
+                $html = $this->app->view()
                       ->fetch("emails/password-reset-link", ["url" => $url]);
 
                 $email = (new Email())
@@ -70,16 +68,16 @@ class AuthenticationController extends BaseController
 
                 $mailer = new Mailer($transport);
                 $r = $mailer->send($email);
-                Debugger::log(['email' => $r]);
+                $this->app->log(['email' => $r]);
             } catch (TransportExceptionInterface $e) {
-                Debugger::log($e->getMessage());
+                $this->app->log($e->getMessage());
                 throw new FormException("Unable to send a password-reset email at this time");
             } catch (\Exception $e) {
-                Debugger::log($e->getMessage());
+                $this->app->log($e->getMessage());
                 throw new FormException("Something went wrong :(");
             }
 
-            Debugger::log("Sent email to {$email_address} without error");
+            $this->app->log("Sent email to {$email_address} without error");
         });
     }
 
@@ -97,9 +95,9 @@ class AuthenticationController extends BaseController
         }
 
         try {
-            Flight::auth()->canResetPasswordOrThrow($selector, $token);
+            $this->app->auth()->canResetPasswordOrThrow($selector, $token);
         } catch (\Exception $e) {
-            Debugger::log($e->getMessage());
+            $this->app->log($e->getMessage());
             throw new FormException("Something went wrong!");
         }
     }
@@ -118,22 +116,22 @@ class AuthenticationController extends BaseController
             throw new InvalidUsernameException("Username cannot be blank.");
         }
 
-        if (false === Flight::validate()->isUsernameAllowed($username)) {
+        if (false === $this->app->validate()->isUsernameAllowed($username)) {
             throw new InvalidUsernameException("Your username should contain numbers and letters only.");
         }
 
-        if (false === Flight::validate()->isPasswordAllowed($password)) {
+        if (false === $this->app->validate()->isPasswordAllowed($password)) {
             throw new InvalidPasswordException();
         }
 
-        Flight::auth()->registerWithUniqueUsername(
+        $this->app->auth()->registerWithUniqueUsername(
             $email,
             $password,
             $username,
         );
 
         if (true == $immediateLogin) {
-            Flight::auth()->login($email, $password, $this->rememberDuration);
+            $this->app->auth()->login($email, $password, $this->rememberDuration);
         }
     }
 
@@ -153,7 +151,7 @@ class AuthenticationController extends BaseController
 
     public function logoutUser()
     {
-        Flight::auth()->logOutEverywhere();
-        Flight::auth()->destroySession();
+        $this->app->auth()->logOutEverywhere();
+        $this->app->auth()->destroySession();
     }
 }
