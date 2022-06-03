@@ -54,6 +54,7 @@
         "tracy/tracy": "2.9.3",
         "league/csv": "^9.7",
         "jdorn/sql-formatter": "^1.2",
-        "robmorgan/phinx": "^0.12.9"
+        "robmorgan/phinx": "^0.12.9",
+        "itsgoingd/clockwork": "^5.1"
     }
 }

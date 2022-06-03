@@ -82,6 +82,17 @@ $app->set('flight.views.extension', ".phtml");
 $connection = \Delight\Db\PdoDatabase::fromDsn(new \Delight\Db\PdoDsn(Config::get('app.cnx.dsn')));
 
 $app->register(
+    'clockwork',
+    'Clockwork\Support\Vanilla\Clockwork::init',
+    [
+        [
+            'storage_files_path' => FILE_ROOT . '/storage/clockwork',
+            'register_helpers' => true,
+        ]
+    ]
+);
+
+$app->register(
     'auth',
     'Delight\Auth\Auth',
     [$connection, null, null, false]
@@ -245,8 +256,15 @@ $app->after("redirect", function () {
 /*
  * routes begin!
  */
+
 // routes for debugging
 if (true == $app->get("debug_mode")) {
+
+    $app->route("/__clockwork/request", function () use ($app) {
+
+        echo new Illuminate\Http\JsonResponse($app->clockwork()->getMetadata([]));
+    });
+
     $app->route("GET /info", function () {
         phpinfo();
     });
@@ -295,7 +313,7 @@ $app->route("POST /login", function () use ($app) {
     echo 'success';
 });
 
-$app->route("POST /register", function () {
+$app->route("POST /register", function () use ($app) {
     try {
         $controller = $app->AuthenticationController();
         $controller->registerUser(true); // argument: true means login immediately after successful registration
@@ -338,11 +356,11 @@ $app->route("POST /register", function () {
     }
 });
 
-$app->route("GET /reset-pw", function () {
+$app->route("GET /reset-pw", function () use ($app) {
     $app->render("reset-pw");
 });
 
-$app->route("POST /reset-password", function () {
+$app->route("POST /reset-password", function () use ($app) {
     try {
         $controller = $app->AuthenticationController();
         $controller->resetPassword();
@@ -359,7 +377,7 @@ $app->route("POST /reset-password", function () {
     }
 });
 
-$app->route("GET /verify_email", function () {
+$app->route("GET /verify_email", function () use ($app) {
 
     $data = $app->request()->query->getData();
 
@@ -377,7 +395,7 @@ $app->route("GET /verify_email", function () {
     exit;
 });
 
-$app->route("POST /verify_email", function () {
+$app->route("POST /verify_email", function () use ($app) {
     try {
         $controller = $app->AuthenticationController();
         $controller->setNewPassword();
@@ -421,7 +439,7 @@ $app->route('GET *', function () {
 //     bdump("MIDDLE");
 // }, true);
 
-$app->route("GET|POST /logout", function () {
+$app->route("GET|POST /logout", function () use ($app) {
     try {
         $controller = $app->AuthenticationController();
         $controller->logoutUser();
@@ -755,7 +773,7 @@ if (true == $app->get("debug_mode")) {
         $app->render("form");
     });
 
-    $app->route('POST /form-test', function () {
+    $app->route('POST /form-test', function () use ($app) {
         $controller = new App\Controllers\ProcessFormController($app->request()->data->getData());
 
         // 1. Filter data.
@@ -764,7 +782,7 @@ if (true == $app->get("debug_mode")) {
     });
 }
 
-$app->map('notFound', function () {
+$app->map('notFound', function () use ($app) {
     $message = "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
     $app->halt(404, $message);
 });
