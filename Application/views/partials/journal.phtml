@@ -37,7 +37,7 @@
                 <td class="text-right" data-name='points'><?=number_format($record->points, 2)?></td>
                 <td>
                     <div class="button-group stacked" role="group">
-                        <button type="button" class="button" hx-delete='<?=Flight::url()->sign("/journal-entry/{$record->id}")?>'>
+                        <button type="button" class="button" hx-delete='<?=$app->url()->sign("/journal-entry/{$record->id}")?>'>
                             delete
                         </button>
                     </div>

@@ -14,7 +14,7 @@ class JournalEntryCreateController
 
     public function __construct(public Engine $app)
     {
-        $formData = $this->app->request->data;
+        $formData = $this->app->request()->data;
         $this->active_user = $this->app->get('ActiveUser');
 
         if (false == is_numeric($formData['amount'])) {

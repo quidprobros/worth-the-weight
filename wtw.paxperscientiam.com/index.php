@@ -357,7 +357,7 @@ $app->route("POST /register", function () use ($app) {
 });
 
 $app->route("GET /reset-pw", function () use ($app) {
-    $app->render("reset-pw");
+    $app->render("reset-pw", ["app" => $app]);
 });
 
 $app->route("POST /reset-password", function () use ($app) {
@@ -387,6 +387,7 @@ $app->route("GET /verify_email", function () use ($app) {
     }
 
     $app->render("login", [
+        "app" => $app,
         "selector" => $data['selector'],
         "token" => $data['token'],
         "show" => false,
