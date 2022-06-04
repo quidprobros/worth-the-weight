@@ -8,12 +8,20 @@ class UserVitalsLogController extends BaseController
 {
     public $route = "partials/modals/vitals-log";
 
-    public $vitals_log;
     public $request;
 
-    public function __contruct(Engine $app)
+    public $weight_log;
+    public $vitals_log;
+
+    public function __construct(public Engine $app)
     {
         $this->request = $this->app->request();
-        $this->vitals_log = $this->app->get("ActiveUser")->vitals_log;
+        $this->vitals_log = $this->app
+                          ->get("ActiveUser")
+                          ->vitals_log;
+
+        $this->weight_log = $this->app
+                          ->get("ActiveUser")
+                          ->weight_log;
     }
 }

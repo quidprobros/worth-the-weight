@@ -1,6 +1,3 @@
-<?
-Flight::log($vitals_log);
-?>
 <div class="reveal medium" id="user-vitals-log-modal" data-reveal>
     <h1>Vitals Log</h1>
     <table>
@@ -13,10 +10,12 @@ Flight::log($vitals_log);
             </tr>
         </thead>
         <tbody>
-            <? if (null != $vitals_log) { ?>
-                <? foreach ($vitals_log as $item) { ?>
+            <? if (null != $weight_log) { ?>
+                <? foreach ($weight_log as $item) { ?>
                     <tr>
-                        <td><?=$item->date?></td>
+                        <td><?=$item->created_at?></td>
+                        <td><?=$item->weight_value?></td>
+                        <td><?=$item->unit->unit_name?></td>
                     </tr>
                 <? } ?>
             <? } ?>

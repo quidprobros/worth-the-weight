@@ -731,7 +731,6 @@ $app->route('POST /user-vitals/weight', function () use ($app) {
 
 
 $app->route('POST /journal-entry', function () use ($app) {
-    sleep(3);
     try {
         if (!$app->verifySignature()) {
             throw new \App\Exceptions\FormException("Sorry, your progress was not recorded.");

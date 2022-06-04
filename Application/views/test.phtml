@@ -1,8 +1,6 @@
 <?PHP
 use flight\Engine;
 
-d($app);
-exit;
 
 /**
 
@@ -43,13 +41,14 @@ use App\Controllers\{UserSettingsController, UserGoalsController};
 use App\Validations\ValidatorStore;
 use Respect\Validation\Validator as v;
 
-$user = Flight::get("ActiveUser");
+$user = $app->get("ActiveUser");
 
+$wl = $user->weight_log;
 
 // get user vitals log
 //!d($user->vitals_log->toArray());
-foreach ($user->weight_log->all() as $wl) {
-    d($wl->toArray());
+foreach ($wl as $w) {
+    d($w->unit->unit_name);
 }
 
 exit;
