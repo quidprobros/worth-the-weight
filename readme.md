@@ -100,7 +100,7 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
   - [ ] Use https://github.com/webpatser/laravel-uuid
 - [ ] need to sanitize all form inputs BEFORE trying to validate
 - [ ] When it comes to validation, need to also know that real records are being referenced!
-      
+- [ ] tables should be shown in columns that can be collapsed if in mobile view
 
 # More features
 - [ ] Allow to add a point goals
@@ -128,7 +128,7 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
 - [ ] should node_modules be included or excluded?
 - [ ] Sort this database confusion out
   - [ ] run database boostrap after build and store db in named volume
-  - [ ]
+  - [ ] ...
 - [x] use environment file
 - [ ] build should not include database
 - [ ] move db to beside backend/
