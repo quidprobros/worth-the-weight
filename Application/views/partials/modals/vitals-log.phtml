@@ -4,22 +4,30 @@
         <caption>Weight Log</caption>
         <thead>
             <tr>
-                <th>date</th>
                 <th>value</th>
                 <th>unit</th>
+                <th>date</th>
             </tr>
         </thead>
         <tbody>
             <? if (null != $weight_log) { ?>
                 <? foreach ($weight_log as $item) { ?>
                     <tr>
-                        <td><?=$item->created_at?></td>
-                        <td><?=$item->weight_value?></td>
+                        <td class='text-right'><?=$item->weight_value?></td>
                         <td><?=$item->unit->unit_name?></td>
+                        <td><?=$item->created_at?></td>
                     </tr>
                 <? } ?>
             <? } ?>
         </tbody>
+    </table>
+
+    <hr>
+
+    <table>
+        <caption>Other Log</caption>
+        <thead><tr></tr></thead>
+        <tbody style='min-height:2rem'><tr></tr></tbody>
     </table>
 
     <button class="close-button" data-close aria-label="Close modal" type="button">
