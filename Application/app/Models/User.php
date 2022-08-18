@@ -94,6 +94,7 @@ class User extends Model
 
     public function weight_log()
     {
-        return $this->belongsToMany(BodyWeight::class, 'body_vitals_log', 'user_id', 'body_weight_id');
+        return $this->belongsToMany(BodyWeight::class, 'body_vitals_log', 'user_id', 'body_weight_id')
+                    ->orderBy('created_at', 'DESC');
     }
 }
