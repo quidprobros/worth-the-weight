@@ -38,8 +38,6 @@
         "ramsey/uuid": "^4.2",
         "illuminate/events": "^8.79",
         "laravel/helpers": "^1.5",
-        "plasticbrain/php-flash-messages": "^1.0",
-        "tamtamchik/simple-flash": "^2.0",
         "respect/validation": "^2.2",
         "elegantweb/sanitizer": "^2.0"
     },

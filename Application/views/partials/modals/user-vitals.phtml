@@ -15,7 +15,7 @@ use Carbon\Carbon;
             <? } else { ?>
                 <div class="form-group">
                     <label><strong>Select log date</strong></label>
-                    <input class="form-control" name="weight_log_date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" required/>
+                    <input class="form-control" name="weight_log_date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" max="<?=Carbon::tomorrow()->format("Y-m-d")?>" required/>
                     <p class="help-text">Only change if entering your weight for a past date.</p>
                 </div>
                 <div class="grid-x input-group">

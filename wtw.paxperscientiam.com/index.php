@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Session;
 
 use Spatie\UrlSigner\MD5UrlSigner;
 use Delight\Base64\Throwable\Exception;
@@ -189,6 +190,11 @@ $capsule->bootEloquent();
 if (true == $app->get("debug_mode")) {
     Capsule::enableQueryLog();
 }
+
+Session::put('key', 'value');
+exit;
+
+
 
 $app->register(
     'stats',
@@ -461,7 +467,6 @@ $app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo) u
     if (!$app->verifySignature()) {
         $app->notFound();
     }
-
     // big picture offset
     if (
         true != is_numeric($bpo)
