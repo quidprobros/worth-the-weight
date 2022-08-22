@@ -17,8 +17,7 @@ class AuthenticationController extends BaseController
 {
     private $data;
 
-    // one year
-    private $rememberDuration = 31557600;
+    private $rememberDuration = null;
 
     public function __construct(public Engine $app, Mailgun $client = null)
     {

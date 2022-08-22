@@ -12,10 +12,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
 
 use Spatie\UrlSigner\MD5UrlSigner;
 use Delight\Base64\Throwable\Exception;
+use Delight\Cookie\Session;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -37,9 +37,10 @@ use Respect\Validation\Exceptions\ValidationException;
 
 const FILE_ROOT = __DIR__ . "/../";
 
-session_start();
-
 require_once FILE_ROOT . "/vendor/autoload.php";
+
+
+session_start();
 
 $app = new flight\Engine();
 
@@ -66,8 +67,11 @@ if ("DEBUG" == Config::get("app.run_mode")) {
     Debugger::enable(Debugger::DETECT);
 } else {
     $app->set("debug_mode", false);
+    Debugger::$showBar = false;
     Debugger::enable(Debugger::PRODUCTION);
 }
+
+Debugger::$showBar = false;
 
 // prevent interference with signing
 $app->request()->query->__unset("DEBUG");
@@ -191,11 +195,6 @@ if (true == $app->get("debug_mode")) {
     Capsule::enableQueryLog();
 }
 
-Session::put('key', 'value');
-exit;
-
-
-
 $app->register(
     'stats',
     'App\Stats',
@@ -264,6 +263,7 @@ $app->after("redirect", function () {
  */
 
 // routes for debugging
+
 if (true == $app->get("debug_mode")) {
 
     $app->route("/__clockwork/request", function () use ($app) {
@@ -278,9 +278,18 @@ if (true == $app->get("debug_mode")) {
 
 $app->route("GET /login", function () use ($app) {
     if (true == $app->auth()->isLoggedIn()) {
+        Session::set("flash-greeting", "Already logged in!");
         $app->redirect("/home", 302);
     }
-    $app->render("login", ['app' => $app]);
+    if (true == $app->get("debug_mode")) {
+        $app->set("login-greeting", "Happy Today!");
+    } else {
+        $app->set("login-greeting", "Please note, this is just a demo; your data WILL be deleted.");
+    }
+
+    $app->render("login", [
+        'app' => $app
+    ]);
 });
 
 $app->route("POST /login", function () use ($app) {
@@ -291,6 +300,7 @@ $app->route("POST /login", function () use ($app) {
     try {
         $controller = $app->AuthenticationController();
         $controller->loginUser();
+        Session::set("flash-greeting", "Welcome {$app->auth()->getUsername()}!");
         header("HX-Redirect: /home");
     } catch (\Delight\Auth\InvalidEmailException $e) {
         $app->log($e->getMessage());
@@ -443,7 +453,7 @@ $app->route('GET *', function () {
 
 // });
 // $app->route('POST *', function () {
-//     bdump("MIDDLE");
+
 // }, true);
 
 $app->route("GET|POST /logout", function () use ($app) {
@@ -463,7 +473,7 @@ $app->route('GET /(home|index)', function () use ($app) {
     $app->redirect($app->url()->sign("/home/0/0"));
 });
 
-$app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo) use ($app) {
+$app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo, $route) use ($app) {
     if (!$app->verifySignature()) {
         $app->notFound();
     }
@@ -483,9 +493,12 @@ $app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo) u
 
     $app->set("omo", $omo); // journal
     $app->set("bpo", $bpo); // big-picture
+    $app->log([$omo, $bpo]);
     $controller = $app->HomeController();
+    $app->hxheader('Unrecognized email address. Have you registered yet?', 'error');
     $controller();
-});
+
+}, true);
 
 $app->route('GET /goto/@date', function ($date) use ($app) {
     (new RedirectDateController($app, $date))();
@@ -734,7 +747,6 @@ $app->route('POST /user-vitals/weight', function () use ($app) {
     }
 });
 
-
 $app->route('POST /journal-entry', function () use ($app) {
     try {
         if (!$app->verifySignature()) {
@@ -744,19 +756,18 @@ $app->route('POST /journal-entry', function () use ($app) {
 
         $controller = $app->JournalEntryCreateController();
     } catch (\App\Exceptions\FormException $e) {
-        echo '<div>Something went wrong!:(</div>';
-        $app->hxheader($e->getMessage(), "error");
         $app->log($e->getMessage(), "error");
+        $app->hxheader($e->getMessage(), "error");
         exit;
     } catch (\Exception $e) {
-        echo '<div>Something went wrong!:(</div>';
-        $app->hxheader("Sorry, your progress was not recorded.", "error");
         $app->log($e->getMessage(), "error");
+        $app->hxheader("Sorry, your progress was not recorded.", "error");
         exit;
     }
 
     try {
         $controller->saveEntry();
+        $app->hxheader("Success!");
         echo "<div>Successly journaled {$controller->amount} units of this food (+{$controller->points} points)!</div>";
     } catch (\Exception $e) {
         $app->log($e->getMessage());
@@ -764,8 +775,6 @@ $app->route('POST /journal-entry', function () use ($app) {
         $app->hxheader("Sorry, your progress was not recorded.", "error");
         return;
     }
-
-    $app->hxheader("Success!");
 });
 
 if (true == $app->get("debug_mode")) {

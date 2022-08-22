@@ -8,6 +8,6 @@ class SendWelcomingEmail
 {
     public function handle(UserHasRegisteredEvent $event)
     {
-        bdump($event->getUsername());
+        
     }
 }

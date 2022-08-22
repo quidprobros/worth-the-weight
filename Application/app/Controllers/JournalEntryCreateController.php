@@ -18,6 +18,7 @@ class JournalEntryCreateController
         $this->active_user = $this->app->get('ActiveUser');
 
         if (false == is_numeric($formData['amount'])) {
+            \Delight\Cookie\Session::set("journalcreate-response", "Amount must be numeric");
             throw new FormException("Amount must be numeric");
         }
         if (!isset($formData['amount']) || 0 >= $formData['amount']) {

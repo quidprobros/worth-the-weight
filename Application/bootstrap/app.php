@@ -36,7 +36,6 @@ try {
     error_log(print_r($e->getMessage(), true));
 } finally {
     $app_config->set(require(FILE_ROOT . "/Application/config/app.php"));
-    //$app_config->set("session", require(FILE_ROOT . "/Application/config/session.php"));
 
     if (empty($app_config)) {
         throw new Exception('Configuration is missing!');
@@ -48,17 +47,5 @@ $app->instance(
     'config',
     $app_config
 );
-
-
-// $sessionManager = new SessionManager($app);
-// // d($sessionManager->driver());
-// // d($sessionManager->getSessionConfig());
-// // d($sessionManager);
-
-// //$app["session.store"] = $sessionManager->driver();
-// $app['session'] = $sessionManager;
-
-// d($app->get('session')->getName());
-// exit;
 
 Facade::setFacadeApplication($app);

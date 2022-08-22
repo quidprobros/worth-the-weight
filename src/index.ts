@@ -123,7 +123,7 @@ export function initCalendar() {
         const min = jsCalendar.tools.dateToString(info.start, "YYYY-MM-DD") as string
         // @ts-ignore
         const max = jsCalendar.tools.dateToString(info.end, "YYYY-MM-DD") as string
-
+        console.log(info);
         if (true !== myCalendar._isSelectionComplete) {
             fetch(`/beef/${min}/${max}`, {
                 method: "GET",
@@ -172,7 +172,6 @@ export function initCalendar() {
 }
 
 $(() => {
-    console.debug("test1", 'page is ready')
     if (0 < $("#food-selection").length) {
         new SlimSelect({
             select: '#food-selection',

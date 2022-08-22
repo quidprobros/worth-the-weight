@@ -39,7 +39,8 @@
         "illuminate/events": "^8.79",
         "laravel/helpers": "^1.5",
         "respect/validation": "^2.2",
-        "elegantweb/sanitizer": "^2.0"
+        "elegantweb/sanitizer": "^2.0",
+        "delight-im/cookie": "^3.4"
     },
     "authors": [
         {
