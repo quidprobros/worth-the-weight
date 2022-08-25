@@ -493,11 +493,9 @@ $app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo, $
 
     $app->set("omo", $omo); // journal
     $app->set("bpo", $bpo); // big-picture
-    $app->log([$omo, $bpo]);
+    $app->log(['o' => $omo, 'b' => $bpo]);
     $controller = $app->HomeController();
-    $app->hxheader('Unrecognized email address. Have you registered yet?', 'error');
     $controller();
-
 }, true);
 
 $app->route('GET /goto/@date', function ($date) use ($app) {
