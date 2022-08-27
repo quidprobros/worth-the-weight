@@ -473,7 +473,7 @@ $app->route('GET /(home|index)', function () use ($app) {
     $app->redirect($app->url()->sign("/home/0/0"));
 });
 
-$app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo, $route) use ($app) {
+$app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo) use ($app) {
     if (!$app->verifySignature()) {
         $app->notFound();
     }
@@ -496,7 +496,7 @@ $app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo, $
     $app->log(['o' => $omo, 'b' => $bpo]);
     $controller = $app->HomeController();
     $controller();
-}, true);
+});
 
 $app->route('GET /goto/@date', function ($date) use ($app) {
     (new RedirectDateController($app, $date))();
