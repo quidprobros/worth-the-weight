@@ -30,6 +30,8 @@ class HomeController extends BaseController
         $this->journal_day_offset = (int) $this->app->get('omo');
         $this->big_picture_day_offset = (int) $this->app->get('bpo');
 
+        $this->app->log([$this->journal_day_offset, $this->big_picture_day_offset]);
+
         $this->query = $this->app->request()->query;
 
         $this->date_omo = date_create()

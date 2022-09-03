@@ -33,14 +33,15 @@
         "league/uri-parser": "^1.4",
         "vlucas/phpdotenv": "^5.3",
         "symfony/mailer": "^6.0",
-        "monolog/monolog": "^2.3",
+        "monolog/monolog": "^3.2",
         "illuminate/support": "^8.79",
         "ramsey/uuid": "^4.2",
         "illuminate/events": "^8.79",
         "laravel/helpers": "^1.5",
         "respect/validation": "^2.2",
         "elegantweb/sanitizer": "^2.0",
-        "delight-im/cookie": "^3.4"
+        "delight-im/cookie": "^3.4",
+        "maximebf/debugbar": "^1.18"
     },
     "authors": [
         {

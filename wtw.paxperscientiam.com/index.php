@@ -20,7 +20,6 @@ use Delight\Cookie\Session;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-use App\Validations\{UserVitalsFormValidator, UserSettingsFormValidator};
 use App\Models\User;
 use App\Controllers\{
 BeefController,
@@ -71,7 +70,6 @@ if ("DEBUG" == Config::get("app.run_mode")) {
     Debugger::enable(Debugger::PRODUCTION);
 }
 
-Debugger::$showBar = false;
 
 // prevent interference with signing
 $app->request()->query->__unset("DEBUG");
@@ -86,16 +84,6 @@ $app->set('flight.views.extension', ".phtml");
 
 $connection = \Delight\Db\PdoDatabase::fromDsn(new \Delight\Db\PdoDsn(Config::get('app.cnx.dsn')));
 
-$app->register(
-    'clockwork',
-    'Clockwork\Support\Vanilla\Clockwork::init',
-    [
-        [
-            'storage_files_path' => FILE_ROOT . '/storage/clockwork',
-            'register_helpers' => true,
-        ]
-    ]
-);
 
 $app->register(
     'auth',
@@ -117,25 +105,25 @@ $app->register(
 // Register controllers
 $app->register(
     'TestController',
-    'App\Controllers\TestController',
+    App\Controllers\TestController::class,
     [$app]
 );
 
 $app->register(
     'AuthenticationController',
-    'App\Controllers\AuthenticationController',
+    App\Controllers\AuthenticationController::class,
     [$app]
 );
 
 $app->register(
     'HomeController',
-    'App\Controllers\HomeController',
+    App\Controllers\HomeController::class,
     [$app]
 );
 
 $app->register(
     'UserSettingsController',
-    'App\Controllers\UserSettingsController',
+    App\Controllers\UserSettingsController::class,
     [$app, App\Validations\ValidatorStore::userSettingsValidator()]
 );
 
@@ -147,7 +135,7 @@ $app->register(
 
 $app->register(
     'UserVitalsModalController',
-    'App\Controllers\UserVitalsModalController',
+    App\Controllers\UserVitalsModalController::class,
     [$app]
 );
 
@@ -159,7 +147,7 @@ $app->register(
 
 $app->register(
     'JournalEntryCreateController',
-    'App\Controllers\JournalEntryCreateController',
+    App\Controllers\JournalEntryCreateController::class,
     [$app]
 );
 
@@ -265,11 +253,9 @@ $app->after("redirect", function () {
 // routes for debugging
 
 if (true == $app->get("debug_mode")) {
-
-    $app->route("/__clockwork/request", function () use ($app) {
-
-        echo new Illuminate\Http\JsonResponse($app->clockwork()->getMetadata([]));
-    });
+    $app->route('*', function () use ($app) {
+        return true;
+    }, true);
 
     $app->route("GET /info", function () {
         phpinfo();
@@ -444,9 +430,7 @@ $app->route("*", function () use ($app) {
     return true;
 });
 
-$app->route('GET *', function () {
-    return true;
-}, true);
+
 
 // middleware kinda
 // $app->before("start", function () {
@@ -490,7 +474,7 @@ $app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo) u
     ) {
         $omo = 0;
     }
-
+    bdump("requested bpo:{$bpo}, omo:{$omo}");
     $app->set("omo", $omo); // journal
     $app->set("bpo", $bpo); // big-picture
     $app->log(['o' => $omo, 'b' => $bpo]);
@@ -630,6 +614,7 @@ $app->route('DELETE /journal-entry/@id', function ($id) use ($app) {
 
 if (true == $app->get("debug_mode")) {
     $app->route('POST /drop-food-log', function () use ($app) {
+        d("OMFG");
         try {
             $controller = $app->JournalEntryRemoveController();
             $controller->deleteAll();
@@ -751,7 +736,7 @@ $app->route('POST /journal-entry', function () use ($app) {
             throw new \App\Exceptions\FormException("Sorry, your progress was not recorded.");
         }
         $app->log($app->request()->data->getData());
-
+        dd("OF");
         $controller = $app->JournalEntryCreateController();
     } catch (\App\Exceptions\FormException $e) {
         $app->log($e->getMessage(), "error");
