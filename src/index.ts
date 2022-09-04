@@ -123,7 +123,7 @@ export function initCalendar() {
         const min = jsCalendar.tools.dateToString(info.start, "YYYY-MM-DD") as string
         // @ts-ignore
         const max = jsCalendar.tools.dateToString(info.end, "YYYY-MM-DD") as string
-        console.log(info);
+        console.log({min, max});
         if (true !== myCalendar._isSelectionComplete) {
             fetch(`/beef/${min}/${max}`, {
                 method: "GET",

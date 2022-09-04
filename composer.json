@@ -41,7 +41,8 @@
         "respect/validation": "^2.2",
         "elegantweb/sanitizer": "^2.0",
         "delight-im/cookie": "^3.4",
-        "maximebf/debugbar": "^1.18"
+        "maximebf/debugbar": "^1.18",
+        "bramus/monolog-colored-line-formatter": "~3.0"
     },
     "authors": [
         {

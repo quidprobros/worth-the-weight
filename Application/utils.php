@@ -19,9 +19,9 @@ if (!function_exists('o')) {
     }
 }
 
-if (!function_exists('dd') && function_exists('d')) {
-    Kint::$aliases[] = 'dd';
-    function dd(...$vars)
+if (!function_exists('kd') && function_exists('d')) {
+    Kint::$aliases[] = 'kd';
+    function kd(...$vars)
     {
         Kint::dump(...$vars);
         exit;

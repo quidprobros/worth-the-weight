@@ -19,16 +19,14 @@ use Delight\Cookie\Session;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\ErrorHandler;
+
 
 use App\Models\User;
-use App\Controllers\{
-BeefController,
+use App\Controllers\{BeefController,
     ExerciseController,
     GotoDateModalController,
-    JournalEntryRemoveController,
-    JournalEntryCreateController,
     RedirectDateController,
-    UserSettingsModalController,
     UserSettingsController,
     };
 
@@ -52,6 +50,10 @@ Debugger::getBar()->addPanel(new App\TracyExtension());
 $monolog = new Logger('main-channel');
 
 $monolog->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEBUG));
+
+ErrorHandler::register($monolog);
+
+$monolog->error("bar");
 
 $tracyLogger = new PsrToTracyLoggerAdapter($monolog);
 
@@ -105,25 +107,25 @@ $app->register(
 // Register controllers
 $app->register(
     'TestController',
-    App\Controllers\TestController::class,
+    'App\Controllers\TestController',
     [$app]
 );
 
 $app->register(
     'AuthenticationController',
-    App\Controllers\AuthenticationController::class,
+    'App\Controllers\AuthenticationController',
     [$app]
 );
 
 $app->register(
     'HomeController',
-    App\Controllers\HomeController::class,
+    'App\Controllers\HomeController',
     [$app]
 );
 
 $app->register(
     'UserSettingsController',
-    App\Controllers\UserSettingsController::class,
+    'App\Controllers\UserSettingsControlle',
     [$app, App\Validations\ValidatorStore::userSettingsValidator()]
 );
 
@@ -135,7 +137,7 @@ $app->register(
 
 $app->register(
     'UserVitalsModalController',
-    App\Controllers\UserVitalsModalController::class,
+    'App\Controllers\UserVitalsModalController',
     [$app]
 );
 
@@ -147,7 +149,7 @@ $app->register(
 
 $app->register(
     'JournalEntryCreateController',
-    App\Controllers\JournalEntryCreateController::class,
+    'App\Controllers\JournalEntryCreateController::class',
     [$app]
 );
 
@@ -208,6 +210,7 @@ $app->map("offset2date", function ($offset) {
     return Carbon::now()->addDays($offset);
 });
 
+
 $app->map("verifySignature", function () use ($app) {
     if (
         empty($app->request()->query->signature) ||
@@ -253,7 +256,7 @@ $app->after("redirect", function () {
 // routes for debugging
 
 if (true == $app->get("debug_mode")) {
-    $app->route('*', function () use ($app) {
+    $app->route('*', function () {
         return true;
     }, true);
 
@@ -474,10 +477,9 @@ $app->route('GET /home/(@omo:-?[0-9]+(/@bpo:-?[0-9]+))', function ($omo, $bpo) u
     ) {
         $omo = 0;
     }
-    bdump("requested bpo:{$bpo}, omo:{$omo}");
+
     $app->set("omo", $omo); // journal
     $app->set("bpo", $bpo); // big-picture
-    $app->log(['o' => $omo, 'b' => $bpo]);
     $controller = $app->HomeController();
     $controller();
 });
@@ -540,7 +542,7 @@ $app->route('GET /modals/vitals-log', function () use ($app) {
     }
 });
 
-$app->route('GET /journal/rel/@offset', function ($offset) use ($app) {
+$app->route('GET /journal/rel/@offset', function () use ($app) {
     if (!$app->verifySignature()) {
         $app->notFound();
     }
@@ -562,6 +564,11 @@ $app->route('GET /home/right-canvas/rel', function () use ($app) {
 });
 
 $app->route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($omo, $bpo) use ($app) {
+    if (!$app->verifySignature()) {
+        $app->notFound();
+    }
+    $app->set("omo", $omo);
+    $app->set("bpo", $bpo);
     try {
         $controller = $app->HomeController();
         $controller->useOtherRoute("partials/title-bar");
@@ -572,7 +579,12 @@ $app->route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($om
 });
 
 $app->route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($omo, $bpo) use ($app) {
+    if (!$app->verifySignature()) {
+        $app->notFound();
+    }
 
+    $app->set("omo", $omo);
+    $app->set("bpo", $bpo);
     try {
         $controller = $app->HomeController();
         $controller->useOtherRoute("partials/offcanvas-menu");
@@ -586,7 +598,8 @@ $app->route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($
     if (!$app->verifySignature()) {
         $app->notFound();
     }
-
+    $app->set("omo", $omo);
+    $app->set("bpo", $bpo);
     try {
         $controller = $app->HomeController();
         $controller->useOtherRoute("partials/big-picture");
@@ -735,8 +748,6 @@ $app->route('POST /journal-entry', function () use ($app) {
         if (!$app->verifySignature()) {
             throw new \App\Exceptions\FormException("Sorry, your progress was not recorded.");
         }
-        $app->log($app->request()->data->getData());
-        dd("OF");
         $controller = $app->JournalEntryCreateController();
     } catch (\App\Exceptions\FormException $e) {
         $app->log($e->getMessage(), "error");
@@ -770,8 +781,8 @@ if (true == $app->get("debug_mode")) {
         $app->render("form");
     });
 
-    $app->route('POST /form-test', function () use ($app) {
-        $controller = new App\Controllers\ProcessFormController($app->request()->data->getData());
+    $app->route('POST /form-test', function () {
+        // $controller = new App\Controllers\ProcessFormController($app->request()->data->getData());
 
         // 1. Filter data.
         // 2. Validate data.
@@ -785,16 +796,21 @@ $app->map('notFound', function () use ($app) {
 });
 
 $app->map('error', function ($ex) use ($app) {
-    $app->log($ex->getMessage(), "error");
-    if (true == $app->get("debug_mode")) {
-        $app->log('bluescreen in debug mode');
-        $bs = new Tracy\BlueScreen();
-        $bs->render($ex);
-        exit;
-    } else {
-        $app->log('bluescreen in production mode');
-        throw $ex;
-    }
+    throw $ex;
 });
+
+
+// $app->map('error', function ($ex) use ($app) {
+//     $app->log($ex->getMessage(), "error");
+//     if (true == $app->get("debug_mode")) {
+//         $app->log('bluescreen in debug mode');
+//         $bs = new Tracy\BlueScreen();
+//         $bs->render($ex);
+//         exit;
+//     } else {
+//         $app->log('bluescreen in production mode');
+//         throw $ex;
+//     }
+// });
 
 $app->start();
