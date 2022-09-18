@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  php-apache-environment: &base
+    container_name: php-apache
+    build:
+      context: ./
+      args:
+        PHP_IMAGE: ${PHP_IMAGE}
+    env_file:
+      - ./docker/.env
+    volumes:
+       - ./Application:/var/www/files/Application
+       - ./wtw.paxperscientiam.com:/var/www/files/wtw.paxperscientiam.com
+       - /var/www/files/storage/ # cache and sqlite database
+       - ./package.json:/var/www/files/package.json
+       - ./composer.json:/var/www/files/composer.json
+       - node_modules:/var/www/files/node_modules
+       - vendor:/var/www/files/vendor       
+    ports:
+      - 9005:80
+
+  # npm-update:
+  #   command: node index.js
+  #   depends_on:
+  #     - php-apache-environment
+
+
+volumes:
+  wtw:
+  vendor:
+  node_modules:
+  logs:

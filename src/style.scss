@@ -1,0 +1,371 @@
+@import "./htmx.scss";
+
+@import "@/rfs/scss";
+
+@import "./foundation_settings";
+
+@import "@/foundation-sites/scss/foundation";
+
+@import "@/slim-select/src/slim-select/slimselect";
+
+@import "@/css.gg/icons/scss/arrow-left-r";
+@import "@/css.gg/icons/scss/arrow-right-r";
+@import '@/css.gg/icons/scss/eye';
+@import '@/css.gg/icons/scss/eye-alt';
+@import '@/css.gg/icons/scss/components';
+
+/* @import "@/simple-jscalendar/source/jsCalendar.css"; */
+/* @import "@/simple-jscalendar/themes/jsCalendar.darkseries.css"; */
+
+@import "@/microtip/microtip";
+
+// Global styles
+@include foundation-global-styles;
+@include foundation-forms;
+
+// using rfs instead
+@include foundation-typography;
+
+@include foundation-xy-grid-classes(
+    $base-grid: true,
+    $margin-grid: true,
+    $padding-grid: true,
+    $block-grid: true,
+    $collapse: true,
+    $offset: true,
+    $vertical-grid: true
+);
+
+// Menu-based containers
+@include foundation-menu;
+@include foundation-menu-icon;
+
+// Generic components
+@include foundation-button;
+@include foundation-button-group;
+@include foundation-close-button;
+@include foundation-table;
+
+// Basic components
+@include foundation-callout;
+@include foundation-card;
+
+// Containers
+@include foundation-thumbnail;
+
+
+// Layout components
+@include foundation-off-canvas;
+@include foundation-reveal;
+@include foundation-title-bar;
+@include foundation-top-bar;
+
+// Helpers
+@include foundation-flex-classes;
+@include foundation-prototype-classes;
+@include foundation-visibility-classes;
+
+
+.custom-shadow {
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: box-shadow 0.2s ease-in-out,background-color 0.2s ease-in-out;
+
+    &.htmx-swapping {
+        box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+    }
+}
+
+.htmx-swapping #big-picture--section-2 {
+    opacity: 0.2;
+    filter: blur(5px);
+    color: white;
+}
+
+tr.htmx-swapping td {
+    opacity: 0;
+    transition: opacity 200ms ease-out;
+}
+
+.fade-me-out.htmx-swapping {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+.htmx-settling .fade-me-in {
+    opacity: 0;
+}
+.fade-me-in {
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+.card-divider {
+    border-left: 1px solid white
+}
+
+.calendar .cell:before {
+    content: '3';
+    display: block;
+    padding-top: 85.71%;
+}
+
+.calendar .cell {
+    background: white;
+    border: grey 1px solid;
+    height: auto;
+}
+
+#big-picture {
+    #big-picture--section-1 {
+        padding: 0 !important;
+    }
+
+    #big-picture--section-2 {
+        transition: opacity 0.2s ease-in-out,
+                    filter 0.3s ease-in-out,
+                    color 0.3s ease-in-out;
+        p:first-child {
+            @include font-size(8rem);
+        }
+    }
+
+    .gg-arrow-right-r,
+    .gg-arrow-left-r {
+        --ggs: 2;
+    }
+}
+
+.footer {
+    background-color: $black;
+    color: $white;
+}
+
+/* .title-bar-center { */
+/*     @extend .title-bar-right; */
+/*     text-align: center; */
+/* } */
+
+.super {
+    font-size: 50% !important;
+}
+
+.special-button-left {
+    @extend .button;
+    @include shadow($prototype-box-shadow);
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(0 50%, 100% 100%, 100% 0);
+}
+
+.special-button-right {
+    @extend .button;
+    @include shadow($prototype-box-shadow);
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(0 0, 0 100%, 100% 50%);
+}
+
+
+
+
+/*base code*/
+.animated {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+.animated.infinite {
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+.animated.hinge {
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+}
+/*the animation definition*/
+@-webkit-keyframes slideInLeft {
+    0% {
+        -webkit-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible
+    }
+    100% {
+        -webkit-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0)
+    }
+}
+@keyframes slideInLeft {
+    0% {
+        -webkit-transform: translate3d(-100%, 0, 0);
+        -ms-transform: translate3d(-100%, 0, 0);
+        transform: translate3d(-100%, 0, 0);
+        
+    }
+    100% {
+        -webkit-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+
+    }
+}
+
+.slideInLeft {
+    -webkit-animation-name: slideInLeft;
+    animation-name: slideInLeft
+}
+
+.slideInLeft2 {
+    @extend .animated;
+    -webkit-animation-name: slideInLeft;
+    animation-name: slideInLeft
+}
+
+/*the animation definition*/
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.05, 1.05, 1.05);
+        transform: scale3d(1.05, 1.05, 1.05)
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+}
+@keyframes pulse {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        -ms-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.05, 1.05, 1.05);
+        -ms-transform: scale3d(1.05, 1.05, 1.05);
+        transform: scale3d(1.05, 1.05, 1.05)
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        -ms-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+}
+.pulse {
+    -webkit-animation-name: pulse;
+    animation-name: pulse
+}
+
+.pulse2 {
+    @extend .animated;
+    -webkit-animation-name: pulse;
+    animation-name: pulse
+}
+
+
+/* .auto            { cursor: auto; } */
+/* .default         { cursor: default; } */
+/* .none            { cursor: none; } */
+/* .context-menu    { cursor: context-menu; } */
+.help-cursor            { cursor: help; }
+.pointer-cursor         { cursor: pointer; }
+/* .progress        { cursor: progress; } */
+/* .wait            { cursor: wait; } */
+/* .cell            { cursor: cell; } */
+/* .crosshair       { cursor: crosshair; } */
+/* .text            { cursor: text; } */
+/* .vertical-text   { cursor: vertical-text; } */
+/* .alias           { cursor: alias; } */
+/* .copy            { cursor: copy; } */
+/* .move            { cursor: move; } */
+/* .no-drop         { cursor: no-drop; } */
+/* .not-allowed     { cursor: not-allowed; } */
+/* .all-scroll      { cursor: all-scroll; } */
+/* .col-resize      { cursor: col-resize; } */
+/* .row-resize      { cursor: row-resize; } */
+/* .n-resize        { cursor: n-resize; } */
+/* .e-resize        { cursor: e-resize; } */
+/* .s-resize        { cursor: s-resize; } */
+/* .w-resize        { cursor: w-resize; } */
+/* .ns-resize       { cursor: ns-resize; } */
+/* .ew-resize       { cursor: ew-resize; } */
+/* .ne-resize       { cursor: ne-resize; } */
+/* .nw-resize       { cursor: nw-resize; } */
+/* .se-resize       { cursor: se-resize; } */
+/* .sw-resize       { cursor: sw-resize; } */
+/* .nesw-resize     { cursor: nesw-resize; } */
+/* .nwse-resize     { cursor: nwse-resize; } */
+
+.nojs-banner {
+    text-align: center;
+    font-size: 1.5em;
+    border: 5px solid black;
+}
+
+
+.no-js {
+    .title-bar-left,
+    .title-bar-right
+    {
+        visibility: hidden;
+    }
+
+    #big-picture--section-3
+    {
+        display: none;
+    }
+}
+
+.no-js body:before {
+    content: "Worth the Weight is better with JavaScript! Some features may be unavailable.";
+
+    color: white;
+    font-family: sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+
+    width: 100%;
+    padding: 1em 0;
+
+    background: rgba(0,0,0,0.75);
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    z-index: 99999;
+}
+
+iframe {
+    display: none;
+}
+
+.no-js iframe {
+    display: inherit !important;
+    border: 10px solid red;
+    width: 100%;
+    height: 6rem;
+}
+
+.nojs-show {
+    display: none;
+}
+.no-js .nojs-show {
+    display: inherit !important;
+}
+
+.show-for-landscape-and-small-only {
+    display: none;
+    @media screen and #{breakpoint(medium down)} and #{breakpoint(landscape)} {
+        display: flex;
+    }
+}
+
+[data-loading] {
+    display: none;
+}

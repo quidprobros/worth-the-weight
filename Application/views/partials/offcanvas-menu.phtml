@@ -1,0 +1,51 @@
+<?
+use Carbon\Carbon;
+
+$prev = $journal_day_offset - 1;
+$next = $journal_day_offset + 1;
+?>
+
+<!-- Your menu or Off-canvas content goes here -->
+<div id='this-container' class="grid-y grid-padding-y"
+     hx-get='<?=$app->url()->sign("/home/left-canvas/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
+     hx-trigger="path-deps"
+     path-deps="/journal-entry">
+    <div class="cell padding-right-1">
+        <div class="button-group align-justify align-middle">
+            <a class="button" title="see entry for yesterday"
+               hx-get='<?=$app->url()->sign("/home/left-canvas/rel/{$prev}/{$big_picture_day_offset}")?>'
+               hx-push-url='<?=$app->url()->sign("/home/{$prev}/{$big_picture_day_offset}")?>'
+               hx-target='#offCanvas'><i class="gg-arrow-left-r"></i></a>
+            <a hx-get='<?=$app->url()->sign("/home/left-canvas/rel/0/{$big_picture_day_offset}")?>'
+               hx-trigger="click"
+               hx-push-url='<?=$app->url()->sign("/home/0/{$big_picture_day_offset}")?>'
+               hx-target='#offCanvas' class="text-center">
+                <div class="h4" style='margin:0'><?=$date_omo->format("D M j, Y")?></div> <? if (0 == $journal_day_offset) { ?>
+                    <p class="text-center margin-0"><small>today</small></p>
+                <? } else { ?>
+                    <p class="text-center margin-0"><small>&nbsp;</small></p>
+                <? } ?>
+            </a>
+            <a class='button' title="see entry for tomorrow"
+               hx-get='<?=$app->url()->sign("/home/left-canvas/rel/{$next}/{$big_picture_day_offset}")?>'
+               hx-push-url='<?=$app->url()->sign("/home/{$next}/{$big_picture_day_offset}")?>'
+               hx-target='#offCanvas'><i class="gg-arrow-right-r"></i></a>
+        </div>
+       
+    </div>
+    <div class="cell">
+        <div class="callout">
+            <strong>Consumed: <?=$journal_points?> points</strong>
+            <br>
+            <strong>Exercised this day: <?=$exercised_omo ? "YES!": "NOPE"?></strong>
+        </div>
+    </div>
+    <div class="cell">
+        <div class='callout'>
+            <div class="table-scroll">
+                <?=$app->render("partials/journal", [
+                ])?>
+            </div>
+        </div>
+    </div>
+</div>

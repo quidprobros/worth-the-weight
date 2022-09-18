@@ -1,0 +1,48 @@
+<table id="journal-table" class="hover" data-order='[[ 0, "desc" ]]'>
+    <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Food</th>
+            <th scope="col">Multiplier</th>
+            <th scope="col">Points</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+
+    <tbody hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML swap:1s">
+        <? if (empty($records)) { ?>
+            <tr class="empty-row-notice">
+                <td class="text-center" colspan="100%"><em>Your food log is empty.</em></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        <? } ?>
+        <? foreach ($records->get() as $record) { ?>
+            <tr style="border-left: solid 10px <?=$record->food->plan->html_color?>">
+                <?
+                $_date = $record->date;
+                if (false == strtotime($_date)) {
+                    $date = "?";
+                } else {
+                    $date = date_create($_date)->format("m/d/Y");
+                }
+                ?>
+                <td data-sort="<?=strtotime($_date)?>" data-name='date'><?=$date?></td>
+                <td data-name='food'><?=$record->food->food_name?></td>
+                <td data-name="quantity" class="text-right">
+                    <?=$record->quantity?>
+                </td>
+                <td class="text-right" data-name='points'><?=number_format($record->points, 2)?></td>
+                <td>
+                    <div class="button-group stacked" role="group">
+                        <button type="button" class="button" hx-delete='<?=$app->url()->sign("/journal-entry/{$record->id}")?>'>
+                            delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        <? } ?>
+    </tbody>
+</table>

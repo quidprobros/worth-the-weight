@@ -1,0 +1,28 @@
+<?
+use Carbon\Carbon;
+?>
+<div id="main-title-bar"
+     class="title-bar">
+    <div class="title-bar-left">
+        <button class="menu-icon" type="button" data-toggle="offCanvas" hx-put="/ui-journal/open"></button>
+        <span class="title-bar-title">Journal</span>
+    </div>
+    <div class="title-bar-center show-for-medium pointer-cursor">
+        <a hx-get='<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/0")?>'
+           hx-push-url='<?=$app->url()->sign("/home/{$journal_day_offset}/0")?>'
+           hx-target="#big-picture"
+           href="/"><?=" Today is " . Carbon::now()->format("D M j, Y")?>
+        </a>
+    </div>
+    <div class="title-bar-center hide-for-medium pointer-cursor">
+        <a hx-get='<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/0")?>'
+           hx-push-url='<?=$app->url()->sign("/home/{$journal_day_offset}/0")?>'
+           hx-target="#big-picture"
+           href="/"><?=Carbon::now()->format("F j, Y")?>
+        </a>
+    </div>
+    <div class="title-bar-right">
+        <span class="title-bar-title">Calendar</span>
+        <button class="menu-icon" type="button" data-toggle="offCanvas2" data-classes=""></button>
+    </div>
+</div>

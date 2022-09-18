@@ -1,0 +1,79 @@
+<div class="reveal" id="user-settings-modal" data-reveal>
+    <h1>Settings and Goals</h1>
+    <form name='user-settings-form'
+          class='grid-x'
+          data-abide novalidate>
+        <fieldset class="cell small-12 fieldset">
+            <legend>Settings</legend>
+            <div class="form-group">
+                <label><strong>select plan</strong></label>
+                <select id="plan-selection" name='plan-selection' class='form-control' required>
+                    <option data-placeholder="true"></option>
+                    <? foreach ((new \App\Models\Plans())::get() as $plan) { ?>
+                        <? if ($app->get('ActiveUser')->settings->plan->id == $plan->id) { ?>
+                            <option value="<?=$plan->id?>" selected><?=$plan->plan_short_name?></option>
+                        <? } else { ?>
+                            <option value="<?=$plan->id?>"><?=$plan->plan_short_name?></option>
+                        <? } ?>
+                    <? } ?>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for=""><strong>weight unit</strong></label>
+                <select id="weight-unit-selection" name="weight-unit-selection" class='form-selection'>
+                    <option value="" data-placeholder="true"></option>
+                    <? foreach ((new \App\Models\MeasurementUnits())->weights() as $measurement_unit) { ?>
+                        <? if ($app->get('ActiveUser')->settings->weight_unit_id == $measurement_unit->id) { ?>
+                            <option value="<?=$measurement_unit->id?>" selected><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>
+                        <? } else { ?>
+                            <option value="<?=$measurement_unit->id?>"><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>
+                        <? } ?>
+                    <? } ?>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for=""><strong>height unit</strong></label>
+                <select id="height-unit-selection" name="height-unit-selection" class='form-selection'>
+                    <option value="" data-placeholder="true"></option>
+                    <? foreach ((new \App\Models\MeasurementUnits())->heights() as $measurement_unit) { ?>
+                        <? if ($app->get('ActiveUser')->settings->height_unit_id == $measurement_unit->id) { ?>
+                            <option value="<?=$measurement_unit->id?>" selected><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>
+                        <? } else { ?>
+                            <option value="<?=$measurement_unit->id?>"><?="{$measurement_unit->unit_name} ({$measurement_unit->unit_abbreviation})"?></option>
+                        <? } ?>
+                    <? } ?>
+                </select>
+            </div>
+        </fieldset>
+        <div class="cell small-12">
+            <button type="submit"
+                    class="large button expanded"
+                    hx-post="/user-settings/"
+                    hx-swap='none'>save settings</button>
+        </div>
+    </form>
+
+    <form name="user-goals-form" class='grid-x' data-abide novalidate>
+        <fieldset class="cell small-12 fieldset">
+            <legend>Goals</legend>
+            <div class="form-group">
+                <label for=""><strong>points goal</strong></label>
+                <input id="plan-points-goal" class="form-control" name="plan-points-goal" type="text" value="" data-inputmask="'alias': 'numeric'" pattern="number"/>
+                <span id="error" class='form-error'></span>
+            </div>
+        </fieldset>
+        <div class="cell small-12">
+            <button type="submit"
+                    class="large button expanded"
+                    hx-post="/user-goals/"
+                    hx-swap='none'>save goals</button>
+        </div>
+    </form>
+
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>

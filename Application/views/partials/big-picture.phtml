@@ -1,0 +1,71 @@
+<?
+
+$prev = $big_picture_day_offset - 1;
+$next = $big_picture_day_offset + 1;
+
+?>
+
+<div class="cell"
+     hx-get='<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$big_picture_day_offset}")?>'
+     hx-trigger="path-deps"
+     hx-target="#big-picture"
+     path-deps="/journal-entry">
+    <div class="grid-x align-middle">
+        <div class="small-1 cell text-left align-self-stretch">
+            <a class="special-button-left padding-0" title="see total for previous day"
+               href='<?=$app->url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
+               hx-trigger="click, keyup[shiftKey&&key=='A'] from:body"
+               hx-get='<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$prev}")?>'
+               hx-push-url='<?=$app->url()->sign("/home/{$journal_day_offset}/{$prev}")?>'
+               hx-swap="innerHTML swap:200ms"
+               hx-target='#big-picture'>
+            </a>
+        </div>
+        <div id="big-picture--section-2" class="small-10 cell custom-shadow" data-classes="">
+            <div class="text-center">
+                <div id="today-total" class="text-center"><p class='margin-0'><span><?=number_format($today_points, 2)?></span><sup class="super"><u>points</u></sup></p></div>
+            </div>
+        </div>
+        <div class="small-1 cell text-right align-self-stretch">
+            <a class="special-button-right padding-0" title="see total for next day"
+               href='<?=$app->url()->sign("/home/{$journal_day_offset}/{$next}")?>'
+               hx-trigger="click, keyup[shiftKey&&key=='D'] from:body"
+               hx-get="<?=$app->url()->sign("/home/big-picture/rel/{$journal_day_offset}/{$next}")?>"
+               hx-swap="innerHTML swap:200ms"
+               hx-push-url='<?=$app->url()->sign("/home/{$journal_day_offset}/{$next}")?>'
+               hx-target='#big-picture'>
+            </a>
+        </div>
+        <div class="cell small-offset-1">
+            <p class="text-left subheader"><?=$title?></p>
+        </div>
+
+
+    </div>
+</div>
+<div id="big-picture--section-3" class="cell">
+    <form name="day-info">
+        <fieldset class="cell small-12 fieldset">
+            <legend>exercise info</legend>
+            <input name="exercised"
+                   type="checkbox"
+                   hx-post='<?=$app->url()->sign("/journal-entry/exercised/rel/{$big_picture_day_offset}")?>'
+                   hx-target="#exercised-statement"
+                   <?=(1 == $exercised_bpo) ? "checked":""?>
+            />
+            <label for="exercised">Did you exercise today?</label>
+            <br>
+            <?=$app->render("partials/exercised-statement", [])?>
+        </fieldset>
+    </form>
+</div>
+<div id="big-picture--footer" class="cell">
+    <div id="statistics" class="callout">
+        <p>
+            You are averaging <strong><?=number_format($stats->avgDaily(), 2)?></strong> points per logged-day.
+        </p>
+        <p>
+            Trailing 7-day average: <strong><?=number_format($stats->avgDailyTrailing7(), 2)?></strong> points per logged-day
+        </p>
+    </div>
+</div>

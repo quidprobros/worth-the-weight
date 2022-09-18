@@ -1,0 +1,16 @@
+version: '3.8'
+# services:
+#   npm-update:
+#     context: ./
+#     args:
+#       PHP_IMAGE: ${PHP_IMAGE}
+#     #build: docker/npm-update
+#     working_dir: /var/www/files
+#     volumes:
+#       - node_modules:/var/www/files/node_modules
+#       - ./package.json:/var/www/files/package.json
+
+# #     <<: *base
+# #     build:
+# #       target: npm_update
+    

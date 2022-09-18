@@ -1,0 +1,141 @@
+<?PHP
+use Delight\Cookie\Session;
+use Illuminate\Support\Facades\Config;
+$pw_reset = $pw_reset ?? false;
+$page_title = $page_title ?? "Worth the Weight!";
+?>
+<!doctype html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="UTF-8"/>
+        <title><?=$page_title?></title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <?=$app->render(Config::get('app.web_root') . "/dist/resources", [])?>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
+    </head>
+    <body>
+        <div class="title-bar">
+            <div class="title-bar-left">
+                <h1>Worth the Weight!</h1>
+            </div>
+        </div>
+        <div class="grid-container">
+            <? if ($app->auth()->isLoggedIn()) { ?>
+                <h1>You are currently logged in as "<?=$app->auth()->getUsername()?>"</h1>
+                <a href="/logout">Not <?=$app->auth()->getUsername()?>?</a>
+            <? } ?>
+            <iframe frameborder="0" name="derp"></iframe>
+            <form hx-post="/login"
+                  class="log-in-form"
+                  hx-swap="none"
+                  target="derp"
+                  method="POST"
+                  action="/login">
+                <input type="hidden" name="csrf_token" value="<?=$app->get('csrf_token'); ?>">
+                <? if (true == $pw_reset) { ?>
+                    <h2 class="text-center cc-form-title"><strong>Login here:</strong></h2>
+                <? } else { ?>
+                    <h2 class="text-center cc-form-title"><strong>Already a member? Login here:</strong></h2>
+                <? } ?>
+                <input type='hidden' name='pw-reset-selector' value=<?=$selector ?? ''?>/>
+                <input type='hidden' name='pw-reset-token' value=<?=$token ?? ''?>/>
+                <div class="input-group">
+                    <span class="input-group-label"><?=$pw_reset ? "Current email" : "Email"?></span>
+                    <input id="login_email"
+                           class="input-group-field"
+                           type="email"
+                           name="login_email"
+                           autocomplete="username"
+                           placeholder="somebody@somewhere.com"
+                           autofocus required>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-label"><?=$pw_reset ? "New password" : "Password"?></span>
+                    <input id="current-password"
+                           type="password"
+                           class='input-group-field'
+                           name="login_password"
+                           placeholder="password123"
+                           autocomplete="current-password"
+                           required>
+                    <div class="input-group-button">
+                        <button type="button"
+                                onclick="App.togglePassword = document.getElementById('current-password'); App.eyeball = document.getElementById('eyeball')"
+                                class="button flex-container align-center-middle">
+                            <i id='eyeball' class="gg-eye"></i>
+                            <span class='show-for-medium'>&nbsp;Show password</span>
+                        </button>
+                    </div>
+                </div>
+                <input type="submit" class="large button expanded" value="Log in"></input>
+                <a type="button" href="/home" class='button nojs-show'>click after successful login</a>
+            </form>
+            <? if (true !== $pw_reset) { ?>
+                <div class="text-left"><a type="button" class="small button" href="/reset-pw">password reset</a></div>
+            <? } ?>
+            <hr/>
+            <? if ($show ?? true) { ?>
+                <form hx-post="/register" class="registration-form" hx-swap='none' method="POST" action="/register">
+                    <input type="hidden" name="token" value="<?=$app->get('csrf_token'); ?>">
+                    <h2 class="text-center cc-form-title"><strong>Register</strong> to be a part of Worth the Weight!</h2>
+                    <label for="register-form-email">Email (fake email address is fine)
+                        <input type="email"
+                               class="register-form-email"
+                               id="register-form-email"
+                               name="register_email"
+                               placeholder="somebody@somewhere.com"
+                               autocomplete="username"
+                               required>
+                    </label>
+
+                    <label for="register-form-username">Username (use numbers and letters only)
+                        <input type="text"
+                               pattern="[a-zA-Z0-9]+"
+                               class="register-form-username"
+                               placeholder="zaphod123"
+                               id="register-form-username"
+                               name="register_username"
+                               required>
+                    </label>
+
+                    <label for="register-form-password">Password (<?=Config::get('app.min_password_length')?> character minimum)
+                        <input  id="new-password"
+                                type="password"
+                                minlength="<?=Config::get('app.min_password_length')?>"
+                                class="register-form-password"
+                                placeholder="password123"
+                                autocomplete="new-password"
+                                name="register_password"
+                                required>
+                    </label>
+                    <button type="submit" class="large button expanded sign-in-form-button">Register</button>
+                </form>
+            <? } ?>
+        </div>
+    </body>
+</html>
+<script>
+ $(function() {
+
+     <? if (true === Session::has("flash-greeting")) { ?>
+     $.notify("<?=Session::take("flash-greeting")?>",
+              {
+                  "className": "info",
+                  "position": "top left",
+              }
+     );
+     <? } ?>
+
+     <? if (true === Session::has("flash-error")) { ?>
+     $.notify("<?=Session::take("flash-error")?>",
+              {
+                  "className": "error",
+                  "position": "top left",
+              }
+     );
+     <? } ?>
+
+
+ });
+</script>

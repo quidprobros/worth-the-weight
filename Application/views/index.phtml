@@ -1,0 +1,181 @@
+<?
+use Carbon\Carbon,
+Illuminate\Support\Facades\Config;
+
+use Delight\Cookie\Session;
+
+$has_plan = $app->get("ActiveUser")->settings->plan()->exists();
+$disabled = $has_plan ? "" : "disabled";
+
+?>
+<!doctype html>
+<html lang="en" class="no-js">
+    <div id="beech"></div>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Worth the Weight!</title>
+        <?=$app->render(Config::get('app.web_root') . "/dist/resources", [])?>
+        <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%3E%3Ctext%20x='0'%20y='14'%3E🦄%3C/text%3E%3C/svg%3E" type="image/svg+xml" />
+    </head>
+    <div id="flash-primary" hx-swap-oob="true"></div>
+    <body hx-ext="path-deps,class-tools" class="medium-grid-frame grid-y align-justify">
+
+        <? foreach ($records as $record) { ?>
+            <?=$record->id?>
+        <? } ?>
+
+        <?=$app->render("partials/title-bar")?>
+
+        <div id="main-container" class=" cell medium-auto medium-cell-block-container">
+            <div class="grid-x grid-padding-x">
+                <div class="cell medium-cell-block-y">
+                    <div class="off-canvas-wrapper">
+                        <div class="off-canvas position-left off-canvas-absolute" id="offCanvas" data-off-canvas>
+                            <?=$app->render("partials/offcanvas-menu", [
+                            ])?>
+                        </div>
+
+                        <div class="off-canvas position-right off-canvas-absolute" id="offCanvas2" data-off-canvas>
+                            <?=$app->render("partials/offcanvas-graphs", [
+                            ])?>
+                        </div>
+                        <div id="main-offcanvas-content" class="off-canvas-content" data-off-canvas-content>
+                            <div class="grid-container fluid">
+                                <div class="grid-x grid-margin-x align-stretch">
+                                    <noscript>
+                                        <div class="nojs-banner cell">
+                                            <iframe name="some-iframe">
+                                                <div>ok</div>
+                                            </iframe>
+                                        </div>
+                                    </noscript>
+                                    <div class="cell small-12 large-4 small-order-2 large-order-1">
+                                        <form name='food-log-form'
+                                              class="grid-x"
+                                              style="height:100%"
+                                              action="/journal-entry"
+                                              method="POST"
+                                              target="some-iframe"
+                                              data-loading-target="#loading"
+                                              data-loading-class-remove="hide"
+                                        >
+                                            <fieldset class="cell small-12 fieldset" <?=$disabled?>>
+                                                <legend>food info</legend>
+                                                <div class='form-group'>
+                                                    <label><strong>Select date</strong></label>
+                                                    <input class="form-control" name="date" type="date" value="<?=Carbon::now()->format("Y-m-d")?>" max="<?=Carbon::tomorrow()->format("Y-m-d")?>" required/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Select food from <span style="text-decoration:underline;text-decoration-color=<?=$app->get("ActiveUser")->settings->plan->html_color?>"><?=$app->get("ActiveUser")->settings->plan->plan_short_name?></span></strong></label>
+                                                    <select id="food-selection" name='food-selection' class='form-control' required>
+                                                        <option data-placeholder="Select food ..."></option>
+                                                        <? foreach ($foods as $food) { ?>
+                                                            <option style="border-left: solid 5px <?=$app->get("ActiveUser")->settings->plan->html_color?>" value="<?=$food->id?>"><?=$food->food_name?> (<?=$food->points?> points)</option>
+                                                        <? } ?>
+                                                    </select>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="cell small-12 fieldset" <?=$disabled?>>
+                                                <div class="form-group">
+                                                    <label>
+                                                        <strong class="help-cursor" aria-label="Fraction of base unit consumed" data-microtip-position="right" role="tooltip">Multiplier&nbsp;ⓘ</strong></label>
+                                                    <input class='form-control' type="text" name="amount" value="" data-inputmask="'alias': 'numeric'" required />
+
+
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="cell small-12 fieldset" <?=$disabled?>>
+                                                <button type="submit" class="shadow expanded rounded button success large <?=$disabled?>"
+                                                        data-loading-disable
+                                                        hx-post="<?=$app->url()->sign('/journal-entry/')?>"
+                                                        hx-swap="none">submit journal entry</button>
+                                            </fieldset>
+                                            <div id="loading" class="hide">Loading ...</div>
+                                        </form>
+
+                                    </div>
+                                    <div class="cell small-12 large-8 small-order-1 large-order-2">
+                                        <div id="big-picture" class="grid-y grid-frame">
+                                            <?$app->render("partials/big-picture")?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="main-footer" class="cell shrink footer">
+            <div class="grid-x grid-padding-x align-middle">
+                <div class="cell small-3">
+                    <div class="button-group margin-1">
+                        <? if (true === $app->get("debug_mode")) { ?>
+                            <button type="button"
+                                    onclick="delayedReload(500)"
+                                    class="button alert"
+                                    name='drop-food-records'
+                                    hx-swap='none'
+                                    hx-post="/drop-food-log">
+                                DELETE ENTIRE FOOD LOG</button>
+                        <? } ?>
+                        <form method="POST" action="/logout">
+                            <input type="hidden"
+                                   name="token"
+                                   value="<?=$app->get('csrf_token'); ?>">
+                            <button type="submit" class="small button" hx-swap='none' hx-post="/logout">log out</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="cell auto text-center show-for-landscape-and-small-only">
+                    Portrait mode works best!
+                </div>
+                <div class="cell auto">
+                    <div class="grid-x text-right small-up-3">
+                        <div class="cell"><button id='show-user-vitals-button' type="button" class="clear button">[vitals] </button></div>
+                        <div class="cell"><button id='show-user-settings-button' type="button" class="clear button">[settings] </button></div>
+                        <div class="cell"><span>Logged in as <strong><?=$app->auth()->getUsername()?></strong></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+         <? if (true != $has_plan) { ?>
+         $.notify("Hello! You must choose a plan from the settings menu!",
+                  {
+                      "className": "info",
+                      "position": "top left",
+                      "autoHide": false
+                  }
+         );
+         <? } ?>
+
+         <? if (true === Session::has("flash-greeting")) { ?>
+         $.notify("<?=Session::take("flash-greeting")?>",
+                  {
+                      "className": "info",
+                      "position": "top left",
+                  }
+         );
+         <? } ?>
+
+
+         htmx.onLoad(function(elt){
+             if ("this-container2" == elt.id) {
+                 initCalendar()
+             }
+         });
+
+         <? if (true == Session::take("ui-journal-open")) { ?>
+         $(function() {
+             $("#offCanvas").foundation("open");
+         });
+         <? } ?>
+
+        </script>
+    </body>
+</html>
+
