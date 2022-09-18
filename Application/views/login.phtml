@@ -1,11 +1,11 @@
 <?PHP
+use Delight\Cookie\Session;
 use Illuminate\Support\Facades\Config;
 $pw_reset = $pw_reset ?? false;
 $page_title = $page_title ?? "Worth the Weight!";
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
-    <?php Tracy\Debugger::renderLoader() ?>
     <head>
         <meta charset="UTF-8"/>
         <title><?=$page_title?></title>
@@ -117,6 +117,25 @@ $page_title = $page_title ?? "Worth the Weight!";
 </html>
 <script>
  $(function() {
-     $.notify("<?=$app->get("login-greeting")?>", "info");
+
+     <? if (true === Session::has("flash-greeting")) { ?>
+     $.notify("<?=Session::take("flash-greeting")?>",
+              {
+                  "className": "info",
+                  "position": "top left",
+              }
+     );
+     <? } ?>
+
+     <? if (true === Session::has("flash-error")) { ?>
+     $.notify("<?=Session::take("flash-error")?>",
+              {
+                  "className": "error",
+                  "position": "top left",
+              }
+     );
+     <? } ?>
+
+
  });
 </script>

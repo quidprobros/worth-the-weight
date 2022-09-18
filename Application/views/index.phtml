@@ -1,6 +1,5 @@
 <?
 use Carbon\Carbon,
-Tracy\Debugger,
 Illuminate\Support\Facades\Config;
 
 use Delight\Cookie\Session;
@@ -11,7 +10,7 @@ $disabled = $has_plan ? "" : "disabled";
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
-    <?php Debugger::renderLoader() ?>
+    <div id="beech"></div>
     <head>
         <meta charset="UTF-8"/>
         <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -172,3 +171,4 @@ $disabled = $has_plan ? "" : "disabled";
         </script>
     </body>
 </html>
+

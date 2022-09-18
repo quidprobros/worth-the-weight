@@ -4,9 +4,7 @@ error_reporting(error_reporting() & ~E_DEPRECATED);
 
 date_default_timezone_set('US/Eastern');
 
-use Tracy\Debugger;
-use Tracy\Bridges\Psr\PsrToTracyLoggerAdapter;
-
+use Spatie\Ignition\Ignition;
 use Carbon\Carbon;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -14,21 +12,20 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Config;
 
 use Spatie\UrlSigner\MD5UrlSigner;
-use Delight\Base64\Throwable\Exception;
 use Delight\Cookie\Session;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\ErrorHandler;
 
-
 use App\Models\User;
-use App\Controllers\{BeefController,
+use App\Controllers\{
+    BeefController,
     ExerciseController,
     GotoDateModalController,
     RedirectDateController,
     UserSettingsController,
-    };
+};
 
 use Respect\Validation\Exceptions\ValidationException;
 
@@ -36,16 +33,9 @@ const FILE_ROOT = __DIR__ . "/../";
 
 require_once FILE_ROOT . "/vendor/autoload.php";
 
-
 session_start();
 
 $app = new flight\Engine();
-
-Debugger::$dumpTheme = 'dark';
-Debugger::$logSeverity = E_NOTICE | E_WARNING;
-Debugger::$strictMode = true;
-Debugger::$showLocation = true;
-Debugger::getBar()->addPanel(new App\TracyExtension());
 
 $monolog = new Logger('main-channel');
 
@@ -53,30 +43,25 @@ $monolog->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEB
 
 ErrorHandler::register($monolog);
 
-$monolog->error("bar");
-
-$tracyLogger = new PsrToTracyLoggerAdapter($monolog);
-
-Debugger::setLogger($tracyLogger);
-
-Debugger::setSessionStorage(new Tracy\NativeSession());
-
-Debugger::$showBar = true;
-
 if ("DEBUG" == Config::get("app.run_mode")) {
     $app->set("debug_mode", true);
-    Debugger::enable(Debugger::DETECT);
 } else {
     $app->set("debug_mode", false);
-    Debugger::$showBar = false;
-    Debugger::enable(Debugger::PRODUCTION);
 }
 
+$ignition = Ignition::make()
+    ->applicationPath("/users/ramos/www/")
+    ->shouldDisplayException($app->get("debug_mode"))
+    ->useDarkMode()
+    ->returnAsString(true)
+    ->register();
 
 // prevent interference with signing
 $app->request()->query->__unset("DEBUG");
 
-$app->map("log", ['Tracy\Debugger', 'log']);
+$app->map("log", function () use ($monolog) {
+    return $monolog;
+});
 
 $app->set("domain", Config::get("domain"));
 
@@ -149,7 +134,7 @@ $app->register(
 
 $app->register(
     'JournalEntryCreateController',
-    'App\Controllers\JournalEntryCreateController::class',
+    'App\Controllers\JournalEntryCreateController',
     [$app]
 );
 
@@ -167,7 +152,7 @@ $app->register(
 
 $app->before('route', function () {
     header("X-Frame-Options: SAMEORIGIN");
-    header("X-Powered-By: Me");
+    header("X-Powered-By: Meep");
     header("X-Content-Type-Options: NOSNIFF");
 });
 
@@ -210,19 +195,18 @@ $app->map("offset2date", function ($offset) {
     return Carbon::now()->addDays($offset);
 });
 
-
 $app->map("verifySignature", function () use ($app) {
     if (
         empty($app->request()->query->signature) ||
         true != $app->url()->validate($app->request()->url)
     ) {
-        $app->log("Signature invalid");
+        $app->log()->info("Signature invalid");
         return false;
     }
     return true;
 });
 
-$app->map("hxheader", function ($message, $status = "success", $exception = null) use ($app) {
+$app->map("notify", function ($message, $status = "success", $exception = null) use ($app) {
     $x = json_encode([
         "showMessage" => [
             "level" => $status,
@@ -233,9 +217,9 @@ $app->map("hxheader", function ($message, $status = "success", $exception = null
     header('HX-Trigger: ' . $x);
 
     if (empty($exception)) {
-        $app->log($message);
+        $app->log()->info($message);
     } else {
-        $app->log($exception->getMessage());
+        $app->log()->error($exception->getMessage());
     }
 });
 
@@ -271,9 +255,9 @@ $app->route("GET /login", function () use ($app) {
         $app->redirect("/home", 302);
     }
     if (true == $app->get("debug_mode")) {
-        $app->set("login-greeting", "Happy Today!");
+        Session::set("flash-greeting", "Happy Today!");
     } else {
-        $app->set("login-greeting", "Please note, this is just a demo; your data WILL be deleted.");
+        Session::set("login-greeting", "Please note, this is just a demo; your data WILL be deleted.");
     }
 
     $app->render("login", [
@@ -292,26 +276,26 @@ $app->route("POST /login", function () use ($app) {
         Session::set("flash-greeting", "Welcome {$app->auth()->getUsername()}!");
         header("HX-Redirect: /home");
     } catch (\Delight\Auth\InvalidEmailException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader('Unrecognized email address. Have you registered yet?', 'error');
+        $app->log()->info($e->getMessage());
+        $app->notify('Unrecognized email address. Have you registered yet?', 'error');
     } catch (\Delight\Auth\InvalidPasswordException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader('Wrong password', 'error');
+        $app->log()->info($e->getMessage());
+        $app->notify('Wrong password', 'error');
     } catch (\Delight\Auth\EmailNotVerifiedException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader('Email not verified', 'error');
+        $app->log()->info($e->getMessage());
+        $app->notify('Email not verified', 'error');
     } catch (\Delight\Auth\TooManyRequestsException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader('Too many requests', 'error');
+        $app->log()->info($e->getMessage());
+        $app->notify('Too many requests', 'error');
     } catch (\App\Exceptions\FormException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader($e->getMessage(), 'error');
+        $app->log()->info($e->getMessage());
+        $app->notify($e->getMessage(), 'error');
     } catch (\Exception $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("Unable to login at this time. Please contact Chris.", "error");
+        $app->log()->info($e->getMessage());
+        $app->notify("Unable to login at this time. Please contact Chris.", "error");
     } catch (\Error $er) {
-        $app->log($er->getMessage());
-        $app->hxheader("Unable to login at this time. PLease contact Chris.", "error");
+        $app->log()->info($er->getMessage());
+        $app->notify("Unable to login at this time. Please contact Chris.", "error");
     }
 
     // for iframe
@@ -333,31 +317,31 @@ $app->route("POST /register", function () use ($app) {
         ]);
         header("HX-Redirect: /home");
     } catch (\App\Exceptions\FormException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader($e->getMessage(), 'error');
+        $app->log()->info($e->getMessage());
+        $app->notify($e->getMessage(), 'error');
     } catch (\Delight\Auth\InvalidEmailException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("Invalid email address", "error");
+        $app->log()->info($e->getMessage());
+        $app->notify("Invalid email address", "error");
     } catch (\Delight\Auth\DuplicateUsernameException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("That username is already taken", "error");
+        $app->log()->info($e->getMessage());
+        $app->notify("That username is already taken", "error");
         echo "That username is already taken";
     } catch (\Delight\Auth\InvalidPasswordException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("Invalid password", "error");
+        $app->log()->info($e->getMessage());
+        $app->notify("Invalid password", "error");
     } catch (\Delight\Auth\UserAlreadyExistsException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("User already registered", "error");
+        $app->log()->info($e->getMessage());
+        $app->notify("User already registered", "error");
         echo "User already registered";
     } catch (\Delight\Auth\TooManyRequestsException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("You have done that too many times. Try again later", "error");
+        $app->log()->info($e->getMessage());
+        $app->notify("You have done that too many times. Try again later", "error");
     } catch (\Exception $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("Unknown error. Contact Chris.", "error");
+        $app->log()->info($e->getMessage());
+        $app->notify("Unknown error. Contact Chris.", "error");
     } catch (\Error $er) {
-        $app->log($er->getMessage());
-        $app->hxheader($er->getMessage(), "error");
+        $app->log()->info($er->getMessage());
+        $app->notify($er->getMessage(), "error");
     }
 });
 
@@ -375,10 +359,10 @@ $app->route("POST /reset-password", function () use ($app) {
         //header("HX-Redirect: /");
     } catch (Delight\Auth\InvalidEmailException $e) {
         $app->render("partials/pw-reset", []);
-        //$app->hxheader('Unknown email address. Are you registered?', 'error');
-        Debugger::log("Attempt to reset password for unknown email address", Tracy\ILogger::EXCEPTION);
+        //$app->notify('Unknown email address. Are you registered?', 'error');
+        $app->log()->error("Attempt to reset password for unknown email address");
     } catch (Exception $e) {
-        $app->log("exception: " . $e->getMessage());
+        $app->log()->error("exception: " . $e->getMessage());
     }
 });
 
@@ -387,7 +371,7 @@ $app->route("GET /verify_email", function () use ($app) {
     $data = $app->request()->query->getData();
 
     if (true !== (isset($data['selector']) && isset($data['token']))) {
-        Debugger::log("Someone attempted to verify with invalid credentials");
+        $app->log()->notice("Someone attempted to verify with invalid credentials");
         $app->redirect("/home", 302);
     }
 
@@ -407,10 +391,10 @@ $app->route("POST /verify_email", function () use ($app) {
         $controller->setNewPassword();
         $controller->useOtherRoute();
     } catch (\App\Exceptions\FormException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader($e->getMessage(), 'error');
+        $app->log()->error($e->getMessage());
+        $app->notify($e->getMessage(), 'error');
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -422,12 +406,12 @@ $app->route("*", function () use ($app) {
     try {
         $app->set("ActiveUser", (new User())->findOrFail($app->auth()->getUserId()));
     } catch (ModelNotFoundException $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         $controller = $app->AuthenticationController();
         $controller->logoutUser();
         $app->redirect("/login");
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         $app->stop();
     }
     return true;
@@ -444,15 +428,23 @@ $app->route("*", function () use ($app) {
 // }, true);
 
 $app->route("GET|POST /logout", function () use ($app) {
+    Session::set("flash-greeting", "See ya soon!");
     try {
         $controller = $app->AuthenticationController();
         $controller->logoutUser();
+        if ("POST" == $app->request()->method) {
+            Session::set("flash-greeting", "See ya soon!");
+        }
         header("HX-Redirect: /login");
     } catch (\Delight\Auth\NotLoggedInException $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("Not logged in", "info");
+        $app->log()->error($e->getMessage());
+        if ("POST" == $app->request()->method) {
+            Session::set("flash-greeting", "See ya soon!");
+        }
     } catch (Exception $e) {
-        $app->hxheader("There was an error logging out. Oops!", "error");
+        if ("POST" == $app->request()->method) {
+            Session::set("flash-greeting", "There was an error logging out.");
+        }
     }
 });
 
@@ -497,7 +489,7 @@ $app->route('GET /beef/@min/@max', function ($min, $max) use ($app) {
         );
         return $app->json($controller->getPayload());
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         return $app->json([]);
     }
 });
@@ -507,7 +499,7 @@ $app->route('GET /modals/go-to-date-modal/@date', function ($date) use ($app) {
         $controller = new GotoDateModalController($app, $date);
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         $app->halt(404);
     }
 });
@@ -517,7 +509,7 @@ $app->route('GET /modals/user-settings', function () use ($app) {
         $controller = $app->UserSettingsModalController();
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         $app->halt(404);
     }
 });
@@ -527,7 +519,7 @@ $app->route('GET /modals/user-vitals', function () use ($app) {
         $controller = $app->UserVitalsModalController();
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         $app->halt(404);
     }
 });
@@ -537,7 +529,7 @@ $app->route('GET /modals/vitals-log', function () use ($app) {
         $controller = $app->UserVitalsLogController();
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         $app->halt(404);
     }
 });
@@ -551,7 +543,7 @@ $app->route('GET /journal/rel/@offset', function () use ($app) {
         $controller->useOtherRoute("partials/journal");
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -574,7 +566,7 @@ $app->route("GET /home/title-bar/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+", function ($om
         $controller->useOtherRoute("partials/title-bar");
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -590,7 +582,7 @@ $app->route('GET /home/left-canvas/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($
         $controller->useOtherRoute("partials/offcanvas-menu");
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -605,7 +597,7 @@ $app->route('GET /home/big-picture/rel/@omo:-?[0-9]+/@bpo:-?[0-9]+', function ($
         $controller->useOtherRoute("partials/big-picture");
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -617,24 +609,23 @@ $app->route('DELETE /journal-entry/@id', function ($id) use ($app) {
     try {
         $controller = $app->JournalEntryRemoveController();
         $controller->deleteEntry($id);
-        $app->hxheader("Entry removed.");
+        $app->notify("Entry removed.");
     } catch (\Exception $e) {
-        $app->log($e->getMessage());
-        $app->hxheader("Something went wrong. Contact Chris!!", "error");
+        $app->log()->error($e->getMessage());
+        $app->notify("Something went wrong. Contact Chris!!", "error");
         $app->halt(204);
     }
 });
 
 if (true == $app->get("debug_mode")) {
     $app->route('POST /drop-food-log', function () use ($app) {
-        d("OMFG");
         try {
             $controller = $app->JournalEntryRemoveController();
             $controller->deleteAll();
             $app->stop();
         } catch (Exception $e) {
-            $app->log()->info($e->getMessage());
-            $app->hxheader("Unable to dump food log table. Contact Chris!");
+            $app->log()->error($e->getMessage());
+            $app->notify("Unable to dump food log table. Contact Chris!", 'error');
             $app->stop();
         }
     });
@@ -654,7 +645,7 @@ $app->route('POST /journal-entry/exercised/rel/@offset', function ($offset) use 
 
         $controller();
     } catch (Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -685,19 +676,19 @@ $app->route('POST /user-settings', function () use ($app) {
         $form = $app->UserSettingsController();
 
         $form->validate(1);
-        $app->hxheader("Success!");
+        $app->notify("Success!");
         $form->saveUpdate();
         header("HX-Refresh:true");
     } catch (ValidationException $e) {
         echo $app->json(['message' => $e->getMessage()]);
-        $app->hxheader($e->getMessage(), "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify($e->getMessage(), "error");
+        $app->log()->error($e->getMessage(), "error");
     } catch (\App\Exceptions\FormException $e) {
-        $app->hxheader($e->getMessage(), "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify($e->getMessage(), "error");
+        $app->log()->error($e->getMessage(), "error");
     } catch (\Exception $e) {
-        $app->hxheader("Something went wrong", "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify("Something went wrong", "error");
+        $app->log()->error($e->getMessage(), "error");
     }
 });
 
@@ -708,19 +699,19 @@ $app->route('POST /user-goals', function () use ($app) {
             App\Validations\ValidatorStore::userGoalsValidator()
         );
         $form->validate(1);
-        $app->hxheader("Success!");
+        $app->notify("Success!");
         $form->saveUpdate();
         header("HX-Refresh:true");
     } catch (ValidationException $e) {
         echo $app->json(['message' => $e->getMessage()]);
-        $app->hxheader($e->getMessage(), "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify($e->getMessage(), "error");
+        $app->log()->error($e->getMessage(), "error");
     } catch (\App\Exceptions\FormException $e) {
-        $app->hxheader($e->getMessage(), "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify($e->getMessage(), "error");
+        $app->log()->error($e->getMessage(), "error");
     } catch (\Exception $e) {
-        $app->hxheader("Something went wrong", "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify("Something went wrong", "error");
+        $app->log()->error($e->getMessage(), "error");
     }
 });
 
@@ -728,18 +719,18 @@ $app->route('POST /user-vitals/weight', function () use ($app) {
     try {
         $form = $app->UserVitalsCreateController();
         $form->validate(1);
-        $app->hxheader("Success!");
+        $app->notify("Success!");
         $form->saveWeight();
     } catch (ValidationException $e) {
         echo $app->json(['message' => $e->getMessage()]);
-        $app->hxheader($e->getMessage(), "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify($e->getMessage(), "error");
+        $app->log()->error($e->getMessage(), "error");
     } catch (\App\Exceptions\FormException $e) {
-        $app->hxheader($e->getMessage(), "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify($e->getMessage(), "error");
+        $app->log()->error($e->getMessage(), "error");
     } catch (\Exception $e) {
-        $app->hxheader("Something went wrong", "error");
-        $app->log($e->getMessage(), "error");
+        $app->notify("Something went wrong", "error");
+        $app->log()->error($e->getMessage(), "error");
     }
 });
 
@@ -750,31 +741,37 @@ $app->route('POST /journal-entry', function () use ($app) {
         }
         $controller = $app->JournalEntryCreateController();
     } catch (\App\Exceptions\FormException $e) {
-        $app->log($e->getMessage(), "error");
-        $app->hxheader($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
+        $app->notify($e->getMessage(), "error");
         exit;
     } catch (\Exception $e) {
-        $app->log($e->getMessage(), "error");
-        $app->hxheader("Sorry, your progress was not recorded.", "error");
+        $app->log()->error($e->getMessage(), "error");
+        $app->notify("Sorry, your progress was not recorded.", "error");
         exit;
     }
 
     try {
         $controller->saveEntry();
-        $app->hxheader("Success!");
+        $app->notify("Success!");
         echo "<div>Successly journaled {$controller->amount} units of this food (+{$controller->points} points)!</div>";
     } catch (\Exception $e) {
-        $app->log($e->getMessage());
+        $app->log()->error($e->getMessage());
         echo '<div>Something went wrong!:(</div>';
-        $app->hxheader("Sorry, your progress was not recorded.", "error");
+        $app->notify("Sorry, your progress was not recorded.", "error");
         return;
     }
 });
 
+$app->route("PUT /ui-journal/open", function () {
+    
+});
+
 if (true == $app->get("debug_mode")) {
     $app->route('GET /test', function () use ($app) {
-        $controller = $app->TestController();
-        $controller();
+        $app->response()
+            ->status(400)
+            ->write("ROFL")
+            ->send();
     });
 
     $app->route('GET /form', function () use ($app) {
@@ -791,26 +788,36 @@ if (true == $app->get("debug_mode")) {
 }
 
 $app->map('notFound', function () use ($app) {
-    $message = "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>";
-    $app->halt(404, $message);
+    $app->response()
+        ->status(404)
+        ->write(
+            "<p>That thing you were looking for ... it's not here. Click <a href='/'>here</a> to head home.</p>"
+        )
+        ->send();
 });
 
-$app->map('error', function ($ex) use ($app) {
-    throw $ex;
+$app->route("GET /ignition-error", function () use ($app) {
+    if ($ignition_html = Session::take("ignition-error")) {
+        echo $ignition_html;
+    } else {
+        $app->notFound();
+    }
 });
 
-
-// $app->map('error', function ($ex) use ($app) {
-//     $app->log($ex->getMessage(), "error");
-//     if (true == $app->get("debug_mode")) {
-//         $app->log('bluescreen in debug mode');
-//         $bs = new Tracy\BlueScreen();
-//         $bs->render($ex);
-//         exit;
-//     } else {
-//         $app->log('bluescreen in production mode');
-//         throw $ex;
-//     }
-// });
+$app->map('error', function ($ex) use ($app, $ignition) {
+    if (true == $app->get("debug_mode")) {
+        if ("GET" === $app->request()->method) {
+            $app->response()->write($ignition->renderException($ex))->send();
+        } else {
+            $html = $ignition->renderException($ex);
+            Session::set("ignition-error", $html);
+            $app
+                ->response()
+                ->status(200)
+                ->header('hx-redirect', "/ignition-error")
+                ->send();
+        }
+    }
+});
 
 $app->start();
