@@ -168,6 +168,13 @@ $disabled = $has_plan ? "" : "disabled";
                  initCalendar()
              }
          });
+
+         <? if (true == Session::take("ui-journal-open")) { ?>
+         $(function() {
+             $("#offCanvas").foundation("open");
+         });
+         <? } ?>
+
         </script>
     </body>
 </html>

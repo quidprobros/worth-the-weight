@@ -763,7 +763,7 @@ $app->route('POST /journal-entry', function () use ($app) {
 });
 
 $app->route("PUT /ui-journal/open", function () {
-    
+    Session::set("ui-journal-open", 1);
 });
 
 if (true == $app->get("debug_mode")) {
