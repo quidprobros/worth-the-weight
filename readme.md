@@ -108,11 +108,8 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
 
 # other
 - [x] use tracy's PSR adapter to incorporate monolog.
-- [ ] update tracy docks to put example of using monolog
-- [ ] make sure debug mode determines which level of logging is used!
-- [ ] figure out events/listeners
 - [ ] new user, autocreate new settings entry, new user goals
-- [ ] figure out flash messages
+- [x] figure out flash messages
 - [ ] use validation library
 - [ ] update migration
   - [ ] When creating users table, should also create record in users_settings table
