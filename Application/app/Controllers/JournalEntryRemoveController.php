@@ -3,9 +3,8 @@
 namespace App\Controllers;
 
 use Exception;
-use flight\Engine;
 
-class JournalEntryRemoveController
+class JournalEntryRemoveController extends BaseController
 {
     private $journal_entry_id;
 

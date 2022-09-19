@@ -134,7 +134,7 @@ $app->register(
 
 $app->register(
     'JournalEntryCreateController',
-    'App\Controllers\JournalEntryCreateController',
+    'App\Controllers\JournalEntryCreateController:',
     [$app]
 );
 
@@ -682,13 +682,13 @@ $app->route('POST /user-settings', function () use ($app) {
     } catch (ValidationException $e) {
         echo $app->json(['message' => $e->getMessage()]);
         $app->notify($e->getMessage(), "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     } catch (\App\Exceptions\FormException $e) {
         $app->notify($e->getMessage(), "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     } catch (\Exception $e) {
         $app->notify("Something went wrong", "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -705,13 +705,13 @@ $app->route('POST /user-goals', function () use ($app) {
     } catch (ValidationException $e) {
         echo $app->json(['message' => $e->getMessage()]);
         $app->notify($e->getMessage(), "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     } catch (\App\Exceptions\FormException $e) {
         $app->notify($e->getMessage(), "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     } catch (\Exception $e) {
         $app->notify("Something went wrong", "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -724,13 +724,13 @@ $app->route('POST /user-vitals/weight', function () use ($app) {
     } catch (ValidationException $e) {
         echo $app->json(['message' => $e->getMessage()]);
         $app->notify($e->getMessage(), "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     } catch (\App\Exceptions\FormException $e) {
         $app->notify($e->getMessage(), "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     } catch (\Exception $e) {
         $app->notify("Something went wrong", "error");
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
     }
 });
 
@@ -745,7 +745,7 @@ $app->route('POST /journal-entry', function () use ($app) {
         $app->notify($e->getMessage(), "error");
         exit;
     } catch (\Exception $e) {
-        $app->log()->error($e->getMessage(), "error");
+        $app->log()->error($e->getMessage());
         $app->notify("Sorry, your progress was not recorded.", "error");
         exit;
     }
@@ -767,11 +767,15 @@ $app->route("PUT /ui-journal/open", function () {
 });
 
 if (true == $app->get("debug_mode")) {
-    $app->route('GET /test', function () use ($app) {
-        $app->response()
-            ->status(400)
-            ->write("ROFL")
-            ->send();
+    // $app->route('GET /test', function () use ($app) {
+    //     $app->response()
+    //         ->status(400)
+    //         ->write("ROFL")
+    //         ->send();
+    // });
+
+    $app->route("POST /test", function () {
+        echo 'neeeeerd';
     });
 
     $app->route('GET /form', function () use ($app) {
@@ -798,7 +802,7 @@ $app->map('notFound', function () use ($app) {
 
 $app->route("GET /ignition-error", function () use ($app) {
     if ($ignition_html = Session::take("ignition-error")) {
-        echo $ignition_html;
+        $app->response()->write($ignition_html)->send();
     } else {
         $app->notFound();
     }

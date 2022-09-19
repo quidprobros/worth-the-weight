@@ -104,6 +104,7 @@ When in a development environment, dev mode can be disabled with ?DEBUG=0
 
 # More features
 - [ ] Allow to add a point goals
+- [ ] Is it necessary to have all these log statements if using the log regeister log?
 
 
 # other
