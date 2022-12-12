@@ -4,7 +4,6 @@ error_reporting(error_reporting() & ~E_DEPRECATED);
 
 date_default_timezone_set('US/Eastern');
 
-use Spatie\Ignition\Ignition;
 use Carbon\Carbon;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
@@ -49,12 +48,6 @@ if ("DEBUG" == Config::get("app.run_mode")) {
     $app->set("debug_mode", false);
 }
 
-$ignition = Ignition::make()
-    ->applicationPath("/users/ramos/www/")
-    ->shouldDisplayException($app->get("debug_mode"))
-    ->useDarkMode()
-    ->returnAsString(true)
-    ->register();
 
 // prevent interference with signing
 $app->request()->query->__unset("DEBUG");
@@ -134,7 +127,7 @@ $app->register(
 
 $app->register(
     'JournalEntryCreateController',
-    'App\Controllers\JournalEntryCreateController:',
+    'App\Controllers\JournalEntryCreateController',
     [$app]
 );
 
@@ -228,17 +221,17 @@ $app->map("hxtrigger", function ($actions) {
     header('HX-Trigger: ' . $z);
 });
 
-// end routing after redirect
-$app->after("redirect", function () {
-    exit;
-});
+// // end routing after redirect
+// $app->after("redirect", function () {
+//     exit;
+// });
 
 /*
  * routes begin!
  */
 
-// routes for debugging
 
+// routes for debugging
 if (true == $app->get("debug_mode")) {
     $app->route('*', function () {
         return true;
@@ -417,16 +410,6 @@ $app->route("*", function () use ($app) {
     return true;
 });
 
-
-
-// middleware kinda
-// $app->before("start", function () {
-
-// });
-// $app->route('POST *', function () {
-
-// }, true);
-
 $app->route("GET|POST /logout", function () use ($app) {
     Session::set("flash-greeting", "See ya soon!");
     try {
@@ -502,6 +485,10 @@ $app->route('GET /modals/go-to-date-modal/@date', function ($date) use ($app) {
         $app->log()->error($e->getMessage());
         $app->halt(404);
     }
+});
+
+$app->route('GET /modals/add-new-food', function () use ($app) {
+    echo '<div>BS</div>';
 });
 
 $app->route('GET /modals/user-settings', function () use ($app) {
@@ -800,28 +787,9 @@ $app->map('notFound', function () use ($app) {
         ->send();
 });
 
-$app->route("GET /ignition-error", function () use ($app) {
-    if ($ignition_html = Session::take("ignition-error")) {
-        $app->response()->write($ignition_html)->send();
-    } else {
-        $app->notFound();
-    }
-});
 
-$app->map('error', function ($ex) use ($app, $ignition) {
-    if (true == $app->get("debug_mode")) {
-        if ("GET" === $app->request()->method) {
-            $app->response()->write($ignition->renderException($ex))->send();
-        } else {
-            $html = $ignition->renderException($ex);
-            Session::set("ignition-error", $html);
-            $app
-                ->response()
-                ->status(200)
-                ->header('hx-redirect', "/ignition-error")
-                ->send();
-        }
-    }
+$app->map('error', function ($ex) use ($app) {
+    
 });
 
 $app->start();

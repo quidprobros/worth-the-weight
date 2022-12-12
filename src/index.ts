@@ -204,6 +204,28 @@ $(() => {
         new OffCanvas($("#offCanvas2"))
     }
 
+    $(document).on("click", "#show-add-new-food-button", function() {
+        fetch(`/modals/add-new-food`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'text/html'
+            },
+        })
+            .then(response => response.text())
+            .then(text => {
+                console.log(text)
+                const $text = $(text)
+                const modal = new Reveal($text)
+                htmx.process(modal.$element[0]);
+
+                $(`#${modal.id}`).on('closed.zf.reveal', function (e) {
+                    e.currentTarget.remove();
+                });
+
+            })
+            .catch(err => console.log(err))
+    });
+
     $(document).on("click",  "#show-user-settings-button", function () {
         fetch(`/modals/user-settings`, {
             method: "GET",

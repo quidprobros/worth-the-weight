@@ -133,7 +133,8 @@ $disabled = $has_plan ? "" : "disabled";
                     Portrait mode works best!
                 </div>
                 <div class="cell auto">
-                    <div class="grid-x text-right small-up-3">
+                    <div class="grid-x text-right small-up-4">
+                        <div class="cell"><button id='show-add-new-food-button' type="button" class="clear button">[add new food] </button></div>
                         <div class="cell"><button id='show-user-vitals-button' type="button" class="clear button">[vitals] </button></div>
                         <div class="cell"><button id='show-user-settings-button' type="button" class="clear button">[settings] </button></div>
                         <div class="cell"><span>Logged in as <strong><?=$app->auth()->getUsername()?></strong></span></div>

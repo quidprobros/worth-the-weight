@@ -50,8 +50,7 @@
         "elegantweb/sanitizer": "^2.0",
         "delight-im/cookie": "^3.4",
         "maximebf/debugbar": "^1.18",
-        "bramus/monolog-colored-line-formatter": "~3.0",
-        "spatie/ignition": "dev-main#b2733a6bbaf0ffb0786b17234838f6283c2e7c9b"
+        "bramus/monolog-colored-line-formatter": "~3.0"
     },
     "authors": [
         {
@@ -63,7 +62,6 @@
         "league/csv": "^9.7",
         "jdorn/sql-formatter": "^1.2",
         "robmorgan/phinx": "^0.12.9",
-        "itsgoingd/clockwork": "^5.1",
         "kint-php/kint": "^4.1"
     }
 }
