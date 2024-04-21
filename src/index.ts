@@ -123,7 +123,7 @@ export function initCalendar() {
         const min = jsCalendar.tools.dateToString(info.start, "YYYY-MM-DD") as string
         // @ts-ignore
         const max = jsCalendar.tools.dateToString(info.end, "YYYY-MM-DD") as string
-        console.log({min, max});
+
         if (true !== myCalendar._isSelectionComplete) {
             fetch(`/beef/${min}/${max}`, {
                 method: "GET",
@@ -205,7 +205,7 @@ $(() => {
     }
 
     $(document).on("click", "#show-add-new-food-button", function() {
-        fetch(`/modals/add-new-food`, {
+        fetch(`/modals/add-food-item`, {
             method: "GET",
             headers: {
                 'Content-Type': 'text/html'
@@ -213,7 +213,6 @@ $(() => {
         })
             .then(response => response.text())
             .then(text => {
-                console.log(text)
                 const $text = $(text)
                 const modal = new Reveal($text)
                 htmx.process(modal.$element[0]);
@@ -222,6 +221,14 @@ $(() => {
                     e.currentTarget.remove();
                 });
 
+                new SlimSelect({
+                    select: '#plan-selection',
+                    allowDeselect: true,
+                    allowDeselectOption: true,
+                    addToBody: true,
+                })
+
+                modal.open();
             })
             .catch(err => console.log(err))
     });
@@ -235,7 +242,6 @@ $(() => {
         })
             .then(response => response.text())
             .then(text => {
-
                 const $text = $(text)
                 const modal = new Reveal($text)
                 htmx.process(modal.$element[0]);

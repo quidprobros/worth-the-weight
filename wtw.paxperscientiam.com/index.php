@@ -24,6 +24,7 @@ use App\Controllers\{
     GotoDateModalController,
     RedirectDateController,
     UserSettingsController,
+    AddFoodItemModalController,
 };
 
 use Respect\Validation\Exceptions\ValidationException;
@@ -140,6 +141,12 @@ $app->register(
 $app->register(
     'UserSettingsModalController',
     'App\Controllers\UserSettingsModalController',
+    [$app]
+);
+
+$app->register(
+    'AddFoodItemModalController',
+    'App\Controllers\AddFoodItemModalController',
     [$app]
 );
 
@@ -487,9 +494,21 @@ $app->route('GET /modals/go-to-date-modal/@date', function ($date) use ($app) {
     }
 });
 
-$app->route('GET /modals/add-new-food', function () use ($app) {
-    echo '<div>BS</div>';
+$app->route('GET /modals/add-food-item', function () use ($app) {
+    try {
+        $controller = $app->AddFoodItemModalController();
+        $controller();
+    } catch (Exception $e) {
+        $app->log()->error($e->getMessage());
+        $app->halt(404);
+    }
 });
+
+$app->route('POST /user-custom-food', function () use ($app) {
+    $app->notify("Success!");
+    echo 345678;
+});
+
 
 $app->route('GET /modals/user-settings', function () use ($app) {
     try {
