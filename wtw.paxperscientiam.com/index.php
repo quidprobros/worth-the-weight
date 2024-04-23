@@ -39,7 +39,7 @@ $app = new flight\Engine();
 
 $monolog = new Logger('main-channel');
 
-$monolog->pushHandler(new StreamHandler(Config::get('app.log_file'), Logger::DEBUG));
+$monolog->pushHandler(new StreamHandler("php://stdout", Logger::DEBUG));
 
 ErrorHandler::register($monolog);
 
@@ -104,7 +104,7 @@ $app->register(
 
 $app->register(
     'UserSettingsController',
-    'App\Controllers\UserSettingsControlle',
+    'App\Controllers\UserSettingsController',
     [$app, App\Validations\ValidatorStore::userSettingsValidator()]
 );
 
