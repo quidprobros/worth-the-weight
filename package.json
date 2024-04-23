@@ -20,7 +20,7 @@
     "dependencies": {
         "@paxperscientiam/dlv.ts": "^1.2.5",
         "css.gg": "^2.0.0",
-        "datatables.net": "^1.10.25",
+        "datatables.net": "^2.0.5",
         "foundation-sites": "^6.7.4",
         "htmx.org": "^1.4.1",
         "inputmask": "^5.0.6",
@@ -28,8 +28,8 @@
         "microtip": "^0.2.2",
         "notifyjs-browser": "^0.4.2",
         "query-state": "^4.3.0",
-        "rfs": "^9.0.4",
-        "simple-jscalendar": "github:paxperscientiam/jsCalendar",
+        "rfs": "^10.0.0",
+        "simple-jscalendar": "^1.4.5",
         "slim-select": "^1.27.0"
     },
     "devDependencies": {
@@ -45,11 +45,9 @@
         "cssnano": "^5.0.6",
         "eslint": "^8.3.0",
         "eslint-watch": "^8.0.0",
-        "fuse-box": "^4.0.1-next.8",
-        "fuse-box-typechecker": "^3.1.1",
-        "postcss-prefixer": "^2.1.2",
+        "postcss-prefixer": "^3.0.0",
         "ts-node": "^10.4.0",
-        "typescript": "^4.5.2"
+        "typescript": "^5.4.5"
     },
     "files": [
         "public",
